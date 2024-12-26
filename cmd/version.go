@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/haierspi/golang-image-upload-service/global"
+
+	"github.com/spf13/cobra"
 )
 
 var versionCmd = &cobra.Command{

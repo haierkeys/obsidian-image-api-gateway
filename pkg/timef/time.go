@@ -23,8 +23,8 @@ func (t *Time) UnmarshalJSON(data []byte) (err error) {
 
 func (t Time) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(t)
-	// 如果时间值 空或者0 值 返回为null 如果写空字符串会报出异常时间
-	// 下面是修复0001-01-01 问题的
+	// 如果时间值是空或者0值 返回为null 如果写空字符串会报出异常时间
+	// 下面是修复0001-01-01问题的
 	if &t == nil || t.IsZero() {
 		return []byte("null"), nil
 	}

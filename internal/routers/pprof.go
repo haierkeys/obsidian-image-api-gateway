@@ -1,13 +1,12 @@
 package routers
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"net/http/pprof"
-	"time"
 
 	"github.com/haierspi/golang-image-upload-service/global"
+	"github.com/haierspi/golang-image-upload-service/internal/middleware"
+	"github.com/haierspi/golang-image-upload-service/internal/routers/api"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,67 +17,44 @@ const (
 	DefaultPrefix = "/debug/pprof"
 )
 
-func MetricsSrv() {
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println("PrivateHttp Metric Service panic", "err", err)
-		}
-	}()
+func NewPrivateRouter() *gin.Engine {
 
-	log.Println("PrivateHttp Metric Service ListenAndServe On: ", global.Config.Server.PrivateHttpListen, "\n")
-
-	router := gin.New()
-	// router.Use(logs.RecoveryWithZap(logs.Logger, true))
-
-	// prom监控
-	router.GET("metrics", gin.WrapH(promhttp.Handler()))
+	r := gin.New()
 
 	if global.Config.Server.RunMode == "debug" {
-		registerPprof(router)
+		r.Use(gin.Recovery())
+	} else {
+		r.Use(middleware.Recovery())
 	}
 
-	s := &http.Server{
-		Addr:           global.Config.Server.PrivateHttpListen,
-		Handler:        router,
-		ReadTimeout:    time.Duration(global.Config.Server.ReadTimeout) * time.Second,
-		WriteTimeout:   time.Duration(global.Config.Server.WriteTimeout) * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	// prom监控
+	r.GET("/debug/vars", api.Expvar)
+	r.GET("metrics", gin.WrapH(promhttp.Handler()))
+
+	if global.Config.Server.RunMode == "debug" {
+		p := r.Group("pprof")
+		{
+			p.GET("/", pprofHandler(pprof.Index))
+			p.GET("/cmdline", pprofHandler(pprof.Cmdline))
+			p.GET("/profile", pprofHandler(pprof.Profile))
+			p.POST("/symbol", pprofHandler(pprof.Symbol))
+			p.GET("/symbol", pprofHandler(pprof.Symbol))
+			p.GET("/trace", pprofHandler(pprof.Trace))
+			p.GET("/allocs", pprofHandler(pprof.Handler("allocs").ServeHTTP))
+			p.GET("/block", pprofHandler(pprof.Handler("block").ServeHTTP))
+			p.GET("/goroutine", pprofHandler(pprof.Handler("goroutine").ServeHTTP))
+			p.GET("/heap", pprofHandler(pprof.Handler("heap").ServeHTTP))
+			p.GET("/mutex", pprofHandler(pprof.Handler("mutex").ServeHTTP))
+			p.GET("/threadcreate", pprofHandler(pprof.Handler("threadcreate").ServeHTTP))
+		}
 	}
 
-	err := s.ListenAndServe()
-
-	fmt.Println("PrivateHttp Metric Service start err", "err", err)
+	return r
 }
 
-func registerPprof(r *gin.Engine, prefixOptions ...string) {
-	prefix := getPrefix(prefixOptions...)
-
-	prefixRouter := r.Group(prefix)
-	{
-		prefixRouter.GET("/", pprofHandler(pprof.Index))
-		prefixRouter.GET("/cmdline", pprofHandler(pprof.Cmdline))
-		prefixRouter.GET("/profile", pprofHandler(pprof.Profile))
-		prefixRouter.POST("/symbol", pprofHandler(pprof.Symbol))
-		prefixRouter.GET("/symbol", pprofHandler(pprof.Symbol))
-		prefixRouter.GET("/trace", pprofHandler(pprof.Trace))
-		prefixRouter.GET("/allocs", pprofHandler(pprof.Handler("allocs").ServeHTTP))
-		prefixRouter.GET("/block", pprofHandler(pprof.Handler("block").ServeHTTP))
-		prefixRouter.GET("/goroutine", pprofHandler(pprof.Handler("goroutine").ServeHTTP))
-		prefixRouter.GET("/heap", pprofHandler(pprof.Handler("heap").ServeHTTP))
-		prefixRouter.GET("/mutex", pprofHandler(pprof.Handler("mutex").ServeHTTP))
-		prefixRouter.GET("/threadcreate", pprofHandler(pprof.Handler("threadcreate").ServeHTTP))
-	}
-}
 func pprofHandler(h http.HandlerFunc) gin.HandlerFunc {
 	handler := h
 	return func(c *gin.Context) {
 		handler.ServeHTTP(c.Writer, c.Request)
 	}
-}
-func getPrefix(prefixOptions ...string) string {
-	prefix := DefaultPrefix
-	if len(prefixOptions) > 0 {
-		prefix = prefixOptions[0]
-	}
-	return prefix
 }

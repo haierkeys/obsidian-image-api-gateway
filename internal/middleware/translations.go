@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"github.com/haierspi/golang-image-upload-service/global"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Translations() gin.HandlerFunc {

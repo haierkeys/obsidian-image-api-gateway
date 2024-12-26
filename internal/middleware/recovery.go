@@ -10,6 +10,7 @@ import (
 	"github.com/haierspi/golang-image-upload-service/pkg/email"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func Recovery() gin.HandlerFunc {
@@ -28,7 +29,8 @@ func Recovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				global.Logger.WithCallersFrames().Errorf(c, "panic recover err: %v", err)
+
+				global.Log().Fatal("panic recover err", zap.String("err", fmt.Sprintf("%v", err)))
 
 				if global.Config.Email.ErrorReportEnable {
 					err := defailtMailer.SendMail(
@@ -37,7 +39,7 @@ func Recovery() gin.HandlerFunc {
 						fmt.Sprintf("错误信息: %v", err),
 					)
 					if err != nil {
-						global.Logger.Panicf(c, "mail.SendMail err: %v", err)
+						global.Log().Panic("mail.SendMail err", zap.Error(err))
 					}
 				}
 

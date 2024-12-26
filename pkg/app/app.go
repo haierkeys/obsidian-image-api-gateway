@@ -108,6 +108,7 @@ func GetAccessHost(c *gin.Context) string {
 // ToResponse 输出到浏览器
 func (r *Response) ToResponse(code *code.Code) {
 
+	r.Ctx.Set("status_code", code.StatusCode())
 	if code.HaveDetails() {
 		r.SendResponse(code.StatusCode(), ErrResult{
 			Code:    code.Code(),
@@ -127,6 +128,9 @@ func (r *Response) ToResponse(code *code.Code) {
 }
 
 func (r *Response) ToResponseList(code *code.Code, list interface{}, totalRows int) {
+
+	r.Ctx.Set("status_code", code.StatusCode())
+
 	r.SendResponse(code.StatusCode(), ResListResult{
 		Code:   code.Code(),
 		Status: code.Status(),

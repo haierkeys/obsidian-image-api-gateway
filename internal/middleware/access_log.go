@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/pkg/logger"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type AccessLogWriter struct {
@@ -24,24 +24,32 @@ func (w AccessLogWriter) Write(p []byte) (int, error) {
 
 func AccessLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		bodyWriter := &AccessLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = bodyWriter
 
-		beginTime := time.Now().Unix()
-		c.Next()
-		endTime := time.Now().Unix()
+		path := c.Request.URL.Path
+		query := c.Request.URL.RawQuery
 
-		fields := logger.Fields{
-			"request":  c.Request.PostForm.Encode(),
-			"response": bodyWriter.body.String(),
-		}
-		s := "access log: method: %s, status_code: %d, " +
-			"begin_time: %d, end_time: %d"
-		global.Logger.WithFields(fields).Infof(c, s,
-			c.Request.Method,
-			bodyWriter.Status(),
-			beginTime,
-			endTime,
+		startTime := time.Now()
+		c.Next()
+
+		timeCost := time.Since(startTime)
+		statusCode, _ := c.Get("status_code")
+
+		global.Log().Info(path,
+			zap.Int("status", c.Writer.Status()),
+			zap.String("method", c.Request.Method),
+			zap.String("path", path),
+			zap.String("query", query),
+			zap.String("ip", c.ClientIP()),
+			zap.String("start-time", startTime.Format("2006-01-02 15:04:05")),
+			zap.String("user-agent", c.Request.UserAgent()),
+			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
+			zap.Duration("time-cost", timeCost),
+			zap.Int("status_code", statusCode.(int)),
+			zap.String("request", c.Request.PostForm.Encode()),
+			zap.String("response", bodyWriter.body.String()),
 		)
 	}
 }

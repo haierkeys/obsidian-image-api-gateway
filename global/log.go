@@ -1,7 +1,11 @@
 package global
 
 import (
-	"github.com/haierspi/golang-image-upload-service/pkg/logger"
+	"go.uber.org/zap"
 )
 
-var Logger *logger.Logger
+var Logger *zap.Logger
+
+func Log() *zap.Logger {
+	return Logger
+}
