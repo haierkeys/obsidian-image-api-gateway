@@ -7,8 +7,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/haierspi/golang-image-upload-service/global"
-	pkg_path "github.com/haierspi/golang-image-upload-service/pkg/path"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	pkg_path "github.com/haierkeys/golang-image-upload-service/pkg/path"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"

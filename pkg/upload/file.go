@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/haierspi/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/global"
 )
 
 type FileType int

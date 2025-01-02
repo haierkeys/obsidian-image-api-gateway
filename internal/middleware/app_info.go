@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/pkg/app"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/pkg/app"
 
 	"github.com/gin-gonic/gin"
 )

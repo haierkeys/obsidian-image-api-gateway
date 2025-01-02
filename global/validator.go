@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/haierspi/golang-image-upload-service/pkg/validator"
+	"github.com/haierkeys/golang-image-upload-service/pkg/validator"
 
 	ut "github.com/go-playground/universal-translator"
 )

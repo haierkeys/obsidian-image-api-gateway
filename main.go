@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/haierspi/golang-image-upload-service/cmd"
+	"github.com/haierkeys/golang-image-upload-service/cmd"
 )
 
 func main() {

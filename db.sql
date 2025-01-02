@@ -21,8 +21,26 @@ CREATE TABLE "pre_user" (
     "deleted_at" TIMESTAMP DEFAULT NULL,
     UNIQUE ("email" ASC)
 );
-
 CREATE UNIQUE INDEX "email" ON "pre_user" ("email" ASC);
+
+DROP TABLE IF EXISTS "pre_cloud_config";
+CREATE TABLE "pre_cloud_config" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "uid" INTEGER NOT NULL DEFAULT 0,
+    "bucket_name" TEXT DEFAULT '',
+    "account_id" TEXT DEFAULT '',
+    "access_key_id" TEXT DEFAULT '',
+    "access_key_secret" TEXT DEFAULT '',
+    "custom_path" TEXT DEFAULT '',
+    "is_deleted" INTEGER NOT NULL DEFAULT 0,
+    "updated_at" TIMESTAMP DEFAULT NULL,
+    "created_at" TIMESTAMP DEFAULT NULL,
+    "deleted_at" TIMESTAMP DEFAULT NULL
+);
+CREATE INDEX "uid" ON "pre_cloud_config" ("uid" ASC);
+
+
+
 
 PRAGMA foreign_keys = true;
 
@@ -46,3 +64,5 @@ CREATE TABLE `pre_user`  (
  PRIMARY KEY (`uid`) ,
  UNIQUE INDEX `email`(`email`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4  COMMENT = '用户表';
+
+

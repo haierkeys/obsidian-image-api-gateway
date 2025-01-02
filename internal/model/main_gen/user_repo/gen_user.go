@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/internal/model"
-	"github.com/haierspi/golang-image-upload-service/pkg/timef"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/internal/model"
+	"github.com/haierkeys/golang-image-upload-service/pkg/timef"
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"

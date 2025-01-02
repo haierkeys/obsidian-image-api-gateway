@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/internal/model"
-	"github.com/haierspi/golang-image-upload-service/internal/routers"
-	"github.com/haierspi/golang-image-upload-service/pkg/logger"
-	"github.com/haierspi/golang-image-upload-service/pkg/safe_close"
-	"github.com/haierspi/golang-image-upload-service/pkg/validator"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/internal/model"
+	"github.com/haierkeys/golang-image-upload-service/internal/routers"
+	"github.com/haierkeys/golang-image-upload-service/pkg/logger"
+	"github.com/haierkeys/golang-image-upload-service/pkg/safe_close"
+	"github.com/haierkeys/golang-image-upload-service/pkg/validator"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

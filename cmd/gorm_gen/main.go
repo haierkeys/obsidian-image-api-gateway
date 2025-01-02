@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/haierspi/golang-image-upload-service/cmd/gorm_gen/pkg"
+	"github.com/haierkeys/golang-image-upload-service/cmd/gorm_gen/pkg"
 )
 
 var (

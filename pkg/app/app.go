@@ -3,7 +3,7 @@ package app
 import (
 	"reflect"
 
-	"github.com/haierspi/golang-image-upload-service/pkg/code"
+	"github.com/haierkeys/golang-image-upload-service/pkg/code"
 
 	"github.com/gin-gonic/gin"
 )

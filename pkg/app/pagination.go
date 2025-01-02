@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/pkg/convert"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/pkg/convert"
 
 	"github.com/gin-gonic/gin"
 )

@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/haierspi/golang-image-upload-service/cmd/db_gen/db_driver"
-	"github.com/haierspi/golang-image-upload-service/pkg/convert"
+	"github.com/haierkeys/golang-image-upload-service/cmd/db_gen/db_driver"
+	"github.com/haierkeys/golang-image-upload-service/pkg/convert"
 )
 
 type tableInfo struct {
@@ -133,7 +133,7 @@ func main() {
 		fmt.Println("  └── file : ", dbPath+"/"+tableSaveName+"_repo/gen_model.go")
 
 		modelContent := fmt.Sprintf("package %s%s\n", tableSaveName, "_repo")
-		modelContent += fmt.Sprintf(`import "github.com/haierspi/golang-image-upload-service/pkg/timef"`)
+		modelContent += fmt.Sprintf(`import "github.com/haierkeys/golang-image-upload-service/pkg/timef"`)
 		modelContent += fmt.Sprintf("\n\n// %s \n", table.Comment.String)
 		modelContent += fmt.Sprintf("//go:generate gormgen -structs %s -input . -pre %s \n", capitalize(tableSaveName), tablePrefix)
 		modelContent += fmt.Sprintf("type %s struct {\n", capitalize(tableSaveName))

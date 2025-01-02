@@ -27,9 +27,9 @@ import (
     "gorm.io/gorm"
     "gorm.io/gorm/schema"
 
-    "github.com/haierspi/golang-image-upload-service/global"
-    "github.com/haierspi/golang-image-upload-service/internal/model"
-    "github.com/haierspi/golang-image-upload-service/pkg/timef"
+    "github.com/haierkeys/golang-image-upload-service/global"
+    "github.com/haierkeys/golang-image-upload-service/internal/model"
+    "github.com/haierkeys/golang-image-upload-service/pkg/timef"
 )
 
 func Connection() *gorm.DB {
@@ -225,7 +225,7 @@ func (qb *{{.QueryBuilderName}}) WhereRaw(query string, values ...interface{})  
 	return qb
 }
 
-// ---------- 
+// ----------
 
 
 

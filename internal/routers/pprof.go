@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"net/http/pprof"
 
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/internal/middleware"
-	"github.com/haierspi/golang-image-upload-service/internal/routers/api"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/internal/middleware"
+	"github.com/haierkeys/golang-image-upload-service/internal/routers/api"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/haierspi/golang-image-upload-service/docs"
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/internal/middleware"
-	"github.com/haierspi/golang-image-upload-service/internal/routers/api"
-	"github.com/haierspi/golang-image-upload-service/pkg/limiter"
+	_ "github.com/haierkeys/golang-image-upload-service/docs"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/internal/middleware"
+	"github.com/haierkeys/golang-image-upload-service/internal/routers/api"
+	"github.com/haierkeys/golang-image-upload-service/pkg/limiter"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

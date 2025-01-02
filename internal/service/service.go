@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/haierspi/golang-image-upload-service/global"
-	"github.com/haierspi/golang-image-upload-service/internal/dao"
+	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/golang-image-upload-service/internal/dao"
 )
 
 type Service struct {

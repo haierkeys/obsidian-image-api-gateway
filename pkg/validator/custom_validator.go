@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/haierspi/golang-image-upload-service/pkg/timef"
+	"github.com/haierkeys/golang-image-upload-service/pkg/timef"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
