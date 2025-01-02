@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/pkg/convert"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
 
 	"github.com/gin-gonic/gin"
 )

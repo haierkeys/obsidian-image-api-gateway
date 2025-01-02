@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/internal/dao"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 )
 
 type Service struct {

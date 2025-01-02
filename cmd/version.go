@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
 	"github.com/spf13/cobra"
 )

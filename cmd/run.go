@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/haierkeys/golang-image-upload-service/pkg/path"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/path"
 
 	"github.com/radovskyb/watcher"
 	"github.com/spf13/cobra"

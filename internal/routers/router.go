@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/haierkeys/golang-image-upload-service/docs"
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/internal/middleware"
-	"github.com/haierkeys/golang-image-upload-service/internal/routers/api"
-	"github.com/haierkeys/golang-image-upload-service/pkg/limiter"
+	_ "github.com/haierkeys/obsidian-image-api-gateway/docs"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers/api"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/limiter"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

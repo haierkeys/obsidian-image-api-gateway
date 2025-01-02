@@ -3,7 +3,7 @@ package aws_s3
 import (
 	"context"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"

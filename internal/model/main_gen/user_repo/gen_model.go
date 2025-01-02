@@ -1,6 +1,6 @@
 package user_repo
 
-import "github.com/haierkeys/golang-image-upload-service/pkg/timef"
+import "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 
 //
 //go:generate gormgen -structs User -input . -pre pre_

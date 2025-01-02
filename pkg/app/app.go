@@ -3,7 +3,7 @@ package app
 import (
 	"reflect"
 
-	"github.com/haierkeys/golang-image-upload-service/pkg/code"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/haierkeys/golang-image-upload-service/pkg/path"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/path"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"

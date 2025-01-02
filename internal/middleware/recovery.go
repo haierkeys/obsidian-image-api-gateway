@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/pkg/app"
-	"github.com/haierkeys/golang-image-upload-service/pkg/code"
-	"github.com/haierkeys/golang-image-upload-service/pkg/email"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/email"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

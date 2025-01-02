@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/haierkeys/golang-image-upload-service/pkg/path"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/path"
 )
 
 var (

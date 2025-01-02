@@ -3,8 +3,8 @@ package app
 import (
 	"encoding/json"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/pkg/util"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/util"
 
 	"github.com/gin-gonic/gin"
 )

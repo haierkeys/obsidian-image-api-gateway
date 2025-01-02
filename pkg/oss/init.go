@@ -1,7 +1,7 @@
 package oss
 
 import (
-	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
 	oss_sdk "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )

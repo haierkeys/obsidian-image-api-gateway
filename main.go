@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/haierkeys/golang-image-upload-service/cmd"
+	"github.com/haierkeys/obsidian-image-api-gateway/cmd"
 )
 
 func main() {

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
-	pkg_path "github.com/haierkeys/golang-image-upload-service/pkg/path"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	pkg_path "github.com/haierkeys/obsidian-image-api-gateway/pkg/path"
 
 	oss_sdk "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )

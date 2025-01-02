@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
-	"github.com/haierkeys/golang-image-upload-service/internal/model"
-	"github.com/haierkeys/golang-image-upload-service/pkg/timef"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"

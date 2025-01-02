@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 )
 
 type FileType int

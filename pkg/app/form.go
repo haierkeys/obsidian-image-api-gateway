@@ -3,7 +3,7 @@ package app
 import (
 	"strings"
 
-	"github.com/haierkeys/golang-image-upload-service/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
