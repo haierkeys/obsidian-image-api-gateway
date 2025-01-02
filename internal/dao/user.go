@@ -18,6 +18,8 @@ type User struct {
 	DeletedAt timef.Time `gorm:"column:deleted_at;time;default:NULL" json:"deletedAt" form:"deletedAt"` //
 }
 
+// GetUserByUID 该结构体表示用户信息
+// 包含用户的唯一标识符、头像、电子邮件、令牌、删除状态以及创建和更新时间
 func (d *Dao) GetUserByUID(uid int64) (*User, error) {
 
 	m, err := user_repo.NewQueryBuilder().
@@ -33,7 +35,8 @@ func (d *Dao) GetUserByUID(uid int64) (*User, error) {
 
 }
 
-func (d *Dao) GetUserByEmail(email string) (*Member, error) {
+// GetUserByEmail 根据电子邮件获取用户信息
+func (d *Dao) GetUserByEmail(email string) (*User, error) {
 
 	m, err := user_repo.NewQueryBuilder().
 		WhereEmail(model.Eq, email).
@@ -44,13 +47,14 @@ func (d *Dao) GetUserByEmail(email string) (*Member, error) {
 		return nil, err
 	}
 
-	return convert.StructAssign(m, &Member{}).(*Member), nil
+	return convert.StructAssign(m, &User{}).(*User), nil
 
 }
 
-func (d *Dao) CreateMember(dao *Member) (int64, error) {
+// CreateMember 创建用户
+func (d *Dao) CreateMember(dao *User) (int64, error) { // 修改参数类型为 User
 
-	m := convert.StructAssign(dao, &user_repo.Member{}).(*user_repo.Member)
+	m := convert.StructAssign(dao, &user_repo.User{}).(*user_repo.User)
 
 	id, err := m.Create()
 
@@ -58,4 +62,32 @@ func (d *Dao) CreateMember(dao *Member) (int64, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+// CreateUser 创建用户
+func (d *Dao) CreateUser(dao *User) (int64, error) { // 修改函数名为 CreateUser
+
+	m := convert.StructAssign(dao, &user_repo.User{}).(*user_repo.User)
+
+	id, err := m.Create()
+
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+// GetUserByCredentials 根据电子邮件和密码获取用户信息
+func (d *Dao) GetUserByCredentials(email, password string) (*User, error) { // 新增函数
+
+	m, err := user_repo.NewQueryBuilder().
+		WhereEmail(model.Eq, email).
+		WhereIsDeleted(model.Eq, 0).
+		First()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return convert.StructAssign(m, &User{}).(*User), nil
 }

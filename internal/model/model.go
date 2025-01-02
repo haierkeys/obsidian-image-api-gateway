@@ -6,6 +6,7 @@ import (
 
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
+	"github.com/haierkeys/gormTracing"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

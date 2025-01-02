@@ -131,7 +131,8 @@ func (g *Generator) Format() *Generator {
 func (g *Generator) Flush() error {
 
 	for k := range g.buf {
-		filename := g.inputFile + "/gen_" + strings.ToLower(k) + ".go"
+		//filename := g.inputFile + "/query_builder_" + strings.ToLower(k) + "_query_builder.go"
+		filename := g.inputFile + "/query.go"
 		if err := ioutil.WriteFile(filename, g.buf[k].Bytes(), 0777); err != nil {
 			log.Fatalln(err)
 		}

@@ -116,21 +116,21 @@ func main() {
 		_ = os.Mkdir(filepath, 0766)
 		fmt.Println("create dir : ", filepath)
 
-		mdName := fmt.Sprintf("%s/gen_table.md", filepath)
+		mdName := fmt.Sprintf("%s/table.md", filepath)
 		mdFile, err := os.OpenFile(mdName, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0766)
 		if err != nil {
 			fmt.Printf("markdown file error %v\n", err.Error())
 			return
 		}
-		fmt.Println("  └── file : ", dbPath+"/"+tableSaveName+"_repo/gen_table.md")
+		fmt.Println("  └── file : ", dbPath+"/"+tableSaveName+"_repo/table.md")
 
-		modelName := fmt.Sprintf("%s/gen_model.go", filepath)
+		modelName := fmt.Sprintf("%s/model.go", filepath)
 		modelFile, err := os.OpenFile(modelName, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0766)
 		if err != nil {
 			fmt.Printf("create and open model file error %v\n", err.Error())
 			return
 		}
-		fmt.Println("  └── file : ", dbPath+"/"+tableSaveName+"_repo/gen_model.go")
+		fmt.Println("  └── file : ", dbPath+"/"+tableSaveName+"_repo/model.go")
 
 		modelContent := fmt.Sprintf("package %s%s\n", tableSaveName, "_repo")
 		modelContent += fmt.Sprintf(`import "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"`)

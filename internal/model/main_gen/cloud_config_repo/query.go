@@ -293,6 +293,49 @@ func (qb *cloudConfigRepoQueryBuilder) OrderByUid(asc bool) *cloudConfigRepoQuer
 	return qb
 }
 
+func (qb *cloudConfigRepoQueryBuilder) WhereType(p model.Predicate, value string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "type", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereTypeIn(value []string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "type", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereTypeNotIn(value []string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "type", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) OrderByType(asc bool) *cloudConfigRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`type` "+order)
+	return qb
+}
+
 func (qb *cloudConfigRepoQueryBuilder) WhereBucketName(p model.Predicate, value string) *cloudConfigRepoQueryBuilder {
 	qb.where = append(qb.where, struct {
 		prefix string

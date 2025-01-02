@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS "pre_cloud_config";
 CREATE TABLE "pre_cloud_config" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "uid" INTEGER NOT NULL DEFAULT 0,
+    "type" TEXT DEFAULT '',
     "bucket_name" TEXT DEFAULT '',
     "account_id" TEXT DEFAULT '',
     "access_key_id" TEXT DEFAULT '',
