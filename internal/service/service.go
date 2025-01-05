@@ -1,24 +1,24 @@
 package service
 
 import (
-	"context"
-
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Service struct {
-	ctx context.Context
+	ctx *gin.Context
 	dao *dao.Dao
 }
 
-func New(ctx context.Context) Service {
+func New(ctx *gin.Context) Service {
 	svc := Service{ctx: ctx}
 	// svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
 	svc.dao = dao.New(global.DBEngine)
 	return svc
 }
 
-func (svc *Service) Ctx() context.Context {
+func (svc *Service) Ctx() *gin.Context {
 	return svc.ctx
 }

@@ -1,13 +1,12 @@
 package app
 
 import (
+	"encoding/json"
 	"strings"
-
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
 
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type ValidError struct {
@@ -19,6 +18,14 @@ type ValidErrors []*ValidError
 
 func (v *ValidError) Error() string {
 	return v.Message
+}
+
+func (v *ValidError) Field() string {
+	return v.Key
+}
+
+func (v *ValidError) Map() map[string]string {
+	return map[string]string{v.Key: v.Message}
 }
 
 func (v ValidErrors) Error() string {
@@ -34,22 +41,41 @@ func (v ValidErrors) Errors() []string {
 	return errs
 }
 
+func (v ValidErrors) ErrorsToString() string {
+	var errs []string
+	for _, err := range v {
+		errs = append(errs, err.Error())
+	}
+
+	return strings.Join(errs, ",")
+}
+
+func (v ValidErrors) Maps() []map[string]string {
+	var maps []map[string]string
+	for _, err := range v {
+		maps = append(maps, err.Map())
+	}
+
+	return maps
+}
+
+func (v ValidErrors) MapsToString() string {
+	maps := v.Maps()
+	re, _ := json.Marshal(maps)
+	return string(re)
+}
+
 // BindAndValid 绑定请求参数并进行验证，支持多语言
 func BindAndValid(c *gin.Context, obj interface{}) (bool, ValidErrors) {
 	var errs ValidErrors
 
-	// 绑定请求参数到给定的对象
-	if err := c.ShouldBindJSON(obj); err != nil {
-		return false, errs // 绑定失败，返回 false
-	}
-
 	// 使用全局验证器进行验证
-	if err := global.Validator.ValidateStruct(obj); err != nil {
+	if err := c.ShouldBind(obj); err != nil {
 		// 如果验证失败，检查错误类型
 		if validationErrors, ok := err.(validator.ValidationErrors); ok {
 			// 获取翻译器
 			v := c.Value("trans")
-			trans, _ := v.(ut.Translator)
+			trans := v.(ut.Translator)
 
 			// 遍历验证错误并进行翻译
 			for _, validationErr := range validationErrors {
@@ -60,6 +86,7 @@ func BindAndValid(c *gin.Context, obj interface{}) (bool, ValidErrors) {
 				})
 			}
 		}
+
 		return false, errs // 返回验证错误
 	}
 

@@ -31,7 +31,7 @@ func (u Upload) Upload(c *gin.Context) {
 	}
 
 	var svcUploadFileData *service.FileInfo
-	var svc = service.New(c.Request.Context())
+	var svc = service.New(c)
 	var err error
 
 	file, fileHeader, errf := c.Request.FormFile("imagefile")

@@ -19,12 +19,14 @@ import (
 )
 
 func Connection() *gorm.DB {
-	db_driver := global.DBEngine
-	db_driver.Config.NamingStrategy = schema.NamingStrategy{
+	dbDriver := global.DBEngine
+	dbDriver.Config.NamingStrategy = schema.NamingStrategy{
 		TablePrefix:   "pre_", // 表名前缀
 		SingularTable: true,   // 使用单数表名
 	}
-	return db_driver
+	// 自动创建
+	dbDriver.AutoMigrate(CloudConfig{})
+	return dbDriver
 }
 
 func NewModel() *CloudConfig {
@@ -66,8 +68,8 @@ func (qb *cloudConfigRepoQueryBuilder) buildQuery() *gorm.DB {
 
 func (t *CloudConfig) Create() (id int64, err error) {
 	t.CreatedAt = timef.Now()
-	db_driver := Connection()
-	if err = db_driver.Model(t).Create(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Create(t).Error; err != nil {
 		return 0, errors.Wrap(err, "create err")
 	}
 	return t.Id, nil
@@ -76,8 +78,8 @@ func (t *CloudConfig) Create() (id int64, err error) {
 func (t *CloudConfig) Save() (err error) {
 	t.UpdatedAt = timef.Now()
 
-	db_driver := Connection()
-	if err = db_driver.Model(t).Save(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Save(t).Error; err != nil {
 		return errors.Wrap(err, "update err")
 	}
 	return nil
@@ -85,14 +87,14 @@ func (t *CloudConfig) Save() (err error) {
 
 func (qb *cloudConfigRepoQueryBuilder) Updates(m map[string]interface{}) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&CloudConfig{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&CloudConfig{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Updates(m).Error; err != nil {
+	if err = dbDriver.Updates(m).Error; err != nil {
 		return errors.Wrap(err, "updates err")
 	}
 	return nil
@@ -101,14 +103,14 @@ func (qb *cloudConfigRepoQueryBuilder) Updates(m map[string]interface{}) (err er
 // 自减
 func (qb *cloudConfigRepoQueryBuilder) Increment(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&CloudConfig{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&CloudConfig{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
 		return errors.Wrap(err, "increment err")
 	}
 	return nil
@@ -117,14 +119,14 @@ func (qb *cloudConfigRepoQueryBuilder) Increment(column string, value int64) (er
 // 自增
 func (qb *cloudConfigRepoQueryBuilder) Decrement(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&CloudConfig{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&CloudConfig{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
 		return errors.Wrap(err, "decrement err")
 	}
 	return nil
@@ -132,12 +134,12 @@ func (qb *cloudConfigRepoQueryBuilder) Decrement(column string, value int64) (er
 
 func (qb *cloudConfigRepoQueryBuilder) Delete() (err error) {
 
-	db_driver := Connection()
+	dbDriver := Connection()
 	for _, where := range qb.where {
-		db_driver = db_driver.Where(where.prefix, where.value)
+		dbDriver = dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Delete(&CloudConfig{}).Error; err != nil {
+	if err = dbDriver.Delete(&CloudConfig{}).Error; err != nil {
 		return errors.Wrap(err, "delete err")
 	}
 	return nil

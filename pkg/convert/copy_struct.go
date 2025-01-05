@@ -3,14 +3,18 @@ package convert
 import (
 	"encoding/json"
 	"reflect"
+	"strings"
+
+	"github.com/gookit/goutil/dump"
+	"github.com/pkg/errors"
 )
 
 // CopyStruct
 // dst 目标结构体，src 源结构体
 // 它会把src与dst的相同字段名的值，复制到dst中
-func StructAssign(src interface{}, dst interface{}) interface{} {
-	bVal := reflect.ValueOf(dst).Elem() //获取reflect.Type类型
-	vVal := reflect.ValueOf(src).Elem() //获取reflect.Type类型
+func StructAssign(src any, dst any) any {
+	bVal := reflect.ValueOf(dst).Elem() // 获取reflect.Type类型
+	vVal := reflect.ValueOf(src).Elem() // 获取reflect.Type类型
 	vTypeOfT := vVal.Type()
 	for i := 0; i < vVal.NumField(); i++ {
 		// 在要修改的结构体中查询有数据结构体中相同属性的字段，有则修改其值
@@ -28,8 +32,67 @@ func StructAssign(src interface{}, dst interface{}) interface{} {
  * @param data interface{} 转换完成后的数据  需要用引用传进来
  * @return []string{}
  */
-func StrucToMap(param any, data any) any {
+func StructToMap(param any, data map[string]interface{}) error {
 	str, _ := json.Marshal(param)
-	_ = json.Unmarshal(str, data)
-	return data
+
+	dump.P(string(str), data)
+	error := json.Unmarshal(str, &data)
+	if error != nil {
+		return error
+	} else {
+		return nil
+	}
+
+}
+
+func StructToModelMap(param any, data map[string]any, key string) error {
+
+	// 获取反射值
+	val := reflect.ValueOf(param)
+
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	// 确保传入的是结构体
+	if val.Kind() != reflect.Struct {
+		return errors.New("not struct")
+	}
+
+	// 获取结构体类型
+	typ := val.Type()
+
+	// 遍历结构体字段
+	for i := 0; i < val.NumField(); i++ {
+
+		if key == "" || typ.Field(i).Name == key {
+			continue
+		}
+
+		// 获取 GORM 的 column 标签
+		tags := splitGormTag(typ.Field(i).Tag.Get("gorm"))
+
+		if tags["column"] != "" {
+			data[tags["column"]] = val.Field(i).Interface()
+		}
+	}
+
+	return nil
+
+}
+
+// 分割 GORM 标签
+func splitGormTag(tag string) map[string]string {
+	tags := strings.Split(tag, ";")
+
+	parts := make(map[string]string, 0)
+
+	for _, part := range tags {
+		kv := strings.SplitN(part, ":", 2)
+		if len(kv) == 2 {
+			parts[kv[0]] = kv[1]
+		}
+	}
+
+	return parts
 }

@@ -33,12 +33,14 @@ import (
 )
 
 func Connection() *gorm.DB {
-	db_driver := global.DBEngine
-	db_driver.Config.NamingStrategy = schema.NamingStrategy{
+	dbDriver := global.DBEngine
+	dbDriver.Config.NamingStrategy = schema.NamingStrategy{
 		TablePrefix:   "{{.Prefix}}",   // 表名前缀
 		SingularTable: true, // 使用单数表名
 	}
-	return db_driver
+	// 自动创建
+ 	dbDriver.AutoMigrate({{.StructName}}{})
+	return dbDriver
 }
 
 
@@ -84,8 +86,8 @@ func (qb *{{.QueryBuilderName}}) buildQuery() *gorm.DB {
 
 func (t *{{.StructName}}) Create() (id int64, err error) {
 	t.CreatedAt = timef.Now()
-	db_driver := Connection()
-	if err = db_driver.Model(t).Create(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Create(t).Error; err != nil {
 		return 0, errors.Wrap(err, "create err")
 	}
 	return t.{{.PrimaryIdName}}, nil
@@ -94,8 +96,8 @@ func (t *{{.StructName}}) Create() (id int64, err error) {
 func (t *{{.StructName}}) Save() (err error) {
 	t.UpdatedAt = timef.Now()
 
-	db_driver := Connection()
-	if err = db_driver.Model(t).Save(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Save(t).Error; err != nil {
 		return errors.Wrap(err, "update err")
 	}
 	return nil
@@ -104,14 +106,14 @@ func (t *{{.StructName}}) Save() (err error) {
 
 func (qb *{{.QueryBuilderName}}) Updates( m map[string]interface{}) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&{{.StructName}}{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&{{.StructName}}{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Updates(m).Error; err != nil {
+	if err = dbDriver.Updates(m).Error; err != nil {
 		return errors.Wrap(err, "updates err")
 	}
 	return nil
@@ -121,14 +123,14 @@ func (qb *{{.QueryBuilderName}}) Updates( m map[string]interface{}) (err error) 
 //自减
 func (qb *{{.QueryBuilderName}}) Increment(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&{{.StructName}}{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&{{.StructName}}{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
 		return errors.Wrap(err, "increment err")
 	}
 	return nil
@@ -137,14 +139,14 @@ func (qb *{{.QueryBuilderName}}) Increment(column string, value int64) (err erro
 //自增
 func (qb *{{.QueryBuilderName}}) Decrement(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&{{.StructName}}{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&{{.StructName}}{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
 		return errors.Wrap(err, "decrement err")
 	}
 	return nil
@@ -152,12 +154,12 @@ func (qb *{{.QueryBuilderName}}) Decrement(column string, value int64) (err erro
 
 func (qb *{{.QueryBuilderName}}) Delete() (err error) {
 
-	db_driver := Connection()
+	dbDriver := Connection()
 	for _, where := range qb.where {
-		db_driver = db_driver.Where(where.prefix, where.value)
+		dbDriver = dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Delete(&{{.StructName}}{}).Error; err != nil {
+	if err = dbDriver.Delete(&{{.StructName}}{}).Error; err != nil {
 		return errors.Wrap(err, "delete err")
 	}
 	return nil

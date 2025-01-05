@@ -19,12 +19,14 @@ import (
 )
 
 func Connection() *gorm.DB {
-	db_driver := global.DBEngine
-	db_driver.Config.NamingStrategy = schema.NamingStrategy{
+	dbDriver := global.DBEngine
+	dbDriver.Config.NamingStrategy = schema.NamingStrategy{
 		TablePrefix:   "pre_", // 表名前缀
 		SingularTable: true,   // 使用单数表名
 	}
-	return db_driver
+	// 自动创建
+	dbDriver.AutoMigrate(User{})
+	return dbDriver
 }
 
 func NewModel() *User {
@@ -66,8 +68,8 @@ func (qb *userRepoQueryBuilder) buildQuery() *gorm.DB {
 
 func (t *User) Create() (id int64, err error) {
 	t.CreatedAt = timef.Now()
-	db_driver := Connection()
-	if err = db_driver.Model(t).Create(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Create(t).Error; err != nil {
 		return 0, errors.Wrap(err, "create err")
 	}
 	return t.Uid, nil
@@ -76,8 +78,8 @@ func (t *User) Create() (id int64, err error) {
 func (t *User) Save() (err error) {
 	t.UpdatedAt = timef.Now()
 
-	db_driver := Connection()
-	if err = db_driver.Model(t).Save(t).Error; err != nil {
+	dbDriver := Connection()
+	if err = dbDriver.Model(t).Save(t).Error; err != nil {
 		return errors.Wrap(err, "update err")
 	}
 	return nil
@@ -85,14 +87,14 @@ func (t *User) Save() (err error) {
 
 func (qb *userRepoQueryBuilder) Updates(m map[string]interface{}) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&User{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&User{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Updates(m).Error; err != nil {
+	if err = dbDriver.Updates(m).Error; err != nil {
 		return errors.Wrap(err, "updates err")
 	}
 	return nil
@@ -101,14 +103,14 @@ func (qb *userRepoQueryBuilder) Updates(m map[string]interface{}) (err error) {
 // 自减
 func (qb *userRepoQueryBuilder) Increment(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&User{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&User{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" + ?", value)).Error; err != nil {
 		return errors.Wrap(err, "increment err")
 	}
 	return nil
@@ -117,14 +119,14 @@ func (qb *userRepoQueryBuilder) Increment(column string, value int64) (err error
 // 自增
 func (qb *userRepoQueryBuilder) Decrement(column string, value int64) (err error) {
 
-	db_driver := Connection()
-	db_driver = db_driver.Model(&User{})
+	dbDriver := Connection()
+	dbDriver = dbDriver.Model(&User{})
 
 	for _, where := range qb.where {
-		db_driver.Where(where.prefix, where.value)
+		dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
+	if err = dbDriver.Update(column, gorm.Expr(column+" - ?", value)).Error; err != nil {
 		return errors.Wrap(err, "decrement err")
 	}
 	return nil
@@ -132,12 +134,12 @@ func (qb *userRepoQueryBuilder) Decrement(column string, value int64) (err error
 
 func (qb *userRepoQueryBuilder) Delete() (err error) {
 
-	db_driver := Connection()
+	dbDriver := Connection()
 	for _, where := range qb.where {
-		db_driver = db_driver.Where(where.prefix, where.value)
+		dbDriver = dbDriver.Where(where.prefix, where.value)
 	}
 
-	if err = db_driver.Delete(&User{}).Error; err != nil {
+	if err = dbDriver.Delete(&User{}).Error; err != nil {
 		return errors.Wrap(err, "delete err")
 	}
 	return nil
@@ -250,49 +252,6 @@ func (qb *userRepoQueryBuilder) OrderByUid(asc bool) *userRepoQueryBuilder {
 	return qb
 }
 
-func (qb *userRepoQueryBuilder) WhereAvatar(p model.Predicate, value string) *userRepoQueryBuilder {
-	qb.where = append(qb.where, struct {
-		prefix string
-		value  interface{}
-	}{
-		fmt.Sprintf("%v %v ?", "avatar", p),
-		value,
-	})
-	return qb
-}
-
-func (qb *userRepoQueryBuilder) WhereAvatarIn(value []string) *userRepoQueryBuilder {
-	qb.where = append(qb.where, struct {
-		prefix string
-		value  interface{}
-	}{
-		fmt.Sprintf("%v %v ?", "avatar", "IN"),
-		value,
-	})
-	return qb
-}
-
-func (qb *userRepoQueryBuilder) WhereAvatarNotIn(value []string) *userRepoQueryBuilder {
-	qb.where = append(qb.where, struct {
-		prefix string
-		value  interface{}
-	}{
-		fmt.Sprintf("%v %v ?", "avatar", "NOT IN"),
-		value,
-	})
-	return qb
-}
-
-func (qb *userRepoQueryBuilder) OrderByAvatar(asc bool) *userRepoQueryBuilder {
-	order := "DESC"
-	if asc {
-		order = "ASC"
-	}
-
-	qb.order = append(qb.order, "`avatar` "+order)
-	return qb
-}
-
 func (qb *userRepoQueryBuilder) WhereEmail(p model.Predicate, value string) *userRepoQueryBuilder {
 	qb.where = append(qb.where, struct {
 		prefix string
@@ -336,6 +295,135 @@ func (qb *userRepoQueryBuilder) OrderByEmail(asc bool) *userRepoQueryBuilder {
 	return qb
 }
 
+func (qb *userRepoQueryBuilder) WhereUsername(p model.Predicate, value string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "username", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereUsernameIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "username", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereUsernameNotIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "username", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) OrderByUsername(asc bool) *userRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`username` "+order)
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WherePassword(p model.Predicate, value string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "password", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WherePasswordIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "password", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WherePasswordNotIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "password", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) OrderByPassword(asc bool) *userRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`password` "+order)
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereSalt(p model.Predicate, value string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "salt", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereSaltIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "salt", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereSaltNotIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "salt", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) OrderBySalt(asc bool) *userRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`salt` "+order)
+	return qb
+}
+
 func (qb *userRepoQueryBuilder) WhereToken(p model.Predicate, value string) *userRepoQueryBuilder {
 	qb.where = append(qb.where, struct {
 		prefix string
@@ -376,6 +464,49 @@ func (qb *userRepoQueryBuilder) OrderByToken(asc bool) *userRepoQueryBuilder {
 	}
 
 	qb.order = append(qb.order, "`token` "+order)
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereAvatar(p model.Predicate, value string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "avatar", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereAvatarIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "avatar", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) WhereAvatarNotIn(value []string) *userRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "avatar", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *userRepoQueryBuilder) OrderByAvatar(asc bool) *userRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`avatar` "+order)
 	return qb
 }
 

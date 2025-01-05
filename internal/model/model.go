@@ -36,7 +36,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 
 	var db *gorm.DB
 	var err error
-	if c.Type == "sqlite" {
+	if c.Type == "mysql" {
 		db, err = gorm.Open(
 			mysql.Open(fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
 				c.UserName,

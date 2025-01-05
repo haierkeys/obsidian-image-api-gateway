@@ -27,7 +27,6 @@ func UserAuthToken() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			if user, err := app.ParseToken(token); err != nil {
-				response.ToResponse(code.ErrorInvalidAuthToken)
 				c.Abort()
 			} else {
 				c.Set("user_token", user)

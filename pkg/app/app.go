@@ -2,6 +2,7 @@ package app
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 
@@ -110,12 +111,13 @@ func (r *Response) ToResponse(code *code.Code) {
 
 	r.Ctx.Set("status_code", code.StatusCode())
 	if code.HaveDetails() {
+		details := strings.Join(code.Details(), ",")
 		r.SendResponse(code.StatusCode(), ErrResult{
 			Code:    code.Code(),
 			Status:  code.Status(),
 			Msg:     code.Msg(),
 			Data:    code.Data(),
-			Details: code.Details(),
+			Details: details,
 		})
 	} else {
 		r.SendResponse(code.StatusCode(), ResResult{

@@ -171,14 +171,14 @@ func main() {
 				gormAdd = append(gormAdd, "primary_key")
 			}
 			if info.Extra.Valid && info.Extra.String == "auto_increment" {
-				gormAdd = append(gormAdd, "AUTO_INCREMENT")
+				gormAdd = append(gormAdd, "auto_increment")
 			}
 			if textType(info.DataType, db.DbType()) == "timef.Time" {
 				gormAdd = append(gormAdd, "time")
 			}
 
 			if info.ColumnDefault.Valid {
-				gormAdd = append(gormAdd, "default:"+info.ColumnDefault.String)
+				gormAdd = append(gormAdd, "default:"+strings.ReplaceAll(info.ColumnDefault.String, "\"", "'"))
 			}
 
 			jsonAdd := convert.Case2LowerCamel(info.ColumnName)
@@ -290,6 +290,7 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 		} else if dbIns.DbType() == "sqlite" {
 
 			var pk int
+
 			err = rows.Scan(
 				&column.OrdinalPosition,
 				&column.ColumnName,
@@ -298,6 +299,10 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 				&column.ColumnDefault, &pk)
 
 			if pk == 1 {
+				column.ColumnKey = sql.NullString{
+					String: "PRI",
+					Valid:  true,
+				}
 				column.Extra = sql.NullString{
 					String: "auto_increment",
 					Valid:  true,
@@ -344,11 +349,13 @@ func capitalize(s string) string {
 
 func textType(s string, t string) string {
 
+	s = strings.ToLower(s)
 	var sqliteTypeToGoType = map[string]string{
-		"INTEGER":   "int64",
-		"TEXT":      "string",
-		"TIMESTAMP": "timef.Time",
-		"REAL":      "float64",
+		"integer":   "int64",
+		"text":      "string",
+		"timestamp": "timef.Time",
+		"datetime":  "timef.Time",
+		"real":      "float64",
 	}
 	var mysqlTypeToGoType = map[string]string{
 		"tinyint":    "int32",

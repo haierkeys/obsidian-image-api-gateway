@@ -60,15 +60,22 @@ func NewRouter() *gin.Engine {
 	r.GET("/debug/vars", api.Expvar)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	a := r.Group("/api")
+	apiR := r.Group("/api")
 	if global.Config.Server.RunMode != "debug" {
-		a.Use(middleware.AccessLog())
+		apiR.Use(middleware.AccessLog())
 	}
 
 	// a.Use(middleware.AuthToken())
 	// a.POST("/upload", api.NewUpload().Upload)
+	userApiR := apiR.Group("/user")
+	{
+		userApiR.POST("/register", api.NewUser().Register)
+		userApiR.POST("/login", api.NewUser().Login)
+	}
 
-	a.Use(middleware.AuthToken()).POST("/upload", api.NewUpload().Upload)
+	apiR.Use(middleware.AuthToken()).POST("/upload", api.NewUpload().Upload)
+
+	// .Use(middleware.UserAuthToken())
 
 	if global.Config.LocalFS.Enable && global.Config.LocalFS.HttpfsEnable {
 		r.StaticFS(global.Config.LocalFS.SavePath, http.Dir(global.Config.LocalFS.SavePath))

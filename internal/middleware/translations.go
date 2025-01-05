@@ -12,12 +12,14 @@ func Translations() gin.HandlerFunc {
 		if locale == "" {
 			locale = "zh"
 		}
+
 		trans, found := global.Ut.GetTranslator(locale)
 
 		if found {
 			c.Set("trans", trans)
 		} else {
-			c.Set("trans", "en")
+			trans, _ := global.Ut.GetTranslator("zh")
+			c.Set("trans", trans)
 		}
 		c.Next()
 	}

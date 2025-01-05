@@ -59,7 +59,7 @@ func NewSuss(code int, msg string) *Code {
 }
 
 func (e *Code) Error() string {
-	return fmt.Sprintf("错误码：%d, 错误信息:：%s", e.Code(), e.Msg())
+	return e.Msg()
 }
 
 func (e *Code) Code() int {
@@ -101,7 +101,6 @@ func (e *Code) WithDetails(details ...string) *Code {
 	for _, d := range details {
 		e.details = append(e.details, d)
 	}
-
 	return e
 }
 

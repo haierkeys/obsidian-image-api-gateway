@@ -5,7 +5,7 @@ import "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 //
 //go:generate gormgen -structs CloudConfig -input . -pre pre_
 type CloudConfig struct {
-	Id              int64      `gorm:"column:id;AUTO_INCREMENT" json:"id" form:"id"`                                      //
+	Id              int64      `gorm:"column:id;primary_key;auto_increment" json:"id" form:"id"`                          //
 	Uid             int64      `gorm:"column:uid;default:0" json:"uid" form:"uid"`                                        //
 	Type            string     `gorm:"column:type;default:''" json:"type" form:"type"`                                    //
 	BucketName      string     `gorm:"column:bucket_name;default:''" json:"bucketName" form:"bucketName"`                 //
