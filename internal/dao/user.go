@@ -74,8 +74,6 @@ func (d *Dao) CreateUser(dao *User) (int64, error) { // 修改函数名为 Creat
 
 	id, err := m.Create()
 
-	dao = convert.StructAssign(m, dao).(*User)
-
 	if err != nil {
 		return 0, err
 	}

@@ -3,66 +3,105 @@ package dao
 import (
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/model/main_gen/cloud_config_repo"
-
-	"gorm.io/gorm"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 )
 
-type CloudConfigDao struct {
-	db *gorm.DB
+type CloudConfig struct {
+	Id              int64      `gorm:"column:id;primary_key;auto_increment" json:"id" form:"id"`                          //
+	Uid             int64      `gorm:"column:uid;index;default:0" json:"uid" form:"uid"`                                  //
+	Type            string     `gorm:"column:type;default:''" json:"type" form:"type"`                                    //
+	BucketName      string     `gorm:"column:bucket_name;default:''" json:"bucketName" form:"bucketName"`                 //
+	AccountId       string     `gorm:"column:account_id;default:''" json:"accountId" form:"accountId"`                    //
+	AccessKeyId     string     `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`             //
+	AccessKeySecret string     `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"` //
+	CustomPath      string     `gorm:"column:custom_path;default:''" json:"customPath" form:"customPath"`                 //
+	IsDeleted       int64      `gorm:"column:is_deleted;default:0" json:"isDeleted" form:"isDeleted"`                     //
+	UpdatedAt       timef.Time `gorm:"column:updated_at;time;default:NULL" json:"updatedAt" form:"updatedAt"`             //
+	CreatedAt       timef.Time `gorm:"column:created_at;time;default:NULL" json:"createdAt" form:"createdAt"`             //
+	DeletedAt       timef.Time `gorm:"column:deleted_at;time;default:NULL" json:"deletedAt" form:"deletedAt"`             //
 }
 
-func NewCloudConfigDao(db *gorm.DB) *CloudConfigDao {
-	return &CloudConfigDao{
-		db: db,
+// 创建云存储配置
+func (d *CloudConfig) Create(params *CloudConfig, uid int64) (int64, error) {
+
+	m := &cloud_config_repo.CloudConfig{}
+	convert.StructAssign(params, m)
+	m.Uid = uid
+
+	id, err := m.Create()
+	if err != nil {
+		return 0, err
 	}
+	return id, nil
 }
 
-// Create 创建云存储配置
-func (d *CloudConfigDao) Create(config *cloud_config_repo.CloudConfig) (int64, error) {
-	return config.Create()
-}
+// 更新云存储配置
+func (d *CloudConfig) Update(params *CloudConfig, uid int64, id int64) error {
 
-// Update 更新云存储配置
-func (d *CloudConfigDao) Update(config *cloud_config_repo.CloudConfig) error {
-	return config.Save()
-}
-
-// Delete 删除云存储配置
-func (d *CloudConfigDao) Delete(uid int64, id int64) error {
-	return cloud_config_repo.NewQueryBuilder().
+	m, err := cloud_config_repo.NewQueryBuilder().
 		WhereUid(model.Eq, uid).
 		WhereId(model.Eq, id).
-		Delete()
+		WhereIsDeleted(model.Eq, 0).
+		First()
+
+	if err != nil {
+		return err
+	}
+	convert.StructAssign(params, m)
+
+	err = m.Save()
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-// GetByID 根据ID获取配置
-func (d *CloudConfigDao) GetByID(id int64) (*cloud_config_repo.CloudConfig, error) {
+// 获取用户的云存储配置列表
+func (d *CloudConfig) GetListByUid(uid int64, page int, pageSize int) ([]*CloudConfig, error) {
+
+	modelList, err := cloud_config_repo.NewQueryBuilder().
+		WhereUid(model.Eq, uid).
+		WhereIsDeleted(model.Eq, 0).
+		OrderByCreatedAt(false).
+		Offset(app.GetPageOffset(page, pageSize)).
+		Limit(pageSize).
+		Get()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var list []*CloudConfig
+	for _, m := range modelList {
+		list = append(list, convert.StructAssign(m, &CloudConfig{}).(*CloudConfig))
+	}
+	return list, nil
+}
+
+// 根据ID获取配置
+func (d *CloudConfig) GetById(id int64, uid int64) (*CloudConfig, error) {
+
+	m, err := cloud_config_repo.NewQueryBuilder().
+		WhereId(model.Eq, id).
+		WhereUid(model.Eq, uid).
+		WhereIsDeleted(model.Eq, 0).
+		First()
+	if err != nil {
+		return nil, err
+	}
+	return convert.StructAssign(m, &CloudConfig{}).(*CloudConfig), nil
+}
+
+// 删除配置
+func (d *CloudConfig) Delete(id int64, uid int64) error {
 	return cloud_config_repo.NewQueryBuilder().
 		WhereId(model.Eq, id).
-		QueryOne()
-}
-
-// GetByUID 获取用户的所有配置
-func (d *CloudConfigDao) GetByUID(uid int64) ([]*cloud_config_repo.CloudConfig, error) {
-	return cloud_config_repo.NewQueryBuilder().
 		WhereUid(model.Eq, uid).
-		OrderByCreatedAt(false).
-		QueryAll()
-}
-
-// GetByType 获取指定类型的配置
-func (d *CloudConfigDao) GetByType(uid int64, typeStr string) ([]*cloud_config_repo.CloudConfig, error) {
-	return cloud_config_repo.NewQueryBuilder().
-		WhereUid(model.Eq, uid).
-		WhereType(model.Eq, typeStr).
-		OrderByCreatedAt(false).
-		QueryAll()
-}
-
-// GetByUIDAndType 获取用户指定类型的单个配置
-func (d *CloudConfigDao) GetByUIDAndType(uid int64, typeStr string) (*cloud_config_repo.CloudConfig, error) {
-	return cloud_config_repo.NewQueryBuilder().
-		WhereUid(model.Eq, uid).
-		WhereType(model.Eq, typeStr).
-		QueryOne()
+		Updates(map[string]interface{}{
+			"is_deleted": 1,
+			"deleted_at": timef.Now(),
+		})
 }
