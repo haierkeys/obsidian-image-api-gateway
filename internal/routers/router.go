@@ -71,6 +71,9 @@ func NewRouter() *gin.Engine {
 	{
 		userApiR.POST("/register", api.NewUser().Register)
 		userApiR.POST("/login", api.NewUser().Login)
+		userApiR.Use(middleware.UserAuthToken()).POST("/cloud_config", api.NewCloudConfig().UpdateAndCreate)
+		userApiR.Use(middleware.UserAuthToken()).DELETE("/cloud_config", api.NewCloudConfig().Delete)
+		userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config", api.NewCloudConfig().List)
 	}
 
 	apiR.Use(middleware.AuthToken()).POST("/upload", api.NewUpload().Upload)

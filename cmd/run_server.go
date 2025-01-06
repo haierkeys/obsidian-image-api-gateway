@@ -194,5 +194,32 @@ func initDatabase() error {
 		return err
 	}
 
+	// 自动迁移
+	//db.AutoMigrate(&user_repo.User{})
+
+	// 创建用户
+	// user := cloud_config_repo.CloudConfig{}
+	// user.CreatedAt = timef.Now()
+	// db.Model(&user).Create(&user)
+	// dump.P(user)
+	// // 查询用户
+
+	// db := global.DBEngine
+	// m, err := cloud_config_repo.NewQueryBuilder().
+	// 	WhereId(model.Eq, 1).
+	// 	WhereIsDeleted(model.Eq, 0).
+	// 	First()
+
+	// m.CreatedAt = timef.Now()
+	// //m.UpdatedAt = timef.Now()
+
+	// db.Model(m).Updates(m)
+
+	// dump.P(m)
+	// dump.P(m.CreatedAt.Value())
+
+	// 输出用户创建时间
+	//fmt.Println("用户创建时间:", queriedUser.CreatedAt)
+
 	return nil
 }

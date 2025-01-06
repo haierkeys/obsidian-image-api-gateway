@@ -2,6 +2,7 @@ package timef
 
 import (
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -28,7 +29,7 @@ func (t Time) MarshalJSON() ([]byte, error) {
 	if &t == nil || t.IsZero() {
 		return []byte("null"), nil
 	}
-	return []byte(fmt.Sprintf("\"%s\"", tTime.Format("2006-01-02 15:04:05"))), nil
+	return []byte(fmt.Sprintf("\"%s\"", tTime.Format(TimeFormat))), nil
 
 }
 
@@ -43,21 +44,17 @@ func (t Time) Value() (driver.Value, error) {
 	if t.String() == "0001-01-01 00:00:00" {
 		return nil, nil
 	}
-	return []byte(time.Time(t).Format(TimeFormat)), nil
+	return time.Time(t).Format(TimeFormat), nil
 }
 
-func (t *Time) Scan(v interface{}) error {
-
-	// dump.P(v.(time.Time).String(), v)
-	tTime, err := time.ParseInLocation("2006-01-02 15:04:05", string(v.([]byte)), time.Local)
-
-	if err != nil {
-		return err
+func (t *Time) Scan(v any) error {
+	timeValue, ok := v.(time.Time)
+	if !ok {
+		return errors.New(fmt.Sprint("Failed to unmarshal time value:", v))
 	}
-
-	*t = Time(tTime)
-
+	*t = Time(timeValue)
 	return nil
+
 }
 
 func (t Time) String() string {

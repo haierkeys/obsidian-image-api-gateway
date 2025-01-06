@@ -10,8 +10,6 @@ import (
 
 	"github.com/haierkeys/obsidian-image-api-gateway/cmd/db_gen/db_driver"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
-
-	"github.com/gookit/goutil/dump"
 )
 
 type tableInfo struct {
@@ -179,7 +177,8 @@ func main() {
 				gormAdd = append(gormAdd, "auto_increment")
 			}
 			if textType(info.DataType, db.DbType()) == "timef.Time" {
-				gormAdd = append(gormAdd, "time")
+				gormAdd = append(gormAdd, "type:datetime")
+				gormAdd = append(gormAdd, "autoUpdateTime:false")
 			}
 
 			if info.ColumnDefault.Valid {
@@ -295,7 +294,6 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 
 		}
 	}
-	dump.P(indexs)
 
 	rows, err := db.Raw(sqlTableColumn).Rows()
 	if err != nil {

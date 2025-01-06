@@ -23,10 +23,11 @@ func UserAuthToken() gin.HandlerFunc {
 		}
 
 		if token == "" {
-			response.ToResponse(code.ErrorInvalidParams)
+			response.ToResponse(code.ErrorNotUserAuthToken)
 			c.Abort()
 		} else {
 			if user, err := app.ParseToken(token); err != nil {
+				response.ToResponse(code.ErrorInvalidUserAuthToken)
 				c.Abort()
 			} else {
 				c.Set("user_token", user)

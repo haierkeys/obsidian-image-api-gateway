@@ -25,7 +25,7 @@ func (h *User) Register(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, params)
 
 	if !valid {
-		global.Logger.Error("api.Register errs: %v", zap.Error(errs))
+		global.Logger.Error("api.user.Register errs: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
@@ -34,7 +34,7 @@ func (h *User) Register(c *gin.Context) {
 	svcData, err := svc.UserRegister(params)
 
 	if err != nil {
-		global.Logger.Error("api.Register svc UserRegister err: %v", zap.Error(err))
+		global.Logger.Error("api.user.Register svc UserRegister err: %v", zap.Error(err))
 		response.ToResponse(code.ErrorUserRegister.WithDetails(err.Error()))
 		return
 	}
@@ -52,7 +52,7 @@ func (h *User) Login(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, params)
 
 	if !valid {
-		global.Logger.Error("app.BindAndValid errs: %v", zap.Error(errs))
+		global.Logger.Error("api.user.Login app.BindAndValid errs: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
@@ -61,7 +61,7 @@ func (h *User) Login(c *gin.Context) {
 	svcData, err := svc.UserLogin(params)
 
 	if err != nil {
-		global.Logger.Error("api.Login svc UserLogin err: %v", zap.Error(err))
+		global.Logger.Error("api.user.Login svc UserLogin err: %v", zap.Error(err))
 		response.ToResponse(code.ErrorUserLoginFailed.WithDetails(err.Error()))
 		return
 	}
