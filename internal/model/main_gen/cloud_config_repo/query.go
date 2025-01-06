@@ -201,6 +201,7 @@ func (qb *cloudConfigRepoQueryBuilder) Offset(offset int) *cloudConfigRepoQueryB
 
 func (qb *cloudConfigRepoQueryBuilder) WhereRaw(query string, values ...interface{}) *cloudConfigRepoQueryBuilder {
 	vals := make([]interface{}, len(values))
+	//nolint:S1001
 	for i, v := range values {
 		vals[i] = v
 	}

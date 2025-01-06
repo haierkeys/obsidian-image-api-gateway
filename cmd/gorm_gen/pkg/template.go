@@ -220,6 +220,7 @@ func (qb *{{.QueryBuilderName}}) Offset(offset int) *{{.QueryBuilderName}} {
 
 func (qb *{{.QueryBuilderName}}) WhereRaw(query string, values ...interface{})  *{{.QueryBuilderName}} {
 	vals := make([]interface{}, len(values))
+	//nolint:S1001
 	for i, v := range values {
 		vals[i] = v
 	}

@@ -201,6 +201,7 @@ func (qb *userRepoQueryBuilder) Offset(offset int) *userRepoQueryBuilder {
 
 func (qb *userRepoQueryBuilder) WhereRaw(query string, values ...interface{}) *userRepoQueryBuilder {
 	vals := make([]interface{}, len(values))
+	//nolint:S1001
 	for i, v := range values {
 		vals[i] = v
 	}
