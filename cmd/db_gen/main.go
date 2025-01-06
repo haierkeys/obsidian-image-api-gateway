@@ -10,6 +10,8 @@ import (
 
 	"github.com/haierkeys/obsidian-image-api-gateway/cmd/db_gen/db_driver"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
+
+	"github.com/gookit/goutil/dump"
 )
 
 type tableInfo struct {
@@ -170,6 +172,9 @@ func main() {
 			if info.ColumnKey.Valid && info.ColumnKey.String == "PRI" {
 				gormAdd = append(gormAdd, "primary_key")
 			}
+			if info.ColumnKey.Valid && info.ColumnKey.String == "INDEX" {
+				gormAdd = append(gormAdd, "index")
+			}
 			if info.Extra.Valid && info.Extra.String == "auto_increment" {
 				gormAdd = append(gormAdd, "auto_increment")
 			}
@@ -255,6 +260,7 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 
 	// 定义承载列信息的切片
 	var columns []tableColumn
+	var indexs = make(map[string]bool)
 	var sqlTableColumn string
 
 	if dbIns.DbType() == "mysql" {
@@ -262,7 +268,34 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 			dbName, tableName)
 	} else if dbIns.DbType() == "sqlite" {
 		sqlTableColumn = fmt.Sprintf("PRAGMA table_info(%s);", tableName)
+
+		sqlAllIndex := fmt.Sprintf("SELECT name AS 'index' FROM sqlite_master WHERE type = 'index' AND tbl_name = '%s'", tableName)
+		rowsAI, err := db.Raw(sqlAllIndex).Rows()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer rowsAI.Close()
+
+		for rowsAI.Next() {
+			var tableIndex string
+			err = rowsAI.Scan(&tableIndex)
+			if tableIndex != "" {
+				sqli := fmt.Sprintf("SELECT name AS 'index_name' FROM pragma_index_info('%s')", tableIndex)
+				rowsi, err := db.Raw(sqli).Rows()
+				defer rowsi.Close()
+
+				for rowsi.Next() {
+					var name string
+					err = rowsi.Scan(&name)
+					if err == nil {
+						indexs[name] = true
+					}
+				}
+			}
+
+		}
 	}
+	dump.P(indexs)
 
 	rows, err := db.Raw(sqlTableColumn).Rows()
 	if err != nil {
@@ -308,10 +341,17 @@ func queryTableColumn(dbIns db_driver.Repo, dbName string, tableName string) ([]
 					Valid:  true,
 				}
 			} else {
+				if indexs[column.ColumnName] {
+					column.ColumnKey = sql.NullString{
+						String: "INDEX",
+						Valid:  true,
+					}
+				}
 				column.Extra = sql.NullString{
 					String: "",
 					Valid:  true,
 				}
+
 			}
 
 			column.DataType = column.ColumnType

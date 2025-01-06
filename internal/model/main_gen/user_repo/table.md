@@ -3,7 +3,7 @@
 | 序号 | 名称 | 描述 | 类型 | 键 | 为空 | 额外 | 默认值 |
 | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: |
 | 0 | uid |  | INTEGER | PRI | 0 | auto_increment |  |
-| 1 | email |  | TEXT |  | 0 |  | "" |
+| 1 | email |  | TEXT | INDEX | 0 |  | "" |
 | 2 | username |  | TEXT |  | 0 |  | "" |
 | 3 | password |  | TEXT |  | 0 |  | "" |
 | 4 | salt |  | TEXT |  | 0 |  | "" |

@@ -3,7 +3,7 @@
 | 序号 | 名称 | 描述 | 类型 | 键 | 为空 | 额外 | 默认值 |
 | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: |
 | 0 | id |  | INTEGER | PRI | 1 | auto_increment |  |
-| 1 | uid |  | INTEGER |  | 1 |  | 0 |
+| 1 | uid |  | INTEGER | INDEX | 1 |  | 0 |
 | 2 | type |  | TEXT |  | 0 |  | '' |
 | 3 | bucket_name |  | TEXT |  | 0 |  | '' |
 | 4 | account_id |  | TEXT |  | 0 |  | '' |

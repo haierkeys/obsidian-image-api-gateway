@@ -21,6 +21,7 @@ package {{.PkgName}}
 
 import (
     "fmt"
+	"sync"
     "time"
 
     "github.com/pkg/errors"
@@ -32,6 +33,8 @@ import (
     "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 )
 
+var once sync.Once
+
 func Connection() *gorm.DB {
 	dbDriver := global.DBEngine
 	dbDriver.Config.NamingStrategy = schema.NamingStrategy{
@@ -39,10 +42,13 @@ func Connection() *gorm.DB {
 		SingularTable: true, // 使用单数表名
 	}
 	// 自动创建
- 	dbDriver.AutoMigrate({{.StructName}}{})
+	if global.Config.Database.AutoMigrate {
+		once.Do(func() {
+			dbDriver.AutoMigrate({{.StructName}}{})
+		})
+	}
 	return dbDriver
 }
-
 
 func NewModel() *{{.StructName}} {
 	return new({{.StructName}})

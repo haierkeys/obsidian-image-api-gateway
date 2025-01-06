@@ -6,7 +6,7 @@ import "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
 //go:generate gormgen -structs User -input . -pre pre_
 type User struct {
 	Uid       int64      `gorm:"column:uid;primary_key;auto_increment" json:"uid" form:"uid"`           //
-	Email     string     `gorm:"column:email;default:''" json:"email" form:"email"`                     //
+	Email     string     `gorm:"column:email;index;default:''" json:"email" form:"email"`               //
 	Username  string     `gorm:"column:username;default:''" json:"username" form:"username"`            //
 	Password  string     `gorm:"column:password;default:''" json:"password" form:"password"`            //
 	Salt      string     `gorm:"column:salt;default:''" json:"salt" form:"salt"`                        //

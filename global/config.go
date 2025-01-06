@@ -74,6 +74,10 @@ type Database struct {
 	Name string `yaml:"name"`
 	// 表前缀
 	TablePrefix string `yaml:"table-prefix"`
+
+	// 是否启用自动迁移
+	AutoMigrate bool `yaml:"auto-migrate"` // 新增字段
+
 	// 字符集
 	Charset string `yaml:"charset"`
 	// 是否解析时间
