@@ -26,7 +26,7 @@ func (u Upload) Upload(c *gin.Context) {
 
 	if !valid {
 		global.Logger.Error("app.BindAndValid errs: %v", zap.Error(errs))
-		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.Errors()...))
+		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
 

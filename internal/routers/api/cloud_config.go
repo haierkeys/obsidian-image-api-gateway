@@ -7,7 +7,6 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gookit/goutil/dump"
 	"go.uber.org/zap"
 )
 
@@ -23,9 +22,8 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, params)
 	if !valid {
-		dump.P(errs)
 		global.Logger.Error("api.CloudConfig.Register errs: %v", zap.Error(errs))
-		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.Errors()...))
+		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
 	uid := app.GetUid(c)
@@ -50,7 +48,7 @@ func (t *CloudConfig) Delete(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
 		global.Logger.Error("api.CloudConfig.Delete svc Delete err: %v", zap.Error(errs))
-		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.Errors()...))
+		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
 	uid := app.GetUid(c)

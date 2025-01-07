@@ -17,6 +17,8 @@ type CloudConfig struct {
 	AccessKeyId     string     `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`                               //
 	AccessKeySecret string     `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"`                   //
 	CustomPath      string     `gorm:"column:custom_path;default:''" json:"customPath" form:"customPath"`                                   //
+	AccessUrlPrefix string     `gorm:"column:access_url_prefix;default:''" json:"accessUrlPrefix" form:"accessUrlPrefix"`                   //
+	IsEnabled       int64      `gorm:"column:is_enabled;default:1" json:"isEnabled" form:"isEnabled"`                                       //
 	IsDeleted       int64      `gorm:"column:is_deleted;default:0" json:"isDeleted" form:"isDeleted"`                                       //
 	UpdatedAt       timef.Time `gorm:"column:updated_at;type:datetime;autoUpdateTime:false;default:NULL" json:"updatedAt" form:"updatedAt"` //
 	CreatedAt       timef.Time `gorm:"column:created_at;type:datetime;autoUpdateTime:false;default:NULL" json:"createdAt" form:"createdAt"` //
@@ -31,6 +33,8 @@ type CloudConfigSet struct {
 	AccessKeyId     string `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`             //
 	AccessKeySecret string `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"` //
 	CustomPath      string `gorm:"column:custom_path;default:''" json:"customPath" form:"customPath"`                 //
+	AccessUrlPrefix string `gorm:"column:access_url_prefix;default:''" json:"accessUrlPrefix" form:"accessUrlPrefix"` //
+	IsEnabled       int64  `gorm:"column:is_enabled;default:1" json:"isEnabled" form:"isEnabled"`                     //
 }
 
 // 创建云存储配置
@@ -48,7 +52,7 @@ func (d *Dao) Create(params *CloudConfigSet, uid int64) (int64, error) {
 }
 
 // 更新云存储配置
-func (d *Dao) Update(params *CloudConfigSet, uid int64, id int64) error {
+func (d *Dao) Update(params *CloudConfigSet, id int64, uid int64) error {
 
 	m, err := cloud_config_repo.NewQueryBuilder().
 		WhereUid(model.Eq, uid).
@@ -69,6 +73,30 @@ func (d *Dao) Update(params *CloudConfigSet, uid int64, id int64) error {
 	return nil
 }
 
+// 启用云存储配置
+func (d *Dao) Enable(id int64, uid int64) error {
+	return cloud_config_repo.NewQueryBuilder().
+		WhereId(model.Eq, id).
+		WhereUid(model.Eq, uid).
+		WhereIsDeleted(model.Eq, 0).
+		Updates(map[string]interface{}{
+			"is_enabled": 1,
+			"updated_at": timef.Now(),
+		})
+}
+
+// 批量关闭云存储配置
+func (d *Dao) DisableBatch(id int64, uid int64) error {
+	return cloud_config_repo.NewQueryBuilder().
+		WhereId(model.Neq, id).
+		WhereUid(model.Eq, uid).
+		WhereIsDeleted(model.Eq, 0).
+		Updates(map[string]interface{}{
+			"is_enabled": 0,
+			"updated_at": timef.Now(),
+		})
+}
+
 func (d *Dao) CountListByUid(uid int64) (int64, error) {
 	return cloud_config_repo.NewQueryBuilder().
 		WhereUid(model.Eq, uid).
@@ -77,7 +105,7 @@ func (d *Dao) CountListByUid(uid int64) (int64, error) {
 }
 
 // 获取用户的云存储配置列表
-func (d *Dao) GetListByUid(uid int64, page int, pageSize int) ([]*CloudConfig, error) {
+func (d *Dao) GetListByUid(page int, pageSize int, uid int64) ([]*CloudConfig, error) {
 
 	modelList, err := cloud_config_repo.NewQueryBuilder().
 		WhereUid(model.Eq, uid).

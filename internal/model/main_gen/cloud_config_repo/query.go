@@ -561,6 +561,92 @@ func (qb *cloudConfigRepoQueryBuilder) OrderByCustomPath(asc bool) *cloudConfigR
 	return qb
 }
 
+func (qb *cloudConfigRepoQueryBuilder) WhereAccessUrlPrefix(p model.Predicate, value string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "access_url_prefix", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereAccessUrlPrefixIn(value []string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "access_url_prefix", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereAccessUrlPrefixNotIn(value []string) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "access_url_prefix", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) OrderByAccessUrlPrefix(asc bool) *cloudConfigRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`access_url_prefix` "+order)
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereIsEnabled(p model.Predicate, value int64) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "is_enabled", p),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereIsEnabledIn(value []int64) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "is_enabled", "IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) WhereIsEnabledNotIn(value []int64) *cloudConfigRepoQueryBuilder {
+	qb.where = append(qb.where, struct {
+		prefix string
+		value  interface{}
+	}{
+		fmt.Sprintf("%v %v ?", "is_enabled", "NOT IN"),
+		value,
+	})
+	return qb
+}
+
+func (qb *cloudConfigRepoQueryBuilder) OrderByIsEnabled(asc bool) *cloudConfigRepoQueryBuilder {
+	order := "DESC"
+	if asc {
+		order = "ASC"
+	}
+
+	qb.order = append(qb.order, "`is_enabled` "+order)
+	return qb
+}
+
 func (qb *cloudConfigRepoQueryBuilder) WhereIsDeleted(p model.Predicate, value int64) *cloudConfigRepoQueryBuilder {
 	qb.where = append(qb.where, struct {
 		prefix string

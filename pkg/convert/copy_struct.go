@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/gookit/goutil/dump"
 	"github.com/pkg/errors"
 )
 
@@ -34,8 +33,6 @@ func StructAssign(src any, dst any) any {
  */
 func StructToMap(param any, data map[string]interface{}) error {
 	str, _ := json.Marshal(param)
-
-	dump.P(string(str), data)
 	error := json.Unmarshal(str, &data)
 	if error != nil {
 		return error
