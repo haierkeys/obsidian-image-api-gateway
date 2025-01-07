@@ -6,7 +6,7 @@ import (
 
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers/api"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers/apiRouter"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -28,7 +28,7 @@ func NewPrivateRouter() *gin.Engine {
 	}
 
 	// prom监控
-	r.GET("/debug/vars", api.Expvar)
+	r.GET("/debug/vars", apiRouter.Expvar)
 	r.GET("metrics", gin.WrapH(promhttp.Handler()))
 
 	if global.Config.Server.RunMode == "debug" {

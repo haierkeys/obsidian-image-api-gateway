@@ -1,4 +1,4 @@
-package api
+package apiRouter
 
 import (
     "github.com/haierkeys/obsidian-image-api-gateway/global"
