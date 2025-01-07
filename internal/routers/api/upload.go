@@ -5,7 +5,7 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/service"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/upload"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -42,7 +42,7 @@ func (u Upload) Upload(c *gin.Context) {
 		response.ToResponse(code.ErrorInvalidParams)
 	}
 
-	svcUploadFileData, err = svc.UploadFile(upload.TypeImage, file, fileHeader, params)
+	svcUploadFileData, err = svc.UploadFile(fsutil.TypeImage, file, fileHeader, params)
 	if err != nil {
 		global.Logger.Error("svc.UploadFile err: %v", zap.Error(err))
 		response.ToResponse(code.ErrorUploadFileFail.WithDetails(err.Error()))

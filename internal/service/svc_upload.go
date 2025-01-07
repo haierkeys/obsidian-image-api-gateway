@@ -9,14 +9,6 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/aws_s3"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloudflare_r2"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/local_fs"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/oss"
-	pkg_path "github.com/haierkeys/obsidian-image-api-gateway/pkg/path"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/upload"
-
 	"github.com/disintegration/imaging"
 	"github.com/gen2brain/avif"
 	"github.com/google/uuid"
@@ -25,6 +17,14 @@ import (
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
 	_ "golang.org/x/image/webp"
+
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloud_storage"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloud_storage/aws_s3"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloud_storage/cloudflare_r2"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloud_storage/local_fs"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/cloud_storage/oss"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
 )
 
 type FileInfo struct {
@@ -39,12 +39,8 @@ type ClientUploadParams struct {
 	Height int    `form:"height"`
 }
 
-type Uploader interface {
-	SendFile(pathKey string, file io.Reader, cType string) (string, error)
-	SendContent(pathKey string, content []byte) (string, error)
-}
-
-func (svc *Service) UploadFile(fileType upload.FileType, file multipart.File, fileHeader *multipart.FileHeader, form *ClientUploadParams) (*FileInfo, error) {
+// UploadFile 上传文件
+func (svc *Service) UploadFile(fileType fsutil.FileType, file multipart.File, fileHeader *multipart.FileHeader, form *ClientUploadParams) (*FileInfo, error) {
 
 	var fileName string
 
@@ -52,23 +48,23 @@ func (svc *Service) UploadFile(fileType upload.FileType, file multipart.File, fi
 
 	// 通过剪切板上传的附件 都是一个默认名字
 	if fileHeader.Filename == "image.png" {
-		fileName = upload.GetFileName(uuid.New().String() + fileHeader.Filename)
+		fileName = fsutil.GetFileName(uuid.New().String() + fileHeader.Filename)
 	} else {
-		fileName = upload.GetFileName(fileHeader.Filename)
+		fileName = fsutil.GetFileName(fileHeader.Filename)
 	}
 
 	cType := fileHeader.Header.Get("Content-Type")
 
-	if !upload.CheckContainExt(fileType, fileName) {
+	if !fsutil.CheckContainExt(fileType, fileName, global.Config.App.UploadAllowExts) {
 		return nil, errors.New("file suffix is not supported.")
 	}
-	if upload.CheckMaxSize(fileType, file) {
+	if fsutil.CheckMaxSize(fileType, file, global.Config.App.UploadMaxSize) {
 		return nil, errors.New("exceeded maximum file limit.")
 	}
 
-	fileKey := upload.GetSavePreDirPath() + fileName
+	fileKey := fsutil.GetSavePreDirPath() + fileName
 
-	var up = make(map[string]Uploader)
+	var up = make(map[string]cloud_storage.CloudStorage)
 	var dstFileKey string
 
 	writer := &bytes.Buffer{}
@@ -196,7 +192,7 @@ func (svc *Service) UploadFile(fileType upload.FileType, file multipart.File, fi
 			err = tiff.Encode(writer, newImage, nil)
 		case "webp":
 			cType = "image/jpg"
-			ext := upload.GetFileExt(fileKey)
+			ext := fsutil.GetFileExt(fileKey)
 			fileKey = fileKey[0:len(fileKey)-len(ext)] + ".jpg"
 
 			err = jpeg.Encode(writer, newImage, &jpeg.Options{Quality: global.Config.App.ImageQuality})
@@ -259,7 +255,7 @@ func (svc *Service) UploadFile(fileType upload.FileType, file multipart.File, fi
 
 	}
 
-	accessUrl := pkg_path.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + upload.UrlEscape(dstFileKey)
+	accessUrl := fsutil.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + fsutil.UrlEscape(dstFileKey)
 
 	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
 }

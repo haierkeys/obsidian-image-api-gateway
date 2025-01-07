@@ -1,6 +1,9 @@
 package service
 
 import (
+	"fmt"
+
+	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
@@ -37,6 +40,18 @@ type DeleteCloudConfigRequest struct {
 	Id int64 `form:"Id" binding:"required,gte=1"`
 }
 
+type CloudType string
+
+func (c CloudType) String() string {
+	return fmt.Sprintf("%.2f", c)
+}
+
+const (
+	OSS CloudType = "oss"
+	R2  CloudType = "r2"
+	AWS CloudType = "aws"
+)
+
 // CloudConfigList 方法用于获取指定用户的云存储配置列表
 func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig, int, error) {
 
@@ -64,6 +79,18 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 
 // 云存储管理 - 更新云存储配置的方法
 func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) error {
+
+	var typeVar any = params.Type
+	if t, ok := typeVar.(CloudType); ok {
+		dump.P("Yes", t)
+	} else {
+		dump.P("No", t)
+	}
+
+	return nil
+	// if params.Type == OSS {
+	// 	return code.ErrorInvalidParams
+	// }
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
 	if params.Id == 0 {
