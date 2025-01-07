@@ -1,7 +1,7 @@
 package global
 
 import (
-    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 )
 
 var (
@@ -12,7 +12,7 @@ var (
 
 func init() {
 
-    filename := fsutil.GetExePath()
+    filename := fileurl.GetExePath()
     ROOT = filename + "/"
 
 }

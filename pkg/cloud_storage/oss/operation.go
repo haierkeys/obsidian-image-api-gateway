@@ -5,7 +5,7 @@ import (
     "io"
 
     "github.com/haierkeys/obsidian-image-api-gateway/global"
-    pkg_path "github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
+    pkg_path "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 
     oss_sdk "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )

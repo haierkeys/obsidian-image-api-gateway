@@ -4,7 +4,7 @@ import (
     "fmt"
     "os"
 
-    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 
     "github.com/pkg/errors"
     "gopkg.in/yaml.v3"
@@ -63,7 +63,7 @@ type Database struct {
     // 数据库类型
     Type string `yaml:"type"`
     // sqlite数据库文件
-    Path string `yaml:"fsutil"`
+    Path string `yaml:"fileurl"`
     // 用户名
     UserName string `yaml:"username"`
     // 密码
@@ -96,12 +96,12 @@ type app struct {
     // 默认上下文超时时间
     DefaultContextTimeout int `yaml:"default-context-timeout"`
     // 日志保存路径
-    LogSavePath string `yaml:"log-save-fsutil"`
+    LogSavePath string `yaml:"log-save-fileurl"`
     // 日志文件名
     LogFile string `yaml:"log-file"`
 
     // 上传临时路径
-    TempPath string `yaml:"temp-fsutil"`
+    TempPath string `yaml:"temp-fileurl"`
     // 上传服务器URL
     UploadUrlPre string `yaml:"upload-url-pre"`
     // 上传图片最大尺寸
@@ -118,7 +118,7 @@ type app struct {
 type localFS struct {
     Enable       bool   `yaml:"enable"`
     HttpfsEnable bool   `yaml:"httpfs-enable"`
-    SavePath     string `yaml:"save-fsutil"`
+    SavePath     string `yaml:"save-fileurl"`
 }
 
 // OSS struct
@@ -128,7 +128,7 @@ type oss struct {
     BucketName      string `yaml:"bucket-name"`
     AccessKeyID     string `yaml:"access-key-id"`
     AccessKeySecret string `yaml:"access-key-secret"`
-    CustomPath      string `yaml:"custom-fsutil"`
+    CustomPath      string `yaml:"custom-fileurl"`
 }
 
 // AWS S3 struct
@@ -138,7 +138,7 @@ type awsS3 struct {
     BucketName      string `yaml:"bucket-name"`
     AccessKeyID     string `yaml:"access-key-id"`
     AccessKeySecret string `yaml:"access-key-secret"`
-    CustomPath      string `yaml:"custom-fsutil"`
+    CustomPath      string `yaml:"custom-fileurl"`
 }
 
 type cloudfluR2 struct {
@@ -147,7 +147,7 @@ type cloudfluR2 struct {
     BucketName      string `yaml:"bucket-name"`
     AccessKeyID     string `yaml:"access-key-id"`
     AccessKeySecret string `yaml:"access-key-secret"`
-    CustomPath      string `yaml:"custom-fsutil"`
+    CustomPath      string `yaml:"custom-fileurl"`
 }
 
 type email struct {
@@ -164,7 +164,7 @@ type email struct {
 // ConfigLoad 初始化
 func ConfigLoad(f string) error {
 
-    realpath, err := fsutil.GetAbsPath(f, "")
+    realpath, err := fileurl.GetAbsPath(f, "")
     if err != nil {
         return err
     }

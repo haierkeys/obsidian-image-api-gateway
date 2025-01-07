@@ -4,11 +4,11 @@ import "text/template"
 
 // Make sure that the template compiles during package initialization
 func parseTemplateOrPanic(t string) *template.Template {
-	tpl, err := template.New("output_template").Parse(t)
-	if err != nil {
-		panic(err)
-	}
-	return tpl
+    tpl, err := template.New("output_template").Parse(t)
+    if err != nil {
+        panic(err)
+    }
+    return tpl
 }
 
 var outputTemplate = parseTemplateOrPanic(`
@@ -30,7 +30,7 @@ import (
 
     "github.com/haierkeys/obsidian-image-api-gateway/global"
     "github.com/haierkeys/obsidian-image-api-gateway/internal/model"
-    "github.com/haierkeys/obsidian-image-api-gateway/pkg/timef"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
 )
 
 var once sync.Once
@@ -91,7 +91,7 @@ func (qb *{{.QueryBuilderName}}) buildQuery() *gorm.DB {
 
 
 func (t *{{.StructName}}) Create() (id int64, err error) {
-	t.CreatedAt = timef.Now()
+	t.CreatedAt = timex.Now()
 	dbDriver := Connection()
 	if err = dbDriver.Model(t).Create(t).Error; err != nil {
 		return 0, errors.Wrap(err, "create err")
@@ -100,7 +100,7 @@ func (t *{{.StructName}}) Create() (id int64, err error) {
 }
 
 func (t *{{.StructName}}) Save() (err error) {
-	t.UpdatedAt = timef.Now()
+	t.UpdatedAt = timex.Now()
 
 	dbDriver := Connection()
 	if err = dbDriver.Model(t).Save(t).Error; err != nil {

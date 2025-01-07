@@ -40,7 +40,7 @@ func AccessLog() gin.HandlerFunc {
         global.Log().Info(path,
             zap.Int("status", c.Writer.Status()),
             zap.String("method", c.Request.Method),
-            zap.String("fsutil", path),
+            zap.String("fileurl", path),
             zap.String("query", query),
             zap.String("ip", c.ClientIP()),
             zap.String("start-time", startTime.Format("2006-01-02 15:04:05")),

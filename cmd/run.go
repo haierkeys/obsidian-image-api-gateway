@@ -7,7 +7,7 @@ import (
     "syscall"
     "time"
 
-    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 
     "github.com/radovskyb/watcher"
     "github.com/spf13/cobra"
@@ -34,13 +34,13 @@ func init() {
                 if err != nil {
                     log.Println("failed to change the current working directory, ", err)
                 }
-                log.Println("working directory changed", zap.String("fsutil", runEnv.dir).String)
+                log.Println("working directory changed", zap.String("fileurl", runEnv.dir).String)
             }
 
             if len(runEnv.config) <= 0 {
-                if fsutil.Exists("config.yaml") {
+                if fileurl.IsExist("config.yaml") {
                     runEnv.config = "config.yaml"
-                } else if fsutil.Exists("config/config-dev.yaml") {
+                } else if fileurl.IsExist("config/config-dev.yaml") {
                     runEnv.config = "config/config-dev.yaml"
                 } else {
                     runEnv.config = "config/config.yaml"

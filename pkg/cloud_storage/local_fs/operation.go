@@ -8,7 +8,7 @@ import (
     "path"
 
     "github.com/haierkeys/obsidian-image-api-gateway/global"
-    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fsutil"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 )
 
 type LocalFS struct {
@@ -20,19 +20,19 @@ func (p *LocalFS) CheckSave() error {
     savePath := p.getSavePath()
 
     if CheckPath(savePath) {
-        if err := fsutil.CreatePath(savePath, os.ModePerm); err != nil {
-            return errors.New("failed to create the save-fsutil directory")
+        if err := fileurl.CreatePath(savePath, os.ModePerm); err != nil {
+            return errors.New("failed to create the save-fileurl directory")
         }
     }
     if Permission(savePath) {
-        return errors.New("no permission to upload the save fsutil directory")
+        return errors.New("no permission to upload the save fileurl directory")
     }
     p.IsCheckSave = true
     return nil
 }
 
 func (p *LocalFS) getSavePath() string {
-    return fsutil.PathSuffixCheckAdd(global.Config.LocalFS.SavePath, "/")
+    return fileurl.PathSuffixCheckAdd(global.Config.LocalFS.SavePath, "/")
 }
 
 // SendFile  上传文件
