@@ -1,268 +1,284 @@
 package service
 
 import (
-	"bytes"
-	"image"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
-	"io"
-	"mime/multipart"
+    "bytes"
+    "image"
+    "image/gif"
+    "image/jpeg"
+    "image/png"
+    "io"
+    "mime/multipart"
 
-	"github.com/disintegration/imaging"
-	"github.com/gen2brain/avif"
-	"github.com/google/uuid"
-	_ "github.com/gookit/goutil/dump"
-	"github.com/pkg/errors"
-	"golang.org/x/image/bmp"
-	"golang.org/x/image/tiff"
-	_ "golang.org/x/image/webp"
+    "github.com/disintegration/imaging"
+    "github.com/gen2brain/avif"
+    "golang.org/x/image/bmp"
+    "golang.org/x/image/tiff"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/oss"
+    "github.com/haierkeys/obsidian-image-api-gateway/global"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/storage"
+
+    _ "github.com/gookit/goutil/dump"
+    "github.com/pkg/errors"
+    _ "golang.org/x/image/webp"
 )
 
 type FileInfo struct {
-	ImageTitle string `json:"imageTitle"`
-	ImageUrl   string `json:"imageUrl"`
+    ImageTitle string `json:"imageTitle"`
+    ImageUrl   string `json:"imageUrl"`
 }
 
 type ClientUploadParams struct {
-	Key    string `form:"key"`
-	Type   string `form:"type"`
-	Width  int    `form:"width"`
-	Height int    `form:"height"`
+    Key    string `form:"key"`
+    Type   string `form:"type"`
+    Width  int    `form:"width"`
+    Height int    `form:"height"`
 }
 
 // UploadFile 上传文件
-func (svc *Service) UploadFile(fileType fileurl.FileType, file multipart.File, fileHeader *multipart.FileHeader, form *ClientUploadParams) (*FileInfo, error) {
+func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHeader, params *ClientUploadParams) (*FileInfo, error) {
 
-	var fileName string
+    // 上传文件名
+    var fileName = fileurl.GetFileNameOrRandom(fileHeader.Filename)
 
-	// dump.P(fileHeader)
+    // 检查文件后缀
+    if !fileurl.IsContainExt(fileurl.ImageType, fileName, global.Config.App.UploadAllowExts) {
+        return nil, errors.New("file suffix is not supported.")
+    }
+    // 检查文件大小
+    if fileurl.IsFileSizeAllowed(fileurl.ImageType, file, global.Config.App.UploadMaxSize) {
+        return nil, errors.New("exceeded maximum file limit.")
+    }
 
-	// 通过剪切板上传的附件 都是一个默认名字
-	if fileHeader.Filename == "image.png" {
-		fileName = fileurl.GetFileName(uuid.New().String() + fileHeader.Filename)
-	} else {
-		fileName = fileurl.GetFileName(fileHeader.Filename)
-	}
+    var fileKey = fileurl.GetDatePath() + fileName
+    var fileType = fileHeader.Header.Get("Content-Type")
+    var dstFileKey string
 
-	cType := fileHeader.Header.Get("Content-Type")
+    // 压缩
+    writer, err := imageResize(params, file, fileKey, fileType)
+    if err != nil {
+        return nil, err
+    }
 
-	if !fileurl.IsContainExt(fileType, fileName, global.Config.App.UploadAllowExts) {
-		return nil, errors.New("file suffix is not supported.")
-	}
-	if fileurl.IsFileSizeAllowed(fileType, file, global.Config.App.UploadMaxSize) {
-		return nil, errors.New("exceeded maximum file limit.")
-	}
+    var reader = bytes.NewReader(writer.Bytes())
 
-	fileKey := fileurl.GetDatePath() + fileName
+    for sType, _ := range storage.StorageTypeMap {
+        config := map[string]any{}
 
-	var dstFileKey string
+        if sType == storage.LOCAL {
+            _ = convert.StructToMap(global.Config.LocalFS, config)
+        } else if sType == storage.OSS {
+            _ = convert.StructToMap(global.Config.OSS, config)
+        } else if sType == storage.R2 {
+            _ = convert.StructToMap(global.Config.CloudfluR2, config)
+        } else if sType == storage.S3 {
+            _ = convert.StructToMap(global.Config.AWSS3, config)
+        } else {
+            continue
+        }
+        if !config["Enable"].(bool) {
+            continue
+        }
+        ins, err := storage.NewClient(sType, config)
+        if err != nil {
+            return nil, err
+        }
+        reader.Seek(0, 0)
+        dstFileKey, err = ins.SendFile(fileKey, reader, fileType)
+        if err != nil {
+            return nil, err
+        }
+    }
+    accessUrl := fileurl.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + fileurl.UrlEscape(dstFileKey)
 
-	writer := &bytes.Buffer{}
-
-	// 压缩
-	_, err := file.Seek(0, 0)
-
-	img, filetype, err := image.Decode(file)
-
-	if err != nil {
-		return nil, err
-	}
-
-	size := img.Bounds().Size()
-
-	// 默认裁剪 | 居中裁剪 | 固定尺寸拉伸 | 固定尺寸等比缩放不裁切 | 不处理
-	// type: "fill-topleft" | "fill-center" | "resize" | "fit" | "none";
-
-	// 服务器强制限制图片的宽度和高度
-	var imageMaxWidth = global.Config.App.ImageMaxSizeWidth
-	var imageMaxHeight = global.Config.App.ImageMaxSizeHeight
-	var newWidth, newHeight int
-	var newImage image.Image
-	var isNewImage bool
-
-	if form.Type == "none" || form.Type == "" {
-
-		newWidth = imageMaxWidth
-		newHeight = imageMaxHeight
-
-		if (size.X != newWidth || size.Y != newHeight) && (newWidth != 0 || newHeight != 0) {
-
-			if newWidth == 0 || newHeight == 0 {
-				newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
-			} else {
-				newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
-			}
-
-			isNewImage = true
-		}
-	} else if form.Type == "fill-topleft" {
-		if form.Width < imageMaxWidth || imageMaxWidth == 0 {
-			newWidth = form.Width
-		} else {
-			newWidth = imageMaxWidth
-		}
-		if form.Height < imageMaxHeight || imageMaxHeight == 0 {
-			newHeight = form.Height
-		} else {
-			newHeight = imageMaxHeight
-		}
-
-		newImage = imaging.Fill(img, newWidth, newHeight, imaging.TopLeft, imaging.Lanczos)
-		isNewImage = true
-	} else if form.Type == "fill-center" {
-		if form.Width < imageMaxWidth || imageMaxWidth == 0 {
-			newWidth = form.Width
-		} else {
-			newWidth = imageMaxWidth
-		}
-		if form.Height < imageMaxHeight || imageMaxHeight == 0 {
-			newHeight = form.Height
-		} else {
-			newHeight = imageMaxHeight
-		}
-		// newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
-		newImage = imaging.Fill(img, newWidth, newHeight, imaging.Center, imaging.Lanczos)
-		isNewImage = true
-	} else if form.Type == "resize" {
-
-		if form.Width < imageMaxWidth || imageMaxWidth == 0 {
-			newWidth = form.Width
-		} else {
-			newWidth = imageMaxWidth
-		}
-		if form.Height < imageMaxHeight || imageMaxHeight == 0 {
-			newHeight = form.Height
-		} else {
-			newHeight = imageMaxHeight
-		}
-
-		if form.Width != 0 && form.Height != 0 && (size.X != newWidth || size.Y != newHeight) {
-			newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
-			isNewImage = true
-		}
-	} else if form.Type == "fit" {
-
-		if form.Width < imageMaxWidth || imageMaxWidth == 0 {
-			newWidth = form.Width
-		} else {
-			newWidth = imageMaxWidth
-		}
-		if form.Height < imageMaxHeight || imageMaxHeight == 0 {
-			newHeight = form.Height
-		} else {
-			newHeight = imageMaxHeight
-		}
-
-		if (size.X != newWidth || size.Y != newHeight) && (newWidth != 0 || newHeight != 0) {
-
-			if newWidth == 0 || newHeight == 0 {
-				newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
-			} else {
-				newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
-			}
-
-			isNewImage = true
-		}
-	}
-
-	if isNewImage {
-
-		// 调整图片大小
-
-		switch filetype {
-		case "png":
-			err = png.Encode(writer, newImage)
-		case "gif":
-			err = gif.Encode(writer, newImage, &gif.Options{NumColors: 256})
-		case "jpeg", "jpg":
-			err = jpeg.Encode(writer, newImage, &jpeg.Options{Quality: global.Config.App.ImageQuality})
-		case "bmp":
-			err = bmp.Encode(writer, newImage)
-		case "tif", "tiff":
-			err = tiff.Encode(writer, newImage, nil)
-		case "webp":
-			cType = "image/jpg"
-			ext := fileurl.GetFileExt(fileKey)
-			fileKey = fileKey[0:len(fileKey)-len(ext)] + ".jpg"
-
-			err = jpeg.Encode(writer, newImage, &jpeg.Options{Quality: global.Config.App.ImageQuality})
-		case "avif":
-			err = avif.Encode(writer, newImage, avif.Options{Quality: global.Config.App.ImageQuality})
-
-		default:
-			return nil, errors.New("Unknown image type:" + filetype)
-		}
-
-		if err != nil {
-			return nil, err
-		}
-
-	} else {
-		file.Seek(0, 0)
-		io.Copy(writer, file)
-	}
-
-	reader := bytes.NewReader(writer.Bytes())
-
-	var up = make(map[storage.Type]storage.Storager)
-	for _, v := range []storage.Type{storage.AWS, storage.OSS, storage.R2, storage.LOCAL} {
-
-		if v == storage.LOCAL && global.Config.LocalFS.Enable {
-
-			up[v] = new(local_fs.LocalFS)
-
-		} else if v == storage.OSS && global.Config.OSS.Enable {
-			c, _ := oss.NewClient()
-			up[v] = &oss.OSS{
-				Client: c,
-			}
-		} else if v == storage.R2 && global.Config.CloudfluR2.Enable {
-
-			c, _ := cloudflare_r2.NewClient()
-
-			up[v] = &cloudflare_r2.R2{
-				S3Client: c,
-			}
-		} else if v == storage.AWS && global.Config.AWSS3.Enable {
-
-			c, _ := aws_s3.NewClient()
-			up[v] = &aws_s3.S3{
-				S3Client: c,
-			}
-
-		} else {
-			continue
-		}
-
-		reader.Seek(0, 0)
-
-		var err error
-		dstFileKey, err = up[v].SendFile(fileKey, reader, cType)
-		if err != nil {
-			return nil, err
-		}
-
-	}
-
-	accessUrl := fileurl.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + fileurl.UrlEscape(dstFileKey)
-
-	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
+    return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
 }
-func MemDupReader(r io.Reader) func() io.Reader {
-	b := bytes.NewBuffer(nil)
-	t := io.TeeReader(r, b)
 
-	return func() io.Reader {
-		br := bytes.NewReader(b.Bytes())
-		return io.MultiReader(br, t)
-	}
+func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *multipart.FileHeader, params *ClientUploadParams) (*FileInfo, error) {
+
+    // 上传文件名
+    var fileName = fileurl.GetFileNameOrRandom(fileHeader.Filename)
+
+    // 检查文件后缀
+    if !fileurl.IsContainExt(fileurl.ImageType, fileName, global.Config.App.UploadAllowExts) {
+        return nil, errors.New("file suffix is not supported.")
+    }
+    // 检查文件大小
+    if fileurl.IsFileSizeAllowed(fileurl.ImageType, file, global.Config.App.UploadMaxSize) {
+        return nil, errors.New("exceeded maximum file limit.")
+    }
+
+    var fileKey = fileurl.GetDatePath() + fileName
+    var fileType = fileHeader.Header.Get("Content-Type")
+    var dstFileKey string
+
+    // 压缩
+    writer, err := imageResize(params, file, fileKey, fileType)
+    if err != nil {
+        return nil, err
+    }
+
+    var reader = bytes.NewReader(writer.Bytes())
+
+    var userCloudConfig = map[string]any{}
+    daoCloudConfig, err := svc.dao.GetEnableByUId(uid)
+    if err != nil {
+        return nil, err
+    }
+
+    _ = convert.StructToMap(daoCloudConfig, userCloudConfig)
+
+    ins, err := storage.NewClient(daoCloudConfig.Type, userCloudConfig)
+    if err != nil {
+        return nil, err
+    }
+
+    dstFileKey, err = ins.SendFile(fileKey, reader, fileType)
+    if err != nil {
+        return nil, err
+    }
+
+    accessUrl := fileurl.PathSuffixCheckAdd(daoCloudConfig.AccessUrlPrefix, "/") + fileurl.UrlEscape(dstFileKey)
+
+    return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
+}
+
+// imageResize 压缩图片
+// 默认裁剪 | 居中裁剪 | 固定尺寸拉伸 | 固定尺寸等比缩放不裁切 | 不处理
+// type: "fill-topleft" | "fill-center" | "resize" | "fit" | "none";
+func imageResize(params *ClientUploadParams, file multipart.File, fileKey string, fileType string) (*bytes.Buffer, error) {
+
+    var writer = &bytes.Buffer{}
+    // 压缩
+    _, err := file.Seek(0, 0)
+    if err != nil {
+        return nil, err
+    }
+
+    img, fileRealType, err := image.Decode(file)
+
+    if err != nil {
+        return nil, err
+    }
+
+    var imgSize = img.Bounds().Size()
+
+    // 服务器强制限制图片的宽度和高度
+    var imageMaxWidth = global.Config.App.ImageMaxSizeWidth
+    var imageMaxHeight = global.Config.App.ImageMaxSizeHeight
+    var newWidth, newHeight int
+    var newImage image.Image
+    var isNewImage bool
+
+    if params.Type == "none" || params.Type == "" {
+        newWidth = imageMaxWidth
+        newHeight = imageMaxHeight
+        if (imgSize.X != newWidth || imgSize.Y != newHeight) && (newWidth != 0 || newHeight != 0) {
+            if newWidth == 0 || newHeight == 0 {
+                newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
+            } else {
+                newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
+            }
+            isNewImage = true
+        }
+    } else if params.Type == "fill-topleft" {
+        if params.Width < imageMaxWidth || imageMaxWidth == 0 {
+            newWidth = params.Width
+        } else {
+            newWidth = imageMaxWidth
+        }
+        if params.Height < imageMaxHeight || imageMaxHeight == 0 {
+            newHeight = params.Height
+        } else {
+            newHeight = imageMaxHeight
+        }
+        newImage = imaging.Fill(img, newWidth, newHeight, imaging.TopLeft, imaging.Lanczos)
+        isNewImage = true
+    } else if params.Type == "fill-center" {
+        if params.Width < imageMaxWidth || imageMaxWidth == 0 {
+            newWidth = params.Width
+        } else {
+            newWidth = imageMaxWidth
+        }
+        if params.Height < imageMaxHeight || imageMaxHeight == 0 {
+            newHeight = params.Height
+        } else {
+            newHeight = imageMaxHeight
+        }
+        // newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
+        newImage = imaging.Fill(img, newWidth, newHeight, imaging.Center, imaging.Lanczos)
+        isNewImage = true
+    } else if params.Type == "resize" {
+        if params.Width < imageMaxWidth || imageMaxWidth == 0 {
+            newWidth = params.Width
+        } else {
+            newWidth = imageMaxWidth
+        }
+        if params.Height < imageMaxHeight || imageMaxHeight == 0 {
+            newHeight = params.Height
+        } else {
+            newHeight = imageMaxHeight
+        }
+        if params.Width != 0 && params.Height != 0 && (imgSize.X != newWidth || imgSize.Y != newHeight) {
+            newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
+            isNewImage = true
+        }
+    } else if params.Type == "fit" {
+        if params.Width < imageMaxWidth || imageMaxWidth == 0 {
+            newWidth = params.Width
+        } else {
+            newWidth = imageMaxWidth
+        }
+        if params.Height < imageMaxHeight || imageMaxHeight == 0 {
+            newHeight = params.Height
+        } else {
+            newHeight = imageMaxHeight
+        }
+        if (imgSize.X != newWidth || imgSize.Y != newHeight) && (newWidth != 0 || newHeight != 0) {
+            if newWidth == 0 || newHeight == 0 {
+                newImage = imaging.Resize(img, newWidth, newHeight, imaging.Lanczos)
+            } else {
+                newImage = imaging.Fit(img, newWidth, newHeight, imaging.Lanczos)
+            }
+            isNewImage = true
+        }
+    }
+    if isNewImage {
+        // 调整图片大小
+        switch fileRealType {
+        case "png":
+            err = png.Encode(writer, newImage)
+        case "gif":
+            err = gif.Encode(writer, newImage, &gif.Options{NumColors: 256})
+        case "jpeg", "jpg":
+            err = jpeg.Encode(writer, newImage, &jpeg.Options{Quality: global.Config.App.ImageQuality})
+        case "bmp":
+            err = bmp.Encode(writer, newImage)
+        case "tif", "tiff":
+            err = tiff.Encode(writer, newImage, nil)
+        case "webp":
+            fileType = "image/jpg"
+            ext := fileurl.GetFileExt(fileKey)
+            fileKey = fileKey[0:len(fileKey)-len(ext)] + ".jpg"
+            err = jpeg.Encode(writer, newImage, &jpeg.Options{Quality: global.Config.App.ImageQuality})
+        case "avif":
+            err = avif.Encode(writer, newImage, avif.Options{Quality: global.Config.App.ImageQuality})
+        default:
+            return nil, errors.New("Unknown image type:" + fileRealType)
+        }
+        if err != nil {
+            return nil, err
+        }
+    } else {
+        _, err = file.Seek(0, 0)
+        if err != nil {
+            return nil, err
+        }
+        _, err = io.Copy(writer, file)
+        if err != nil {
+            return nil, err
+        }
+    }
+    return writer, nil
 }

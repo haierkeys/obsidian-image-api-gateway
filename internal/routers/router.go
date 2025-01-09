@@ -11,10 +11,10 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers/apiRouter"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/limiter"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(

@@ -5,14 +5,16 @@
 | 0 | id |  | INTEGER | PRI | 1 | auto_increment |  |
 | 1 | uid |  | INTEGER | INDEX | 1 |  | 0 |
 | 2 | type |  | TEXT |  | 0 |  | '' |
-| 3 | bucket_name |  | TEXT |  | 0 |  | '' |
-| 4 | account_id |  | TEXT |  | 0 |  | '' |
-| 5 | access_key_id |  | TEXT |  | 0 |  | '' |
-| 6 | access_key_secret |  | TEXT |  | 0 |  | '' |
-| 7 | custom_path |  | TEXT |  | 0 |  | '' |
-| 8 | access_url_prefix |  | TEXT |  | 0 |  | '' |
-| 9 | is_enabled |  | INTEGER |  | 1 |  | 1 |
-| 10 | is_deleted |  | INTEGER |  | 1 |  | 0 |
-| 11 | updated_at |  | TIMESTAMP |  | 0 |  | NULL |
-| 12 | created_at |  | TIMESTAMP |  | 0 |  | NULL |
-| 13 | deleted_at |  | TIMESTAMP |  | 0 |  | NULL |
+| 3 | endpoint |  | TEXT |  | 0 |  | '' |
+| 4 | region |  | TEXT |  | 0 |  | '' |
+| 5 | account_id |  | TEXT |  | 0 |  | '' |
+| 6 | bucket_name |  | TEXT |  | 0 |  | '' |
+| 7 | access_key_id |  | TEXT |  | 0 |  | '' |
+| 8 | access_key_secret |  | TEXT |  | 0 |  | '' |
+| 9 | custom_path |  | TEXT |  | 0 |  | '' |
+| 10 | access_url_prefix |  | TEXT |  | 0 |  | '' |
+| 11 | is_enabled |  | INTEGER |  | 1 |  | 1 |
+| 12 | is_deleted |  | INTEGER |  | 1 |  | 0 |
+| 13 | updated_at |  | TIMESTAMP |  | 0 |  | NULL |
+| 14 | created_at |  | TIMESTAMP |  | 0 |  | NULL |
+| 15 | deleted_at |  | TIMESTAMP |  | 0 |  | NULL |

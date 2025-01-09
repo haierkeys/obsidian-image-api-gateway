@@ -28,8 +28,10 @@ CREATE TABLE "pre_cloud_config" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, -- 配置id
     "uid" INTEGER NOT NULL DEFAULT 0, -- 用户id
     "type" TEXT DEFAULT '', -- 类型
-    "bucket_name" TEXT DEFAULT '', -- 存储桶名称
+    "endpoint" TEXT DEFAULT '',-- 账户id
+    "region" TEXT DEFAULT '',-- 账户id
     "account_id" TEXT DEFAULT '', -- 账户id
+    "bucket_name" TEXT DEFAULT '',-- 存储桶名称
     "access_key_id" TEXT DEFAULT '', -- 访问密钥id
     "access_key_secret" TEXT DEFAULT '', -- 访问密钥
     "custom_path" TEXT DEFAULT '', -- 自定义路径

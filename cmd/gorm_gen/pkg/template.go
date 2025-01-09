@@ -4,11 +4,11 @@ import "text/template"
 
 // Make sure that the template compiles during package initialization
 func parseTemplateOrPanic(t string) *template.Template {
-    tpl, err := template.New("output_template").Parse(t)
-    if err != nil {
-        panic(err)
-    }
-    return tpl
+	tpl, err := template.New("output_template").Parse(t)
+	if err != nil {
+		panic(err)
+	}
+	return tpl
 }
 
 var outputTemplate = parseTemplateOrPanic(`

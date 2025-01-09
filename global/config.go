@@ -5,6 +5,10 @@ import (
 	"os"
 
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aliyun_oss"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
@@ -16,16 +20,16 @@ var (
 
 type config struct {
 	File       string
-	Server     server     `yaml:"server"`
-	Log        LogConfig  `yaml:"log"`
-	Database   Database   `yaml:"database"`
-	App        app        `yaml:"app"`
-	Email      email      `yaml:"email"`
-	Security   security   `yaml:"security"`
-	LocalFS    localFS    `yaml:"local-fs"`
-	OSS        oss        `yaml:"storage-oss"`
-	CloudfluR2 cloudfluR2 `yaml:"cloudflu-r2"`
-	AWSS3      awsS3      `yaml:"aws-s3"`
+	Server     server               `yaml:"server"`
+	Log        LogConfig            `yaml:"log"`
+	Database   Database             `yaml:"database"`
+	App        app                  `yaml:"app"`
+	Email      email                `yaml:"email"`
+	Security   security             `yaml:"security"`
+	LocalFS    local_fs.Config      `yaml:"local-fs"`
+	OSS        aliyun_oss.Config    `yaml:"storage-oss"`
+	CloudfluR2 cloudflare_r2.Config `yaml:"cloudflu-r2"`
+	AWSS3      aws_s3.Config        `yaml:"aws-s3"`
 }
 
 type LogConfig struct {
@@ -112,42 +116,6 @@ type app struct {
 	ImageMaxSizeWidth  int `yaml:"image-max-size-width"`
 	ImageMaxSizeHeight int `yaml:"image-max-size-height"`
 	ImageQuality       int `yaml:"image-quality"`
-}
-
-// StorageLocal struct
-type localFS struct {
-	Enable       bool   `yaml:"enable"`
-	HttpfsEnable bool   `yaml:"httpfs-enable"`
-	SavePath     string `yaml:"save-fileurl"`
-}
-
-// OSS struct
-type oss struct {
-	Enable          bool   `yaml:"enable"`
-	Endpoint        string `yaml:"endpoint"`
-	BucketName      string `yaml:"bucket-name"`
-	AccessKeyID     string `yaml:"access-key-id"`
-	AccessKeySecret string `yaml:"access-key-secret"`
-	CustomPath      string `yaml:"custom-fileurl"`
-}
-
-// AWS S3 struct
-type awsS3 struct {
-	Enable          bool   `yaml:"enable"`
-	Region          string `yaml:"region"`
-	BucketName      string `yaml:"bucket-name"`
-	AccessKeyID     string `yaml:"access-key-id"`
-	AccessKeySecret string `yaml:"access-key-secret"`
-	CustomPath      string `yaml:"custom-fileurl"`
-}
-
-type cloudfluR2 struct {
-	Enable          bool   `yaml:"enable"`
-	AccountId       string `yaml:"account-id"`
-	BucketName      string `yaml:"bucket-name"`
-	AccessKeyID     string `yaml:"access-key-id"`
-	AccessKeySecret string `yaml:"access-key-secret"`
-	CustomPath      string `yaml:"custom-fileurl"`
 }
 
 type email struct {

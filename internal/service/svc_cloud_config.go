@@ -3,7 +3,9 @@ package service
 import (
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
 )
 
@@ -65,9 +67,11 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 // 云存储管理 - 更新云存储配置的方法
 func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) error {
 
-	// if params.Type == OSS {
-	// 	return code.ErrorInvalidParams
-	// }
+	// 检查云存储类型是否有效
+	if !storage.CloudStorageTypeMap[params.Type] {
+		return code.ErrorInvalidCloudStorageType
+	}
+
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
 	if params.Id == 0 {

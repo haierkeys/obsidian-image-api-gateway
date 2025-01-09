@@ -7,26 +7,19 @@ import (
     "io"
     "time"
 
-    "github.com/haierkeys/obsidian-image-api-gateway/global"
-    pkg_path "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+    "github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 
     "github.com/aws/aws-sdk-go-v2/aws"
-    "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
     "github.com/aws/aws-sdk-go-v2/service/s3"
     "github.com/aws/aws-sdk-go-v2/service/s3/types"
     "github.com/pkg/errors"
 )
 
-type S3 struct {
-    S3Client  *s3.Client
-    S3Manager *manager.Uploader
-}
-
 func (p *S3) GetBucket(bucketName string) string {
 
     // Get bucket
     if len(bucketName) <= 0 {
-        bucketName = global.Config.AWSS3.BucketName
+        bucketName = p.Config.BucketName
     }
 
     return bucketName
@@ -38,7 +31,7 @@ func (p *S3) SendFile(fileKey string, file io.Reader, itype string) (string, err
     ctx := context.Background()
     bucket := p.GetBucket("")
 
-    fileKey = pkg_path.PathSuffixCheckAdd(global.Config.AWSS3.CustomPath, "/") + fileKey
+    fileKey = fileurl.PathSuffixCheckAdd(p.Config.CustomPath, "/") + fileKey
 
     //  k, _ := h.Open()
 
@@ -61,7 +54,7 @@ func (p *S3) SendContent(fileKey string, content []byte) (string, error) {
     ctx := context.Background()
     bucket := p.GetBucket("")
 
-    fileKey = pkg_path.PathSuffixCheckAdd(global.Config.AWSS3.CustomPath, "/") + fileKey
+    fileKey = fileurl.PathSuffixCheckAdd(p.Config.CustomPath, "/") + fileKey
 
     input := &s3.PutObjectInput{
         Bucket:            aws.String(bucket),
