@@ -22,15 +22,20 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, params)
 	if !valid {
-		global.Logger.Error("api.CloudConfig.Register errs: %v", zap.Error(errs))
+		global.Logger.Error("apiRouter.CloudConfig.UpdateAndCreate.BindAndValid errs: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
 	uid := app.GetUid(c)
+	if uid == 0 {
+		global.Logger.Error("apiRouter.CloudConfig.UpdateAndCreate err uid=0")
+		response.ToResponse(code.ErrorNotUserAuthToken)
+		return
+	}
 	svc := service.New(c)
 	err := svc.CloudConfigUpdateAndCreate(uid, params)
 	if err != nil {
-		global.Logger.Error("api.CloudConfig.UpdateAndCreate svc UserRegister err: %v", zap.Error(err))
+		global.Logger.Error("apiRouter.CloudConfig.UpdateAndCreate svc UpdateAndCreate err: %v", zap.Error(err))
 		response.ToResponse(code.Failed.WithDetails(err.Error()))
 		return
 	}
@@ -39,7 +44,6 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 	} else {
 		response.ToResponse(code.SuccessUpdate)
 	}
-	return
 }
 
 func (t *CloudConfig) Delete(c *gin.Context) {
@@ -47,25 +51,34 @@ func (t *CloudConfig) Delete(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Error("api.CloudConfig.Delete svc Delete err: %v", zap.Error(errs))
+		global.Logger.Error("apiRouter.CloudConfig.Delete.BindAndValid svc Delete err: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
 	uid := app.GetUid(c)
+	if uid == 0 {
+		global.Logger.Error("apiRouter.CloudConfig.Delete err uid=0")
+		response.ToResponse(code.ErrorNotUserAuthToken)
+		return
+	}
 	svc := service.New(c)
 	err := svc.CloudConfigDelete(uid, &param)
 	if err != nil {
-		global.Logger.Error("api.CloudConfig.UpdateAndCreate svc UserRegister err: %v", zap.Error(err))
+		global.Logger.Error("apiRouter.CloudConfig.Delete svc Delete err: %v", zap.Error(err))
 		response.ToResponse(code.Failed.WithDetails(err.Error()))
 		return
 	}
 	response.ToResponse(code.SuccessDelete)
-	return
 }
 
 func (t *CloudConfig) List(c *gin.Context) {
 	response := app.NewResponse(c)
 	uid := app.GetUid(c)
+	if uid == 0 {
+		global.Logger.Error("apiRouter.CloudConfig.List err uid=0")
+		response.ToResponse(code.ErrorNotUserAuthToken)
+		return
+	}
 	svc := service.New(c)
 	list, total, err := svc.CloudConfigList(uid, &app.Pager{Page: 1, PageSize: 10})
 	if err != nil {
@@ -73,5 +86,4 @@ func (t *CloudConfig) List(c *gin.Context) {
 		return
 	}
 	response.ToResponseList(code.Success, list, total)
-	return
 }

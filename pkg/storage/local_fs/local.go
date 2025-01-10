@@ -1,9 +1,9 @@
 package local_fs
 
 type Config struct {
-	Enable       bool   `yaml:"enable"`
-	HttpfsEnable bool   `yaml:"httpfs-enable"`
-	SavePath     string `yaml:"save-path"`
+	IsEnabled      bool   `yaml:"is-enable"`
+	HttpfsIsEnable bool   `yaml:"httpfs-is-enable"`
+	SavePath       string `yaml:"save-path"`
 }
 
 type LocalFS struct {
@@ -11,14 +11,38 @@ type LocalFS struct {
 	Config      *Config
 }
 
-func NewClient(conf map[string]any) (*LocalFS, error) {
+func NewClient(cf map[string]any) (*LocalFS, error) {
 
-	config := &Config{
-		Enable:       conf["Enable"].(bool),
-		HttpfsEnable: conf["HttpfsEnable"].(bool),
-		SavePath:     conf["SavePath"].(string),
+	var IsEnabled bool
+	switch t := cf["IsEnabled"].(type) {
+	case int64:
+		if t == 0 {
+			IsEnabled = false
+		} else {
+			IsEnabled = true
+		}
+	case bool:
+		IsEnabled = t
+	}
+
+	var HttpfsIsEnable bool
+	switch t := cf["HttpfsIsEnable"].(type) {
+	case int64:
+		if t == 0 {
+			HttpfsIsEnable = false
+		} else {
+			HttpfsIsEnable = true
+		}
+	case bool:
+		HttpfsIsEnable = t
+	}
+
+	conf := &Config{
+		IsEnabled:      IsEnabled,
+		HttpfsIsEnable: HttpfsIsEnable,
+		SavePath:       cf["SavePath"].(string),
 	}
 	return &LocalFS{
-		Config: config,
+		Config: conf,
 	}, nil
 }

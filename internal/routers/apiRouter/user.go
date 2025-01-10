@@ -25,7 +25,7 @@ func (h *User) Register(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, params)
 
 	if !valid {
-		global.Logger.Error("apiRouter.user.Register errs: %v", zap.Error(errs))
+		global.Logger.Error("apiRouter.user.Register.BindAndValid errs: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
@@ -40,7 +40,6 @@ func (h *User) Register(c *gin.Context) {
 	}
 
 	response.ToResponse(code.Success.WithData(svcData))
-	return
 }
 
 // Login 用户登录
@@ -52,7 +51,7 @@ func (h *User) Login(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, params)
 
 	if !valid {
-		global.Logger.Error("apiRouter.user.Login app.BindAndValid errs: %v", zap.Error(errs))
+		global.Logger.Error("apiRouter.user.Login.BindAndValid errs: %v", zap.Error(errs))
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
@@ -67,5 +66,4 @@ func (h *User) Login(c *gin.Context) {
 	}
 
 	response.ToResponse(code.Success.WithData(svcData))
-	return
 }

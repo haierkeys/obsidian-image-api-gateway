@@ -10,24 +10,28 @@ import (
 )
 
 type CloudConfig struct {
-	Id              int64      `json:"Id"`
-	Type            string     `json:"type"`
-	BucketName      string     `json:"bucketName"`
-	AccountId       string     `json:"accountId"`
-	AccessKeyId     string     `json:"accessKeyId"`
-	AccessKeySecret string     `json:"accessKeySecret"`
-	CustomPath      string     `json:"customPath"`
-	AccessUrlPrefix string     `json:"accessUrlPrefix"`
-	IsEnabled       int64      `json:"isEnabled"`
-	UpdatedAt       timex.Time `json:"updatedAt"`
-	CreatedAt       timex.Time `json:"createdAt"`
+	Id              int64      `json:"Id"`              // ID
+	Type            string     `json:"type"`            // 类型
+	BucketName      string     `json:"bucketName"`      // 存储桶名称
+	Endpoint        string     `json:"endpoint"`        // 端点
+	Region          string     `json:"region"`          // 区域
+	AccountId       string     `json:"accountId"`       // 账户ID
+	AccessKeyId     string     `json:"accessKeyId"`     // 访问密钥ID
+	AccessKeySecret string     `json:"accessKeySecret"` // 访问密钥秘密
+	CustomPath      string     `json:"customPath"`      // 自定义路径
+	AccessUrlPrefix string     `json:"accessUrlPrefix"` // 访问地址前缀
+	IsEnabled       int64      `json:"isEnabled"`       // 是否启用
+	UpdatedAt       timex.Time `json:"updatedAt"`       // 更新时间
+	CreatedAt       timex.Time `json:"createdAt"`       // 创建时间
 }
 
 type CloudConfigRequest struct {
 	Id              int64  `form:"Id"`                                                // ID
 	Type            string `form:"type" binding:"required,gte=1"`                     // 类型
+	Endpoint        string `form:"endpoint"`                                          // 端点 oss
+	Region          string `form:"region"`                                            // 区域 s3
+	AccountId       string `form:"accountId"`                                         // 账户ID r2
 	BucketName      string `form:"bucketName" binding:"required,gte=1"`               // 存储桶名称
-	AccountId       string `form:"accountId"`                                         // 账户ID
 	AccessKeyId     string `form:"accessKeyId" binding:"required,min=2,max=100"`      // 访问密钥ID
 	AccessKeySecret string `form:"accessKeySecret" binding:"required,min=2,max=100"`  // 访问密钥秘密
 	CustomPath      string `form:"customPath"`                                        // 自定义路径
@@ -67,9 +71,27 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 // 云存储管理 - 更新云存储配置的方法
 func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) error {
 
+	return code.ErrorInvalidCloudStorageAccountId
 	// 检查云存储类型是否有效
 	if !storage.CloudStorageTypeMap[params.Type] {
 		return code.ErrorInvalidCloudStorageType
+	}
+	// 检查云存储类型是否为 r2
+	if params.Type == storage.R2 {
+		// 检查账户ID是否为空
+		if params.AccountId == "" {
+			return code.ErrorInvalidCloudStorageAccountId
+		}
+	} else if params.Type == storage.S3 {
+		// 检查区域是否为空
+		if params.Region == "" {
+			return code.ErrorInvalidCloudStorageRegion
+		}
+	} else if params.Type == storage.OSS {
+		// 检查端点是否为空
+		if params.Endpoint == "" {
+			return code.ErrorInvalidCloudStorageEndpoint
+		}
 	}
 
 	// 调用数据访问层的更新方法

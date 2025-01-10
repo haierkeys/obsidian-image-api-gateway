@@ -28,4 +28,8 @@ var (
 	ErrorUploadFileFailed        = NewError(incr(600), "上传文件失败")
 	ErrorInvalidCloudStorageType = NewError(incr(600), "云存储类型无效")
 	ErrorInvalidStorageType      = NewError(incr(600), "存储类型无效")
+
+	ErrorInvalidCloudStorageAccountId = NewError(incr(600), "云存储账户ID无效")
+	ErrorInvalidCloudStorageRegion    = NewError(incr(600), "云存储区域无效")
+	ErrorInvalidCloudStorageEndpoint  = NewError(incr(600), "云存储端点无效")
 )

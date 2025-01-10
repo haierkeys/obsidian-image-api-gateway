@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	Enable          bool   `yaml:"enable"`
+	IsEnabled       bool   `yaml:"is-enable"`
 	Region          string `yaml:"region"`
 	BucketName      string `yaml:"bucket-name"`
 	AccessKeyID     string `yaml:"access-key-id"`
@@ -30,8 +30,20 @@ var clients = make(map[string]*S3)
 func NewClient(cf map[string]any) (*S3, error) {
 	// New client
 
+	var IsEnabled bool
+	switch t := cf["IsEnabled"].(type) {
+	case int64:
+		if t == 0 {
+			IsEnabled = false
+		} else {
+			IsEnabled = true
+		}
+	case bool:
+		IsEnabled = t
+	}
+
 	conf := &Config{
-		Enable:          cf["Enable"].(bool),
+		IsEnabled:       IsEnabled,
 		Region:          cf["Region"].(string),
 		BucketName:      cf["BucketName"].(string),
 		AccessKeyID:     cf["AccessKeyID"].(string),
