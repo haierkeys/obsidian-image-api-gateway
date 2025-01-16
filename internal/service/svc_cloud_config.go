@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
@@ -98,7 +97,6 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
 
-	dump.P(da)
 	if params.Id == 0 {
 		id, err := svc.dao.Create(da, uid)
 		if err != nil {

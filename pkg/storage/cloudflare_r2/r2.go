@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/gookit/goutil/dump"
 	"github.com/pkg/errors"
 )
 
@@ -43,8 +42,6 @@ func NewClient(cf map[string]any) (*R2, error) {
 	case bool:
 		IsEnabled = t
 	}
-
-	dump.P(cf["AccessKeyId"].(string))
 
 	conf := &Config{
 		IsEnabled:       IsEnabled,
