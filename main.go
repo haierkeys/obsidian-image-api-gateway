@@ -11,5 +11,4 @@ var efs embed.FS
 
 func main() {
 	cmd.Execute(efs)
-
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/gookit/goutil/dump"
 	"github.com/pkg/errors"
 )
 
@@ -16,7 +17,7 @@ type Config struct {
 	IsEnabled       bool   `yaml:"is-enable"`
 	AccountId       string `yaml:"account-id"`
 	BucketName      string `yaml:"bucket-name"`
-	AccessKeyID     string `yaml:"access-key-id"`
+	AccessKeyId     string `yaml:"access-key-id"`
 	AccessKeySecret string `yaml:"access-key-secret"`
 	CustomPath      string `yaml:"custom-path"`
 }
@@ -43,16 +44,19 @@ func NewClient(cf map[string]any) (*R2, error) {
 		IsEnabled = t
 	}
 
+	dump.P(cf["AccessKeyId"].(string))
+
 	conf := &Config{
 		IsEnabled:       IsEnabled,
 		AccountId:       cf["AccountId"].(string),
 		BucketName:      cf["BucketName"].(string),
-		AccessKeyID:     cf["AccessKeyID"].(string),
+		AccessKeyId:     cf["AccessKeyId"].(string),
 		AccessKeySecret: cf["AccessKeySecret"].(string),
 		CustomPath:      cf["CustomPath"].(string),
 	}
+
 	var accountId = conf.AccountId
-	var accessKeyId = conf.AccessKeyID
+	var accessKeyId = conf.AccessKeyId
 	var accessKeySecret = conf.AccessKeySecret
 
 	if clients[accessKeyId] != nil {

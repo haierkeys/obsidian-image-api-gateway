@@ -11,7 +11,6 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/gen2brain/avif"
-	"github.com/gookit/goutil/dump"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
 	"gorm.io/gorm"
@@ -66,8 +65,8 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 
 	var reader = bytes.NewReader(writer.Bytes())
 
+	config := map[string]any{}
 	for sType := range storage.StorageTypeMap {
-		config := map[string]any{}
 
 		if sType == storage.LOCAL {
 			_ = convert.StructToMap(global.Config.LocalFS, config)
@@ -133,9 +132,7 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 		return nil, err
 	}
 
-	convert.StructToMap(daoCloudConfig, userCloudConfig)
-
-	dump.P(daoCloudConfig)
+	userCloudConfig = convert.StructToMapByReflect(daoCloudConfig)
 
 	ins, err := storage.NewClient(daoCloudConfig.Type, userCloudConfig)
 	if err != nil {
@@ -147,7 +144,7 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 		return nil, err
 	}
 
-	accessUrl := fileurl.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + fileurl.UrlEscape(dstFileKey)
+	accessUrl := fileurl.PathSuffixCheckAdd(userCloudConfig["AccessUrlPrefix"].(string), "/") + fileurl.UrlEscape(dstFileKey)
 
 	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
 }

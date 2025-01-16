@@ -42,6 +42,35 @@ func StructToMap(param any, data map[string]interface{}) error {
 
 }
 
+func StructToMapByReflect(obj any) map[string]any {
+	val := reflect.ValueOf(obj)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	if val.Kind() != reflect.Struct {
+		return nil
+	}
+
+	result := make(map[string]any)
+	typ := val.Type()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+
+		fieldName := typ.Field(i).Name
+		if field.CanInterface() {
+			// 如果字段是 Struct，递归处理
+			if field.Kind() == reflect.Struct {
+				result[fieldName] = StructToMapByReflect(field.Interface())
+			} else {
+				result[fieldName] = field.Interface()
+			}
+		}
+	}
+
+	return result
+}
+
 func StructToModelMap(param any, data map[string]any, key string) error {
 
 	// 获取反射值

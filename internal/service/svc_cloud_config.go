@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
@@ -10,7 +11,7 @@ import (
 )
 
 type CloudConfig struct {
-	Id              int64      `json:"Id"`              // ID
+	Id              int64      `json:"id"`              // ID
 	Type            string     `json:"type"`            // 类型
 	BucketName      string     `json:"bucketName"`      // 存储桶名称
 	Endpoint        string     `json:"endpoint"`        // 端点
@@ -26,7 +27,7 @@ type CloudConfig struct {
 }
 
 type CloudConfigRequest struct {
-	Id              int64  `form:"Id"`                                                // ID
+	Id              int64  `form:"id"`                                                // ID
 	Type            string `form:"type" binding:"required,gte=1"`                     // 类型
 	Endpoint        string `form:"endpoint"`                                          // 端点 oss
 	Region          string `form:"region"`                                            // 区域 s3
@@ -40,7 +41,7 @@ type CloudConfigRequest struct {
 }
 
 type DeleteCloudConfigRequest struct {
-	Id int64 `form:"Id" binding:"required,gte=1"`
+	Id int64 `form:"id" binding:"required,gte=1"`
 }
 
 // CloudConfigList 方法用于获取指定用户的云存储配置列表
@@ -71,11 +72,11 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 // 云存储管理 - 更新云存储配置的方法
 func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) error {
 
-	return code.ErrorInvalidCloudStorageAccountId
 	// 检查云存储类型是否有效
 	if !storage.CloudStorageTypeMap[params.Type] {
 		return code.ErrorInvalidCloudStorageType
 	}
+
 	// 检查云存储类型是否为 r2
 	if params.Type == storage.R2 {
 		// 检查账户ID是否为空
@@ -96,6 +97,8 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
+
+	dump.P(da)
 	if params.Id == 0 {
 		id, err := svc.dao.Create(da, uid)
 		if err != nil {

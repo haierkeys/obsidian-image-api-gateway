@@ -31,6 +31,8 @@ type CloudConfigSet struct {
 	Id              int64  `gorm:"column:id;primary_key;auto_increment" json:"id" form:"id"`                          //
 	Type            string `gorm:"column:type;default:''" json:"type" form:"type"`                                    //
 	BucketName      string `gorm:"column:bucket_name;default:''" json:"bucketName" form:"bucketName"`                 //
+	Endpoint        string `gorm:"column:endpoint;default:''" json:"endpoint" form:"endpoint"`                        //
+	Region          string `gorm:"column:region;default:''" json:"region" form:"region"`                              //
 	AccountId       string `gorm:"column:account_id;default:''" json:"accountId" form:"accountId"`                    //
 	AccessKeyId     string `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`             //
 	AccessKeySecret string `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"` //

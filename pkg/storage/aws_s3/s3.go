@@ -14,7 +14,7 @@ type Config struct {
 	IsEnabled       bool   `yaml:"is-enable"`
 	Region          string `yaml:"region"`
 	BucketName      string `yaml:"bucket-name"`
-	AccessKeyID     string `yaml:"access-key-id"`
+	AccessKeyId     string `yaml:"access-key-id"`
 	AccessKeySecret string `yaml:"access-key-secret"`
 	CustomPath      string `yaml:"custom-path"`
 }
@@ -46,13 +46,13 @@ func NewClient(cf map[string]any) (*S3, error) {
 		IsEnabled:       IsEnabled,
 		Region:          cf["Region"].(string),
 		BucketName:      cf["BucketName"].(string),
-		AccessKeyID:     cf["AccessKeyID"].(string),
+		AccessKeyId:     cf["AccessKeyId"].(string),
 		AccessKeySecret: cf["AccessKeySecret"].(string),
 		CustomPath:      cf["CustomPath"].(string),
 	}
 
 	var region = conf.Region
-	var accessKeyId = conf.AccessKeyID
+	var accessKeyId = conf.AccessKeyId
 	var accessKeySecret = conf.AccessKeySecret
 
 	if clients[accessKeyId] != nil {
