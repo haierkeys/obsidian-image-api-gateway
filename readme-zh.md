@@ -1,9 +1,12 @@
 [中文文档](readme-zh.md) / [English Document](README.md)
 
-# Obsidian Image Api Gateway
-===
+# <h1 align="center"> Obsidian Image API Gateway<h1>
 
-为 obsidian-auto-image-remote-uploader 插件提供图片上传/存储/同步云存储服务
+<p align="center"><a href="https://npmjs.com/package/changelog.md"><img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="NPM version"></a>
+<img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway.svg" alt="preview" >
+</p>
+
+为 [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) Obsidian插件提供图片上传/存储/同步云存储服务
 
 功能清单:
 
@@ -31,13 +34,7 @@
 
 本软件是开源软件,免费提供给大家的使用，但如果您想表示感谢或帮助支持继续开发，请随时通过以下任一方式为我提供一点帮助：
 
-- [![Paypal](https://img.shields.io/badge/paypal-haierkeys-yellow?style=social&logo=paypal)](https://paypal.me/haierkeys)
-
-- [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/haierkeys)
-
-- <img src="https://raw.githubusercontent.com/haierkeys/obsidian-auto-image-remote-uploader/main/bmc_qr.png" style="width:120px;height:auto;">
-
-- 爱发电 https://afdian.net/a/haierkeys
+[<img src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" alt="BuyMeACoffee" width="100">](https://ko-fi.com/haierkeys)
 
 # 开始使用
 

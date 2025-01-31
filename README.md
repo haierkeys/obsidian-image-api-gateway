@@ -1,9 +1,14 @@
 [中文文档](readme-zh.md) / [English Document](README.md)
 
-# Obsidian Image API Gateway
-===
 
-Provides image upload/storage/sync services for the `obsidian-auto-image-remote-uploader` plugin.
+# <h1 align="center"> Obsidian Image API Gateway<h1>
+
+<p align="center"><a href="https://npmjs.com/package/changelog.md"><img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="NPM version"></a>
+<img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway.svg" alt="preview" >
+</p>
+
+
+Provides image upload/storage/sync services for the [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) obsidian plugin.
 
 Feature List:
 
@@ -29,13 +34,7 @@ Feature List:
 
 This software is open source and free to use. However, if you'd like to show your support or help with continued development, feel free to contribute in any of the following ways:
 
-- [![Paypal](https://img.shields.io/badge/paypal-haierkeys-yellow?style=social&logo=paypal)](https://paypal.me/haierkeys)
-
-- [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/haierkeys)
-
-- <img src="https://raw.githubusercontent.com/haierkeys/obsidian-auto-image-remote-uploader/main/bmc_qr.png" style="width:120px;height:auto;">
-
-- Afdian: https://afdian.net/a/haierkeys
+[<img src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" alt="BuyMeACoffee" width="100">](https://ko-fi.com/haierkeys)
 
 # Getting Started
 
