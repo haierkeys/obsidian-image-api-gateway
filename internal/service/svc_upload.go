@@ -26,8 +26,9 @@ import (
 )
 
 type FileInfo struct {
-	ImageTitle string `json:"imageTitle"`
-	ImageUrl   string `json:"imageUrl"`
+	ImageTitle string   `json:"imageTitle"`
+	ImageUrl   string   `json:"imageUrl"`
+	UseStore   []string `json:"useStore"`
 }
 
 // 上传文件
@@ -65,9 +66,9 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 
 	var reader = bytes.NewReader(writer.Bytes())
 
-	config := map[string]any{}
+	useStore := []string{}
 	for sType := range storage.StorageTypeMap {
-
+		config := map[string]any{}
 		if sType == storage.LOCAL {
 			_ = convert.StructToMap(global.Config.LocalFS, config)
 		} else if sType == storage.OSS {
@@ -76,6 +77,8 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 			_ = convert.StructToMap(global.Config.CloudfluR2, config)
 		} else if sType == storage.S3 {
 			_ = convert.StructToMap(global.Config.AWSS3, config)
+		} else if sType == storage.MinIO {
+			_ = convert.StructToMap(global.Config.MinIO, config)
 		} else {
 			continue
 		}
@@ -91,10 +94,11 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 		if err != nil {
 			return nil, err
 		}
+		useStore = append(useStore, sType)
 	}
 	accessUrl := fileurl.PathSuffixCheckAdd(global.Config.App.UploadUrlPre, "/") + fileurl.UrlEscape(dstFileKey)
 
-	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
+	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl, UseStore: useStore}, nil
 }
 
 func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *multipart.FileHeader, params *ClientUploadParams) (*FileInfo, error) {
@@ -144,9 +148,11 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 		return nil, err
 	}
 
+	useStore := []string{daoCloudConfig.Type}
+
 	accessUrl := fileurl.PathSuffixCheckAdd(userCloudConfig["AccessUrlPrefix"].(string), "/") + fileurl.UrlEscape(dstFileKey)
 
-	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl}, nil
+	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl, UseStore: useStore}, nil
 }
 
 // imageResize 压缩图片

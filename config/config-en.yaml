@@ -1,31 +1,27 @@
 server:
-  run-mode:
-  # Server port configuration:
-  # - Format: -ip:port (to specify a specific listening IP)
-  # - Format: :port (to listen on all available interfaces)
-  http-port: :8000
-  read-timeout: 60 # Maximum time (in seconds) to wait for the client to send data
-  write-timeout: 60 # Maximum time (in seconds) to wait for the server to send a response
-  # Interface for monitoring server performance (useful for internal debugging)
-  private-http-listen: :8001
+  run-mode: debug  # Set the server to run in debug mode
+  http-port:  :8000  # Server port - format as -ip:port (binds to a specific IP) or :port (binds to all IPs)
+  read-timeout: 60  # Maximum time (in seconds) to wait for a read operation to complete
+  write-timeout: 60  # Maximum time (in seconds) to wait for a write operation to complete
+  private-http-listen:  :8001  # Performance monitoring interface (private HTTP server)
 
 security:
-  # Authorization token for API requests (used to verify the client’s identity)
-  auth-token: 6666
+  auth-token: 6666  # Token for authenticating image upload API requests
+  encryption_key: X-Auth-Token  # Key for encrypting authentication data
+
+log:
+  level: debug  # Set the logging level (debug, info, warn, error)
+  file:  # Path to the log file (optional field, not specified here)
+  production: false  # Whether the application is running in production mode
 
 app:
-  default-page-size: 10 # Default number of items returned per page in paginated APIs
-  max-page-size: 100 # Maximum number of items allowed per page in paginated APIs
-  default-context-timeout: 60 # Default timeout (in seconds) for API requests
-  log-save-path: storage/logs # Directory to save application logs
-  log-file: app.log # Name of the log file
+  default-page-size: 10  # Default number of items per page for pagination
+  max-page-size: 100  # Maximum number of items allowed per page for pagination
+  default-context-timeout: 60  # Default timeout (in seconds) for the app's operations
 
-  temp-path: storage/temp # Temporary directory for processing files
-  # Prefix for URLs returned by the API for uploaded files
-  upload-url-pre: https://image.diybeta.com
-  # Maximum allowed file size for uploads, in megabytes
-  upload-max-size: 5
-  # Allowed file types for uploads (based on extensions)
+  temp-path: storage/temp  # Path for storing temporary files
+  upload-url-pre: http://192.168.215.2:9000  # URL prefix for uploaded files
+  upload-max-size: 5  # Maximum allowed file size for uploads (in MB)
   upload-allow-exts:
     - .jpg
     - .jpeg
@@ -34,60 +30,62 @@ app:
     - .gif
     - .tiff
     - .avif
-    - .webp
-  # Image Upload Size Limit - Width
-  image-max-size-width: 500
-  # Image Upload Size Limit - Height
-  image-max-size-height: 500
-  # Image Quality Range 0-100
-  image-quality: 75
+    - .webp  # Allowed image file extensions for uploads
+  image-max-size-width: 800  # Maximum allowed image width for uploads
+  image-max-size-height: 800  # Maximum allowed image height for uploads
+  image-quality: 100  # Quality of uploaded images (range: 0-100)
 
-# Configuration for local file storage
+# Local file storage configuration
 local-fs:
-  enable: true # Whether to enable local file storage
-  # Enable an internal HTTP file access service for locally stored files
-  httpfs-enable: true
-  # Directory for saving uploaded files
-  save-path: storage/uploads
+  is-enable: false  # Whether local file storage is enabled
+  httpfs-is-enable: false  # Whether to enable built-in HTTP file access service
+  save-path: storage/uploads  # Path to save uploaded files
 
-# Configuration for Alibaba Cloud OSS (Object Storage Service)
+# Aliyun OSS (Object Storage Service) configuration
 oss:
-  enable: false # Whether to enable OSS cloud storage
-  endpoint: # OSS endpoint URL (e.g., oss-cn-beijing.aliyuncs.com)
-  bucket-name: # Name of the OSS bucket
-  access-key-id: # Access key ID for OSS
-  access-key-secret: # Access key secret for OSS
-  # Prefix for directories where files are stored in OSS
-  custom-path: blog
+  is-enable: false  # Whether Aliyun OSS cloud storage is enabled
+  endpoint:  # Endpoint for the Aliyun OSS service (must be configured)
+  bucket-name:  # Name of the OSS bucket (must be configured)
+  access-key-id:  # Access key ID for OSS (must be configured)
+  access-key-secret:  # Access key secret for OSS (must be configured)
+  custom-path: blog  # Custom path or prefix for uploaded files
 
-# Configuration for Cloudflare R2 storage
+# CloudFlu R2 storage configuration
 cloudflu-r2:
-  enable: false # Whether to enable Cloudflare R2 storage
-  bucket-name: image # Name of the R2 bucket
-  account-id: # Cloudflare account ID
-  access-key-id: # R2 access key ID
-  access-key-secret: # R2 access key secret
-  # Prefix for directories where files are stored in R2
-  custom-path: blog
+  is-enable: false  # Whether R2 cloud storage is enabled
+  bucket-name: image  # Name of the R2 bucket
+  account-id:  # R2 account ID (must be configured)
+  access-key-id:  # R2 access key ID (must be configured)
+  access-key-secret:  # R2 access key secret (must be configured)
+  custom-path: blog  # Custom path or prefix for uploaded files
 
-# Configuration for Amazon S3 storage
+# AWS S3 storage configuration
 aws-s3:
-  enable: false # Whether to enable AWS S3 cloud storage
-  region: # AWS region (e.g., us-west-1)
-  bucket-name: # Name of the S3 bucket
-  access-key-id: # AWS access key ID
-  access-key-secret: # AWS access key secret
-  # Prefix for directories where files are stored in S3
-  custom-path: blog
+  is-enable: false  # Whether AWS S3 cloud storage is enabled
+  region: ap-southeast-1  # AWS region (region code)
+  bucket-name:  # Name of the S3 bucket (must be configured)
+  access-key-id:  # Access key ID for AWS S3 (must be configured)
+  access-key-secret:  # Access key secret for AWS S3 (must be configured)
+  custom-path: blog  # Custom path or prefix for uploaded files
 
-# Email configuration for sending error reports
+# MinIO storage configuration
+minio:
+  is-enable: true  # Whether MinIO storage is enabled
+  endpoint: http://192.168.215.2:9000  # MinIO server endpoint URL
+  region: test  # MinIO region (can be customized)
+  bucket-name: image  # Name of the MinIO bucket
+  access-key-id: minioadmin  # MinIO access key ID (default)
+  access-key-secret: minioadmin  # MinIO access key secret (default)
+  custom-path: blog  # Custom path or prefix for uploaded files
+
+# Email configuration for error reporting
 email:
-  error-report-enable: false # Whether to enable error reporting via email
-  host: smtp.gmail.com # SMTP server host
-  port: 465 # SMTP server port
-  user-name: xxx # Email account username
-  password: xxx # Email account password
-  is-ssl: true # Whether to use SSL for the connection
-  from: xxx # Sender's email address
-  to: # List of recipient email addresses
-    - xxx
+  error-report-enable: false  # Whether to enable error reporting via email
+  host: smtp.gmail.com  # SMTP server host for sending emails (Gmail in this case)
+  port: 465  # SMTP server port (465 is for SSL connections)
+  user-name: xxx  # Email account username for authentication
+  password: xxx  # Email account password for authentication
+  is-ssl: true  # Whether to use SSL for secure email transmission
+  from: xxx  # Sender's email address
+  to:
+    - xxx  # Recipient(s) email address(es)

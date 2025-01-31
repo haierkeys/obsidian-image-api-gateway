@@ -9,6 +9,7 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/minio"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
@@ -29,6 +30,7 @@ type config struct {
 	LocalFS    local_fs.Config      `yaml:"local-fs"`
 	OSS        aliyun_oss.Config    `yaml:"storage-oss"`
 	CloudfluR2 cloudflare_r2.Config `yaml:"cloudflu-r2"`
+	MinIO      minio.Config         `yaml:"minio"`
 	AWSS3      aws_s3.Config        `yaml:"aws-s3"`
 }
 

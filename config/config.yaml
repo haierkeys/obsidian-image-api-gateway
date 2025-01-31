@@ -1,31 +1,27 @@
 server:
-  run-mode:
-  # 服务端口配置：
-  # - 格式：-ip:port (指定监听的IP地址)
-  # - 格式：:port (监听所有可用接口)
-  http-port: :8000
-  read-timeout: 60 # 等待客户端发送数据的最大时间（以秒为单位）
-  write-timeout: 60 # 等待服务端发送响应的最大时间（以秒为单位）
-  # 用于监控服务器性能的接口（适合内部调试使用）
-  private-http-listen: :8001
+  run-mode: debug  # 设置服务器运行模式为 debug（调试模式）
+  http-port:  :8000  # 服务器端口 - 格式为 -ip:port（绑定特定 IP）或 :port（绑定所有 IP）
+  read-timeout: 60  # 读取超时时间（秒），请求超时前等待的最大时间
+  write-timeout: 60  # 写入超时时间（秒），写入超时前等待的最大时间
+  private-http-listen:  :8001  # 性能监控接口（私有 HTTP 服务器）
 
 security:
-  # API请求的授权令牌（用于验证客户端身份）
-  auth-token: 6666
+  auth-token: 6666  # 图片上传 API 授权 Token
+  encryption_key: X-Auth-Token  # 用于加密认证数据的密钥
+
+log:
+  level: debug  # 设置日志级别（debug、info、warn、error）
+  file:  # 日志文件路径（可选字段，未指定）
+  production: false  # 应用是否处于生产环境模式
 
 app:
-  default-page-size: 10 # 分页API每页默认返回的项目数量
-  max-page-size: 100 # 分页API每页允许的最大项目数量
-  default-context-timeout: 60 # API请求的默认超时时间（以秒为单位）
-  log-save-path: storage/logs # 应用日志的保存目录
-  log-file: app.log # 日志文件的名称
+  default-page-size: 10  # 默认每页显示的项目数（分页）
+  max-page-size: 100  # 最大每页允许的项目数（分页）
+  default-context-timeout: 60  # 应用操作的默认超时时间（秒）
 
-  temp-path: storage/temp # 用于临时处理文件的目录
-  # API返回的上传文件URL的前缀
-  upload-url-pre: https://image.diybeta.com
-  # 上传文件的最大允许大小，单位为MB
-  upload-max-size: 5
-  # 允许上传的文件类型（根据文件扩展名）
+  temp-path: storage/temp  # 临时文件存储路径
+  upload-url-pre: http://192.168.215.2:9000  # 上传文件的 URL 前缀
+  upload-max-size: 5  # 上传文件的最大大小（单位：MB）
   upload-allow-exts:
     - .jpg
     - .jpeg
@@ -34,60 +30,62 @@ app:
     - .gif
     - .tiff
     - .avif
-    - .webp
-  # 上传图片尺寸限制-宽度
-  image-max-size-width: 500
-  # 上传图片尺寸限制-高度
-  image-max-size-height: 500
-  # 上传图片质量 0-100 区间
-  image-quality: 500
+    - .webp  # 允许上传的图片文件扩展名
+  image-max-size-width: 800  # 上传图片的最大宽度
+  image-max-size-height: 800  # 上传图片的最大高度
+  image-quality: 100  # 上传图片的质量（范围：0-100）
 
 # 本地文件存储配置
 local-fs:
-  enable: true # 是否启用本地文件存储
-  # 启用一个内部HTTP文件访问服务以访问本地存储的文件
-  httpfs-enable: true
-  # 上传文件的保存目录
-  save-path: storage/uploads
+  is-enable: false  # 是否启用本地文件存储
+  httpfs-is-enable: false  # 是否启用内置的 HTTP 文件访问服务
+  save-path: storage/uploads  # 上传文件保存路径
 
-# 阿里云 OSS（对象存储服务）的配置
+# 阿里云 OSS 配置
 oss:
-  enable: false # 是否启用OSS云存储
-  endpoint: # OSS的终端地址（例如：oss-cn-beijing.aliyuncs.com）
-  bucket-name: # OSS存储桶名称
-  access-key-id: # OSS的访问密钥ID
-  access-key-secret: # OSS的访问密钥Secret
-  # 在OSS中保存文件的自定义目录前缀
-  custom-path: blog
+  is-enable: false  # 是否启用阿里云 OSS 云存储
+  endpoint:  # OSS 服务的 Endpoint（需要配置）
+  bucket-name:  # OSS 存储桶名称（需要配置）
+  access-key-id:  # OSS 访问密钥 ID（需要配置）
+  access-key-secret:  # OSS 访问密钥 Secret（需要配置）
+  custom-path: blog  # 上传文件的自定义路径或前缀
 
-# Cloudflare R2存储的配置
+# CloudFlu R2 存储配置
 cloudflu-r2:
-  enable: false # 是否启用Cloudflare R2存储
-  bucket-name: image # R2存储桶名称
-  account-id: # Cloudflare账号ID
-  access-key-id: # R2访问密钥ID
-  access-key-secret: # R2访问密钥Secret
-  # 在R2中保存文件的自定义目录前缀
-  custom-path: blog
+  is-enable: false  # 是否启用 R2 云存储
+  bucket-name: image  # R2 存储桶名称
+  account-id:  # R2 帐户 ID（需要配置）
+  access-key-id:  # R2 访问密钥 ID（需要配置）
+  access-key-secret:  # R2 访问密钥 Secret（需要配置）
+  custom-path: blog  # 上传文件的自定义路径或前缀
 
-# 亚马逊S3存储的配置
+# AWS S3 存储配置
 aws-s3:
-  enable: false # 是否启用AWS S3云存储
-  region: # AWS区域（例如：us-west-1）
-  bucket-name: # S3存储桶名称
-  access-key-id: # AWS访问密钥ID
-  access-key-secret: # AWS访问密钥Secret
-  # 在S3中保存文件的自定义目录前缀
-  custom-path: blog
+  is-enable: false  # 是否启用 AWS S3 云存储
+  region: ap-southeast-1  # AWS 区域（区域代码）
+  bucket-name:  # S3 存储桶名称（需要配置）
+  access-key-id:  # S3 访问密钥 ID（需要配置）
+  access-key-secret:  # S3 访问密钥 Secret（需要配置）
+  custom-path: blog  # 上传文件的自定义路径或前缀
 
-# 用于发送错误报告的电子邮件配置
+# MinIO 存储配置
+minio:
+  is-enable: true  # 是否启用 MinIO 存储
+  endpoint: http://192.168.215.2:9000  # MinIO 服务器的 Endpoint URL
+  region: test  # MinIO 区域（可以自定义）
+  bucket-name: image  # MinIO 存储桶名称
+  access-key-id: minioadmin  # MinIO 访问密钥 ID（默认值）
+  access-key-secret: minioadmin  # MinIO 访问密钥 Secret（默认值）
+  custom-path: blog  # 上传文件的自定义路径或前缀
+
+# 邮件配置（用于错误报告）
 email:
-  error-report-enable: false # 是否启用通过电子邮件发送错误报告
-  host: smtp.gmail.com # SMTP服务器地址
-  port: 465 # SMTP服务器端口
-  user-name: xxx # 邮件账户用户名
-  password: xxx # 邮件账户密码
-  is-ssl: true # 是否使用SSL连接
-  from: xxx # 发件人电子邮件地址
-  to: # 收件人电子邮件地址列表
-    - xxx
+  error-report-enable: false  # 是否启用错误报告通过邮件发送
+  host: smtp.gmail.com  # 邮件发送服务器主机（这里是 Gmail）
+  port: 465  # 邮件服务器端口（465 是 SSL 连接的端口）
+  user-name: xxx  # 邮件帐户的用户名（用于认证）
+  password: xxx  # 邮件帐户的密码（用于认证）
+  is-ssl: true  # 是否使用 SSL 安全协议传输邮件
+  from: xxx  # 发件人邮箱地址
+  to:
+    - xxx  # 收件人邮箱地址

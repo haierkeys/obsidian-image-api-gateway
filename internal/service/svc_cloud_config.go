@@ -92,6 +92,11 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 		if params.Endpoint == "" {
 			return code.ErrorInvalidCloudStorageEndpoint
 		}
+	} else if params.Type == storage.MinIO {
+		// 检查端点是否为空
+		if params.Endpoint == "" {
+			return code.ErrorInvalidCloudStorageEndpoint
+		}
 	}
 
 	// 调用数据访问层的更新方法

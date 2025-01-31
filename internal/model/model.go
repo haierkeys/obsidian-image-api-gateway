@@ -36,6 +36,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 
 	var db *gorm.DB
 	var err error
+	var isEnable bool
 	if c.Type == "mysql" {
 		db, err = gorm.Open(
 			mysql.Open(fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
@@ -57,6 +58,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 		if err != nil {
 			return nil, err
 		}
+		isEnable = true
 	} else if c.Type == "sqlite" {
 		db, err = gorm.Open(sqlite.Open(c.Path), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Warn),
@@ -68,25 +70,34 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 		if err != nil {
 			return nil, err
 		}
+		isEnable = true
 	}
 
-	if global.Config.Server.RunMode == "debug" {
-		db.Config.Logger = logger.Default.LogMode(logger.Info)
+	if isEnable {
+
+		if global.Config.Server.RunMode == "debug" {
+			db.Config.Logger = logger.Default.LogMode(logger.Info)
+		}
+
+		// 获取通用数据库对象 sql.DB ，然后使用其提供的功能
+		sqlDB, err := db.DB()
+		if err != nil {
+			return nil, err
+		}
+
+		// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
+		sqlDB.SetMaxIdleConns(c.MaxIdleConns)
+
+		// SetMaxOpenConns 设置打开数据库连接的最大数量。
+		sqlDB.SetMaxOpenConns(c.MaxOpenConns)
+
+		// SetConnMaxLifetime 设置了连接可复用的最大时间。
+		sqlDB.SetConnMaxLifetime(time.Hour)
+
+		_ = db.Use(&gormTracing.OpentracingPlugin{})
+
+		return db, nil
+	} else {
+		return nil, err
 	}
-
-	// 获取通用数据库对象 sql.DB ，然后使用其提供的功能
-	sqlDB, err := db.DB()
-
-	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。
-	sqlDB.SetMaxIdleConns(c.MaxIdleConns)
-
-	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(c.MaxOpenConns)
-
-	// SetConnMaxLifetime 设置了连接可复用的最大时间。
-	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	_ = db.Use(&gormTracing.OpentracingPlugin{})
-
-	return db, nil
 }
