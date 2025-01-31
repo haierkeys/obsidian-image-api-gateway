@@ -1,7 +1,7 @@
 [中文文档](readme-zh.md) / [English Document](README.md)
 
 
-# <h1 align="center"> Obsidian Image API Gateway<h1>
+<h1 align="center"> Obsidian Image API Gateway<h1>
 
 <p align="center"><a href="https://npmjs.com/package/changelog.md"><img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="NPM version"></a>
 <img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway.svg" alt="preview" >
