@@ -16,6 +16,7 @@ Feature List:
   - [x] Support for Alibaba Cloud OSS (functionality supported but not yet tested)
   - [x] Support for Cloudflare R2 (functionality supported and tested successfully)
   - [x] Support for Amazon S3 (functionality supported and tested successfully)
+  - [x] Add MinIO storage support. ( v1.5+ )
   - [ ] Support for Google ECS (under development)
 - [x] Docker installation for easy deployment on home NAS or remote servers
 - [ ] Public API for users who are unable to set up their own API services
