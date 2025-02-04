@@ -15,8 +15,12 @@ RUN mkdir -p /api/
 VOLUME /${P_NAME}/configs
 VOLUME /${P_NAME}/storage
 COPY ./build/${TARGETOS}_${TARGETARCH}/${P_BIN} /${P_NAME}/
-CMD ["sh", "-c","cd /${P_NAME}/ \
-    && mkdir -p storage/logs \
-    && touch storage/logs/c.log \
-    && mv storage/logs/c.log storage/logs/c.log_$(date '+%Y%m%d%H%M%S%'| cut -b 1-17) \
-    && /${P_NAME}/${P_BIN} run 2>&1 | tee storage/logs/c.log"]
+
+# 将脚本复制到容器中
+COPY entrypoint.sh /entrypoint.sh
+
+# 给脚本执行权限
+RUN chmod +x /entrypoint.sh
+
+# 使用 ENTRYPOINT 执行脚本
+ENTRYPOINT ["/entrypoint.sh"]
