@@ -51,12 +51,15 @@
 docker pull haierkeys/obsidian-image-api-gateway:latest
 
 # 创建项目运行必要目录
-mkdir -p /data/image-api/config
-mkdir -p /data/image-api/storage/logs
-mkdir -p /data/image-api/storage/uploads
+mkdir -p /data/image-api
+cd /data/image-api
+
+mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
 
 # 下载默认配置到配置文件目录内
-wget https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/configs/config.yaml  -O /data/config/config.yaml
+wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
+
+
 
 # 创建&启动容器
 docker run -tid --name image-api \

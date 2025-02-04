@@ -50,12 +50,13 @@ Run the following commands:
 docker pull haierkeys/obsidian-image-api-gateway:latest
 
 # Create necessary directories for the project
-mkdir -p /data/image-api/config
-mkdir -p /data/image-api/storage/logs
-mkdir -p /data/image-api/storage/uploads
+mkdir -p /data/image-api
+cd /data/image-api
+
+mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
 
 # Download the default configuration file into the configuration directory
-wget https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/configs/config.yaml  -O /data/config/config.yaml
+wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
 
 # Create and start the container
 docker run -tid --name image-api \
