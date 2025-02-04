@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM frolvlad/alpine-glibc
 ARG TARGETOS
 ARG TARGETARCH
 ENV TZ=Asia/Shanghai
