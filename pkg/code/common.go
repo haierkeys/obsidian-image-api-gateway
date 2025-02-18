@@ -24,6 +24,8 @@ var (
 	ErrorUserLoginFailed         = NewError(incr(400), "用户登录失败")
 	ErrorUserNotFound            = NewError(incr(400), "用户不存在")
 	ErrorUserEmailAlreadyExists  = NewError(incr(400), "用户邮箱已存在")
+	ErrorUserPasswordNotMatch    = NewError(incr(400), "两次输入的密码不一致")
+	ErrorDBQuery                 = NewError(incr(400), "数据库查询失败")
 
 	ErrorUploadFileFailed        = NewError(incr(600), "上传文件失败")
 	ErrorInvalidCloudStorageType = NewError(incr(600), "云存储类型无效")

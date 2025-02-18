@@ -8,6 +8,7 @@ import (
 )
 
 func AppInfo() gin.HandlerFunc {
+
 	return func(c *gin.Context) {
 		c.Set("app_name", global.Name)
 		c.Set("app_version", global.Version)

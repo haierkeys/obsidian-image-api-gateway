@@ -52,6 +52,21 @@ func (d *Dao) GetUserByEmail(email string) (*User, error) {
 
 }
 
+func (d *Dao) GetUserByUsername(username string) (*User, error) {
+
+	m, err := user_repo.NewQueryBuilder().
+		WhereUsername(model.Eq, username).
+		WhereIsDeleted(model.Eq, 0).
+		First()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return convert.StructAssign(m, &User{}).(*User), nil
+
+}
+
 // CreateMember 创建用户
 func (d *Dao) CreateMember(dao *User) (int64, error) { // 修改参数类型为 User
 

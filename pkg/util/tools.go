@@ -3,6 +3,7 @@ package util
 import (
 	"math/rand"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -43,6 +44,17 @@ func Inarray(val interface{}, array interface{}) (exists bool, index int) {
 		}
 	}
 	return
+}
+
+func IsEmail(email string) bool {
+	// 定义邮箱的正则表达式，支持 Gmail 和其他常见邮箱格式
+	var emailRegex = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+
+	// 编译正则表达式
+	re := regexp.MustCompile(emailRegex)
+
+	// 使用正则表达式匹配邮箱
+	return re.MatchString(email)
 }
 
 func GetLastDateOfNextMonth(d time.Time) time.Time {

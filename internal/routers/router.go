@@ -36,7 +36,6 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", frontendIndexContent)
 	})
 	r.StaticFS("/assets", http.FS(frontendAssets))
-	r.NoRoute(middleware.NoFound())
 	api := r.Group("/api")
 	{
 		api.Use(middleware.AppInfo())
@@ -67,10 +66,13 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 			userApiR.Use(middleware.UserAuthToken()).POST("/upload", apiRouter.NewUpload().UserUpload)
 		}
 		api.Use(middleware.AuthToken()).POST("/upload", apiRouter.NewUpload().Upload)
+
 	}
 	if global.Config.LocalFS.IsEnabled && global.Config.LocalFS.HttpfsIsEnable {
 		r.StaticFS(global.Config.LocalFS.SavePath, http.Dir(global.Config.LocalFS.SavePath))
 	}
+	r.Use(middleware.Cors())
+	r.NoRoute(middleware.NoFound())
 
 	return r
 }

@@ -8,6 +8,7 @@ import (
 )
 
 func Cors() gin.HandlerFunc {
+
 	return func(c *gin.Context) {
 
 		var domain string
@@ -27,8 +28,8 @@ func Cors() gin.HandlerFunc {
 		}
 
 		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With,  AccessToken, X-CSRF-Token, Authorization, Debug, Token, Content-Type, Accept")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With,  AccessToken, X-CSRF-Token, Authorization, Debug, Domain, Token, Content-Type, Content-Length, Accept")
 
 		if domain != "" {
 			c.Header("Access-Control-Allow-Origin", domain)
