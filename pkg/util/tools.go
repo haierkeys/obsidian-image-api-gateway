@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/pkg/errors"
 )
@@ -46,7 +47,7 @@ func Inarray(val interface{}, array interface{}) (exists bool, index int) {
 	return
 }
 
-func IsEmail(email string) bool {
+func IsValidEmail(email string) bool {
 	// 定义邮箱的正则表达式，支持 Gmail 和其他常见邮箱格式
 	var emailRegex = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 
@@ -55,6 +56,20 @@ func IsEmail(email string) bool {
 
 	// 使用正则表达式匹配邮箱
 	return re.MatchString(email)
+}
+
+func IsValidUsername(username string) bool {
+	if len(username) < 3 || len(username) > 15 {
+		return false // 用户名长度不符合
+	}
+
+	// 检查每个字符是否是字母、数字或下划线
+	for _, char := range username {
+		if !(unicode.IsLetter(char) || unicode.IsDigit(char) || char == '_') {
+			return false // 包含不合法字符
+		}
+	}
+	return true
 }
 
 func GetLastDateOfNextMonth(d time.Time) time.Time {

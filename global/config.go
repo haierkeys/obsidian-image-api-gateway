@@ -24,6 +24,7 @@ type config struct {
 	Server     server               `yaml:"server"`
 	Log        LogConfig            `yaml:"log"`
 	Database   Database             `yaml:"database"`
+	User       user                 `yaml:"user"`
 	App        app                  `yaml:"app"`
 	Email      email                `yaml:"email"`
 	Security   security             `yaml:"security"`
@@ -92,6 +93,13 @@ type Database struct {
 	MaxIdleConns int `yaml:"max-idle-conns"`
 	// 最大打开连接数
 	MaxOpenConns int `yaml:"max-open-conns"`
+}
+
+type user struct {
+	// 是否启用
+	IsEnabled bool `yaml:"is-enable"`
+	// 注册是否启用
+	RegisterIsEnable bool `yaml:"register-is-enable"`
 }
 
 type app struct {

@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
@@ -55,6 +56,13 @@ func (svc *Service) UserRegisterSendEmail(param *UserCreateRequest) (int64, erro
 // UserRegister 用户注册
 func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 
+	if !global.Config.User.RegisterIsEnable {
+		return nil, code.ErrorUserRegisterIsDisable
+	}
+
+	if util.IsValidUsername(param.Username) {
+		return nil, code.ErrorUserUsernameNotValid
+	}
 	if param.Password != param.ConfirmPassword {
 		return nil, code.ErrorUserPasswordNotMatch
 
@@ -108,7 +116,7 @@ func (svc *Service) UserLogin(param *UserLoginRequest) (*User, error) {
 
 	var user *dao.User
 	var err error
-	if util.IsEmail(param.Credentials) {
+	if util.IsValidEmail(param.Credentials) {
 		user, err = svc.dao.GetUserByEmail(param.Credentials)
 		if err != nil {
 			return nil, code.ErrorUserNotFound

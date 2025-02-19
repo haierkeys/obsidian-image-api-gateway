@@ -21,9 +21,11 @@ var (
 	ErrorUserRegister            = NewError(incr(400), "用户注册失败")
 	ErrorPasswordNotValid        = NewError(incr(400), "密码不符合规则")
 	ErrorUserLoginPasswordFailed = NewError(incr(400), "密码错误")
+	ErrorUserRegisterIsDisable   = NewError(incr(400), "用户注册已关闭")
 	ErrorUserLoginFailed         = NewError(incr(400), "用户登录失败")
 	ErrorUserNotFound            = NewError(incr(400), "用户不存在")
 	ErrorUserEmailAlreadyExists  = NewError(incr(400), "用户邮箱已存在")
+	ErrorUserUsernameNotValid    = NewError(incr(400), "用户名不符合规则,用户名长度为3-15位,只能包含字母、数字或下划线")
 	ErrorUserPasswordNotMatch    = NewError(incr(400), "两次输入的密码不一致")
 	ErrorDBQuery                 = NewError(incr(400), "数据库查询失败")
 
