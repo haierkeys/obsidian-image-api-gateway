@@ -2,7 +2,7 @@
 # docker login --username=xxxxxx registry.cn-shanghai.aliyuncs.com
 include .env
 #export $(shell sed 's/=.*//' .env)
-
+REPO = $(eval REPO := $$(shell go list -f '{{.ImportPath}}' .))$(value REPO)
 
 DockerHubUser = haierkeys
 DockerHubName = obsidian-image-api-gateway
@@ -38,7 +38,7 @@ goCmd	=	go
 
 
 # Setup the -ldflags option for go build here, interpolate the variable values
-LDFLAGS=-ldflags "-X global.GitTag=$(GitTag) -X global.BuildTime=$(BuildTime)"
+LDFLAGS=-ldflags "-X ${REPO}/global.Version=$(GitTag) -X ${REPO}/global.GitTag=$(GitTag) -X ${REPO}/global.BuildTime=$(BuildTime)"
 
 goBuild	=	$(goCmd) $(buildCmd) ${LDFLAGS}
 goRun	=	$(goCmd) run ${LDFLAGS}
@@ -120,9 +120,9 @@ build-windows-amd64:
 # CGO_ENABLED=0 CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC="x86_64-w64-mingw32-gcc -fno-stack-protector -D_FORTIFY_SOURCE=0 -lssp" $(goBuild) -o $(bin).exe -v $(sourceDir)
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(goBuild) -o $(buildDir)/windows_amd64/${P_BIN}.exe -v $(sourceDir)
 gox-linux:
-	gox -osarch="linux/amd64 linux/arm64" -output="$(buildDir)/{{.OS}}_{{.Arch}}/${P_BIN}" ${LDFLAGS}
+	gox ${LDFLAGS} -osarch="linux/amd64 linux/arm64" -output="$(buildDir)/{{.OS}}_{{.Arch}}/${P_BIN}"
 gox-all:
-	gox -osarch="darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64" -output="$(buildDir)/{{.OS}}_{{.Arch}}/${P_BIN}" ${LDFLAGS}
+	gox ${LDFLAGS} -osarch="darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64" -output="$(buildDir)/{{.OS}}_{{.Arch}}/${P_BIN}"
 
 define dockerImageClean
 	@echo "docker Image Clean"
