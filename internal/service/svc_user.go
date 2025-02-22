@@ -60,7 +60,7 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 		return nil, code.ErrorUserRegisterIsDisable
 	}
 
-	if util.IsValidUsername(param.Username) {
+	if !util.IsValidUsername(param.Username) {
 		return nil, code.ErrorUserUsernameNotValid
 	}
 	if param.Password != param.ConfirmPassword {

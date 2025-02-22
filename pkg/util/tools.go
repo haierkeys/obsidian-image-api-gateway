@@ -9,6 +9,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/gookit/goutil/dump"
 	"github.com/pkg/errors"
 )
 
@@ -59,9 +60,12 @@ func IsValidEmail(email string) bool {
 }
 
 func IsValidUsername(username string) bool {
+	dump.P(username)
 	if len(username) < 3 || len(username) > 15 {
 		return false // 用户名长度不符合
 	}
+
+	dump.P(username)
 
 	// 检查每个字符是否是字母、数字或下划线
 	for _, char := range username {
