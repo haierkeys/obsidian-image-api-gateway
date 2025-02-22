@@ -69,57 +69,60 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 }
 
 // 云存储管理 - 更新云存储配置的方法
-func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) error {
+func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) (int64, error) {
 
 	// 检查云存储类型是否有效
 	if !storage.CloudStorageTypeMap[params.Type] {
-		return code.ErrorInvalidCloudStorageType
+		return 0, code.ErrorInvalidCloudStorageType
 	}
 
 	// 检查云存储类型是否为 r2
 	if params.Type == storage.R2 {
 		// 检查账户ID是否为空
 		if params.AccountId == "" {
-			return code.ErrorInvalidCloudStorageAccountId
+			return 0, code.ErrorInvalidCloudStorageAccountId
 		}
 	} else if params.Type == storage.S3 {
 		// 检查区域是否为空
 		if params.Region == "" {
-			return code.ErrorInvalidCloudStorageRegion
+			return 0, code.ErrorInvalidCloudStorageRegion
 		}
 	} else if params.Type == storage.OSS {
 		// 检查端点是否为空
 		if params.Endpoint == "" {
-			return code.ErrorInvalidCloudStorageEndpoint
+			return 0, code.ErrorInvalidCloudStorageEndpoint
 		}
 	} else if params.Type == storage.MinIO {
 		// 检查端点是否为空
 		if params.Endpoint == "" {
-			return code.ErrorInvalidCloudStorageEndpoint
+			return 0, code.ErrorInvalidCloudStorageEndpoint
 		}
 	}
 
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
 
+	var id int64
+	var err error
 	if params.Id == 0 {
-		id, err := svc.dao.Create(da, uid)
+		id, err = svc.dao.Create(da, uid)
 		if err != nil {
 			// 如果发生错误，返回错误信息
-			return err
+			return 0, err
 		}
 		svc.dao.DisableBatch(id, uid)
 	} else {
+		id = params.Id
 		err := svc.dao.Update(da, params.Id, uid)
 		if err != nil {
 			// 如果发生错误，返回错误信息
-			return err
+			return 0, err
 		}
 		if params.IsEnabled == 1 {
 			svc.dao.DisableBatch(params.Id, uid)
 		}
 	}
-	return nil
+	return id, nil
 }
 
 // 删除指定用户的云存储配置

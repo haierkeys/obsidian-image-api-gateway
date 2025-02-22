@@ -1,61 +1,59 @@
+
+
 [中文文档](readme-zh.md) / [English Document](README.md)
 
-
-<h1 align="center">Obsidian Image API Gateway</h1>
+# Obsidian Image API Gateway
 
 <p align="center">
-<img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="version">
-<img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway.svg" alt="license" >
+    <img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="version">
+    <img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway" alt="license">
 </p>
 
+This project provides image upload, storage, and cloud synchronization services for the [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) Obsidian plugin.
 
-Provides image upload/storage/sync services for the [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) obsidian plugin.
+## Features List
 
-Feature List:
-
-- [x] Support for image uploads
-- [x] Authorization token support for enhanced API security
-- [x] HTTP access to images (basic functionality; using Nginx is recommended)
-- [x] Storage-related features:
-  - [x] Support for simultaneous storage on both local and cloud storage for easy migration
-  - [x] Local storage support (prepared for NAS use,functionality supported and tested successfully)
-  - [x] Support for Alibaba Cloud OSS (functionality supported but not yet tested)
-  - [x] Support for Cloudflare R2 (functionality supported and tested successfully)
-  - [x] Support for Amazon S3 (functionality supported and tested successfully)
-  - [x] Add MinIO storage support. ( v1.5+ )
-  - [ ] Support for Google ECS (under development)
-- [x] Docker installation for easy deployment on home NAS or remote servers
-- [ ] Public API for users who are unable to set up their own API services
+- [x] Supports image upload
+- [x] Supports token-based authorization for enhanced API security
+- [x] Supports image HTTP access (basic functionality; it is recommended to use Nginx as a substitute)
+- [x] Storage support:
+  - [x] Save images both locally and in cloud storage for easier migration
+  - [x] Local storage support (tested for NAS setup)
+  - [x] Supports Alibaba Cloud OSS storage (feature implemented, not yet tested)
+  - [x] Supports Cloudflare R2 storage (feature implemented, tested)
+  - [x] Supports Amazon S3 (feature implemented, tested)
+  - [x] Added support for MinIO storage (v1.5+)
+  - [ ] Google ECS support (to be developed)
+- [x] Provides Docker installation support for easy use on home NAS or remote servers
+- [x] Provides public service API & Web interface for easier public service provision <a href="#userapi">Public API & Web Interface</a>
 
 ## Changelog
 
-[Changelog](https://github.com/haierkeys/obsidian-image-api-gateway/releases)
+For the full list of updates, please visit the [Changelog](https://github.com/haierkeys/obsidian-image-api-gateway/releases).
 
 ## Pricing
 
-This software is open source and free to use. However, if you'd like to show your support or help with continued development, feel free to contribute in any of the following ways:
+This software is open-source and free. If you wish to express your gratitude or support continued development, you can contribute by:
 
 [<img src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" alt="BuyMeACoffee" width="100">](https://ko-fi.com/haierkeys)
 
-# Getting Started
+## Quick Start
 
-## Containerized Installation (Docker)
+### Containerized Installation (Docker Method)
 
-Assume your server’s image storage path is _/data/storage/uploads_.
-
-Run the following commands:
+Assuming your server's image storage path is _/data/storage/uploads_, execute the following commands:
 
 ```bash
-# Pull the container image
+# Pull the latest container image
 docker pull haierkeys/obsidian-image-api-gateway:latest
 
-# Create necessary directories for the project
+# Create the necessary directories for the project
 mkdir -p /data/image-api
 cd /data/image-api
 
 mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
 
-# Download the default configuration file into the configuration directory
+# Download the default configuration file to the config directory
 wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
 
 # Create and start the container
@@ -67,28 +65,29 @@ docker run -tid --name image-api \
         haierkeys/obsidian-image-api-gateway:latest
 ```
 
-## Binary Installation
+### Binary Installation
 
-Download the latest release from [GitHub Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases).
-
-Extract it to the desired directory and execute the binary.
+Download the latest version from [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases), extract it, and execute:
 
 ```bash
 ./image-api run -c config/config.yaml
 ```
 
-## Configuration
+### Configuration
 
-The default configuration file name is `_config.yaml_`, which should be located in the _root directory_ or the _config_ directory.
+The default configuration file is named _config.yaml_ and should be placed in the _root directory_ or the _config_ directory.
 
-For detailed configuration instructions, refer to:
+For more configuration details, refer to:
 
-- [Configuration File with English Comments](config/config-en.yaml)
+- [Configuration File - Chinese Comments](config/config.yaml)
+- [Configuration File - English Comments](config/config-en.yaml)
 
+### Open Service - Public User API & Web Interface
+<span id="lable"></span>
 
-## TODO
+- Web Interface: [http://IP:[[config:http-port](config/config.yaml#http-port)]]
+- Configuration Settings: [config:database](config/config.yaml#database) and [config:user](config/config.yaml#user)
 
-## Others
+## Other Resources
 
-**Obsidian Auto Image Remote Uploader**
-[https://github.com/haierkeys/obsidian-auto-image-remote-uploader](https://github.com/haierkeys/obsidian-auto-image-remote-uploader)
+- [Obsidian Auto Image Remote Uploader](https://github.com/haierkeys/obsidian-auto-image-remote-uploader)

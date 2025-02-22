@@ -33,16 +33,16 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 		return
 	}
 	svc := service.New(c)
-	err := svc.CloudConfigUpdateAndCreate(uid, params)
+	id, err := svc.CloudConfigUpdateAndCreate(uid, params)
 	if err != nil {
 		global.Logger.Error("apiRouter.CloudConfig.UpdateAndCreate svc UpdateAndCreate err: %v", zap.Error(err))
 		response.ToResponse(code.Failed.WithDetails(err.Error()))
 		return
 	}
 	if params.Id == 0 {
-		response.ToResponse(code.SuccessCreate)
+		response.ToResponse(code.SuccessCreate.WithData(id))
 	} else {
-		response.ToResponse(code.SuccessUpdate)
+		response.ToResponse(code.SuccessUpdate.WithData(id))
 	}
 }
 

@@ -11,6 +11,8 @@ type Code struct {
 	// 状态
 	status bool
 	// 错误消息
+	Lang lang
+	// 错误消息
 	msg string
 	// 数据
 	data interface{}
@@ -23,18 +25,18 @@ type Code struct {
 var codes = map[int]string{}
 var maxcode = 0
 
-func NewError(code int, msg string) *Code {
+func NewError(code int, l lang) *Code {
 	if _, ok := codes[code]; ok {
 		panic(fmt.Sprintf("错误码 %d 已经存在，请更换一个", code))
 	}
 
-	codes[code] = msg
+	codes[code] = l.GetMessage()
 
 	if code > maxcode {
 		maxcode = code
 	}
 
-	return &Code{code: code, status: false, msg: msg}
+	return &Code{code: code, status: false, Lang: l}
 }
 
 func incr(code int) int {
@@ -45,17 +47,18 @@ func incr(code int) int {
 	}
 }
 
-var sussCodes = map[string]string{}
+var sussCodes = map[int]string{}
 
-func NewSuss(code int, msg string) *Code {
-	if _, ok := sussCodes[msg]; ok {
-		panic(fmt.Sprintf("成功信息 %d 已经存在，请更换一个", msg))
+func NewSuss(code int, l lang) *Code {
+	if _, ok := sussCodes[code]; ok {
+		panic(fmt.Sprintf("成功码 %d 已经存在，请更换一个", code))
 	}
-	sussCodes[msg] = msg
+	sussCodes[code] = l.GetMessage()
 	if code > maxcode {
 		maxcode = code
 	}
-	return &Code{code: code, status: true, msg: msg}
+
+	return &Code{code: code, status: true, Lang: l}
 }
 
 func (e *Code) Error() string {
@@ -71,7 +74,7 @@ func (e *Code) Status() bool {
 }
 
 func (e *Code) Msg() string {
-	return e.msg
+	return e.Lang.GetMessage()
 }
 
 func (e *Code) Msgf(args []interface{}) string {

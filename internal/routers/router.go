@@ -43,7 +43,7 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 		api.Use(middleware.RateLimiter(methodLimiters))
 		api.Use(middleware.ContextTimeout(time.Duration(global.Config.App.DefaultContextTimeout) * time.Second))
 		api.Use(middleware.Cors())
-		api.Use(middleware.Translations())
+		api.Use(middleware.Lang())
 		api.Use(middleware.AccessLog())
 		if global.Config.Server.RunMode == "debug" {
 			api.Use(gin.Recovery())

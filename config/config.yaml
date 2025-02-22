@@ -1,18 +1,10 @@
 server:
   run-mode: debug  # 设置服务器运行模式为 debug（调试模式）
+  # http-port
   http-port:  :8000  # 服务器端口 - 格式为 -ip:port（绑定特定 IP）或 :port（绑定所有 IP）
   read-timeout: 60  # 读取超时时间（秒），请求超时前等待的最大时间
   write-timeout: 60  # 写入超时时间（秒），写入超时前等待的最大时间
   private-http-listen:  :8001  # 性能监控接口（私有 HTTP 服务器）
-
-security:
-  auth-token: 6666  # 图片上传 API 授权 Token
-  encryption_key: X-Auth-Token  # 用于加密认证数据的密钥
-
-log:
-  level: debug  # 设置日志级别（debug、info、warn、error）
-  file:  # 日志文件路径（可选字段，未指定）
-  production: false  # 应用是否处于生产环境模式
 
 app:
   default-page-size: 10  # 默认每页显示的项目数（分页）
@@ -34,6 +26,29 @@ app:
   image-max-size-width: 800  # 上传图片的最大宽度
   image-max-size-height: 800  # 上传图片的最大高度
   image-quality: 100  # 上传图片的质量（范围：0-100）
+
+log:
+  level: Debug  # 日志级别
+  file: storage/logs/log.log # 日志文件路径
+  production: true  # 是否为生产环境
+
+security:
+  auth-token: 6666  # 图片上传 API 授权 Token
+  encryption_key: X-Auth-Token  # 用于加密认证数据的密钥
+
+# database
+# 数据库配置
+database:
+  type: sqlite
+  path: storage/database/db.db
+  table-prefix: pre_
+  auto-migrate: true
+
+# user
+# 公共用户接口设置
+user:
+  is-enable: false  # 公共用户接口是否启用
+  register-is-enable: false  # 公共用户接口是否开启注册
 
 # 本地文件存储配置
 local-fs:

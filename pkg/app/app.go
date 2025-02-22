@@ -115,7 +115,7 @@ func (r *Response) ToResponse(code *code.Code) {
 		r.SendResponse(code.StatusCode(), ErrResult{
 			Code:    code.Code(),
 			Status:  code.Status(),
-			Msg:     code.Msg(),
+			Msg:     code.Lang.GetMessage(),
 			Data:    code.Data(),
 			Details: details,
 		})
@@ -123,7 +123,7 @@ func (r *Response) ToResponse(code *code.Code) {
 		r.SendResponse(code.StatusCode(), ResResult{
 			Code:   code.Code(),
 			Status: code.Status(),
-			Msg:    code.Msg(),
+			Msg:    code.Lang.GetMessage(),
 			Data:   code.Data(),
 		})
 	}
@@ -136,7 +136,7 @@ func (r *Response) ToResponseList(code *code.Code, list interface{}, totalRows i
 	r.SendResponse(code.StatusCode(), ResListResult{
 		Code:   code.Code(),
 		Status: code.Status(),
-		Msg:    code.Msg(),
+		Msg:    code.Lang.GetMessage(),
 		Data: ListRes{
 			List: list,
 			Pager: Pager{
