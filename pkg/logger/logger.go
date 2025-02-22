@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -49,6 +50,11 @@ var (
 )
 
 func NewLogger(lc Config) (*zap.Logger, error) {
+
+	if !fileurl.IsExist(lc.File) {
+		fileurl.CreatePath(lc.File, os.ModePerm)
+	}
+
 	lvl, err := zapcore.ParseLevel(lc.Level)
 	if err != nil {
 		return nil, fmt.Errorf("invalid log level: %w", err)

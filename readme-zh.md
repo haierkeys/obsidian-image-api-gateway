@@ -56,8 +56,7 @@ wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-ap
 # 创建并启动容器
 docker run -tid --name image-api \
         -p 8000:8000 -p 8001:8001 \
-        -v /data/image-api/storage/logs/:/api/storage/logs/ \
-        -v /data/image-api/storage/uploads/:/api/storage/uploads/ \
+        -v /data/image-api/storage/:/api/storage/ \
         -v /data/image-api/config/:/api/config/ \
         haierkeys/obsidian-image-api-gateway:latest
 ```
