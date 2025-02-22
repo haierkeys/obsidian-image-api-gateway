@@ -85,6 +85,8 @@ For more configuration details, refer to:
 ### Open Service - Public User API & Web Interface
 <span id="lable"></span>
 
+![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
+
 - Web Interface: [http://IP:[[config:http-port](config/config.yaml#http-port)]]
 - Configuration Settings: [config:database](config/config.yaml#database) and [config:user](config/config.yaml#user)
 

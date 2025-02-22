@@ -82,6 +82,8 @@ docker run -tid --name image-api \
 ### 开放服务 - 用户公共接口 & Web 界面
 <span id="lable"></span>
 
+![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
+
 - Web 界面：[http://IP:[[config:http-port](config/config.yaml#http-port)]]
 - 配置设置：[config:database](config/config.yaml#database) 和 [config:user](config/config.yaml#user)
 
