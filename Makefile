@@ -30,6 +30,8 @@ endif
 # These are the values we want to pass for Version and BuildTime
 # GitTag	= $(shell git describe --tags)
 GitTag	= $(shell git describe --tags --abbrev=0)
+GitVersion	= $(shell git log -1 --format=%h)
+GitVersionDesc	= $(shell git log -1 --format=%s)
 BuildTime=$(shell date +%FT%T%z)
 
 
@@ -38,7 +40,7 @@ goCmd	=	go
 
 
 # Setup the -ldflags option for go build here, interpolate the variable values
-LDFLAGS=-ldflags "-X ${REPO}/global.Version=$(GitTag) -X ${REPO}/global.GitTag=$(GitTag) -X ${REPO}/global.BuildTime=$(BuildTime)"
+LDFLAGS=-ldflags "-X ${REPO}/global.Version=$(GitTag) -X \"${REPO}/global.GitTag=$(GitVersion) / $(GitVersionDesc)\" -X ${REPO}/global.BuildTime=$(BuildTime)"
 
 goBuild	=	$(goCmd) $(buildCmd) ${LDFLAGS}
 goRun	=	$(goCmd) run ${LDFLAGS}
