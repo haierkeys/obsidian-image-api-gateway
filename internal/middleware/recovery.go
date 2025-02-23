@@ -40,6 +40,13 @@ func Recovery() gin.HandlerFunc {
 				default:
 					// 如果是其它类型的 panic（如非错误类型的 panic）
 					global.Log().Error("Recovered from unknown panic",
+						zap.Int("status", c.Writer.Status()),
+						zap.String("router", path),
+						zap.String("method", c.Request.Method),
+						zap.String("query", query),
+						zap.String("ip", c.ClientIP()),
+						zap.String("user-agent", c.Request.UserAgent()),
+						zap.String("request", c.Request.PostForm.Encode()),
 						zap.String("panic_value", fmt.Sprintf("%v", err)), // 记录 panic 的值
 						zap.String("stack", string(debug.Stack())),        // 错误堆栈
 					)
