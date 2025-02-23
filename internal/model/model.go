@@ -2,10 +2,11 @@ package model
 
 import (
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 
 	"github.com/haierkeys/gormTracing"
 	"gorm.io/driver/mysql"
@@ -62,11 +63,9 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 		isEnable = true
 	} else if c.Type == "sqlite" {
 
-		// if !fileurl.IsExist(c.Path) {
-		// 	//fileurl.CreatePath(c.Path, os.ModePerm)
-		// }
-
-		dump.P(c.Path)
+		if !fileurl.IsExist(c.Path) {
+			fileurl.CreatePath(c.Path, os.ModePerm)
+		}
 
 		db, err = gorm.Open(sqlite.Open(c.Path), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Warn),
