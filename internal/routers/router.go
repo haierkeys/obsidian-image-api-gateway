@@ -38,18 +38,19 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 	r.StaticFS("/assets", http.FS(frontendAssets))
 	api := r.Group("/api")
 	{
-		api.Use(middleware.AppInfo())
-		api.Use(gin.Logger())
-		api.Use(middleware.RateLimiter(methodLimiters))
-		api.Use(middleware.ContextTimeout(time.Duration(global.Config.App.DefaultContextTimeout) * time.Second))
-		api.Use(middleware.Cors())
-		api.Use(middleware.Lang())
-		api.Use(middleware.AccessLog())
-		if global.Config.Server.RunMode == "debug" {
+		// api.Use(middleware.AppInfo())
+		// api.Use(gin.Logger())
+		// api.Use(middleware.RateLimiter(methodLimiters))
+		// api.Use(middleware.ContextTimeout(time.Duration(global.Config.App.DefaultContextTimeout) * time.Second))
+		// api.Use(middleware.Cors())
+		// api.Use(middleware.Lang())
+		// api.Use(middleware.AccessLog())
+		if false && global.Config.Server.RunMode == "debug" {
 			api.Use(gin.Recovery())
 		} else {
 			api.Use(middleware.Recovery())
 		}
+		//api.Use(middleware.Recovery())
 		// 对404 的处理
 		// r.NoRoute(middleware.NoFound())
 		// r.Use(middleware.Tracing())
