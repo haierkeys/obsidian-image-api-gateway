@@ -12,7 +12,15 @@ func UserAuthToken() gin.HandlerFunc {
 		var token string
 		response := app.NewResponse(c)
 
-		if s, exist := c.GetQuery("token"); exist {
+		if s, exist := c.GetQuery("authorization"); exist {
+			token = s
+		} else if s, exist = c.GetQuery("Authorization"); exist {
+			token = s
+		} else if s = c.GetHeader("authorization"); len(s) != 0 {
+			token = s
+		} else if s = c.GetHeader("Authorization"); len(s) != 0 {
+			token = s
+		} else if s, exist := c.GetQuery("token"); exist {
 			token = s
 		} else if s, exist = c.GetQuery("Token"); exist {
 			token = s
