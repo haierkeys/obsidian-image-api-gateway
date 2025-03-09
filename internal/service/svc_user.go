@@ -83,7 +83,7 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 		return nil, code.ErrorDBQuery
 	}
 	if nameUser != nil {
-		return nil, code.ErrorUserNotFound
+		return nil, code.ErrorUserAlreadyExists
 	}
 
 	password, err := util.GeneratePasswordHash(param.Password)
