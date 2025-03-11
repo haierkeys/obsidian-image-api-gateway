@@ -35,41 +35,83 @@
 [<img src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" alt="BuyMeACoffee" width="100">](https://ko-fi.com/haierkeys)
 
 ## 快速开始
+### 安装
 
-### 容器化安装（Docker 方式）
+- 目录设置
 
-假设您的服务器图片保存路径为 _/data/storage/uploads_，依次执行以下命令：
+  ```bash
+  # 创建项目所需的目录
+  mkdir -p /data/image-api
+  cd /data/image-api
 
-```bash
-# 拉取最新的容器镜像
-docker pull haierkeys/obsidian-image-api-gateway:latest
+  mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
+  ```
 
-# 创建项目所需的目录
-mkdir -p /data/image-api
-cd /data/image-api
+- 容器化安装（Docker 方式）
 
-mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
+  假设您的服务器图片保存路径为 _/data/storage/uploads_，依次执行以下命令：
 
-# 下载默认配置文件到配置目录
-wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
+  ```bash
+  # 拉取最新的容器镜像
+  docker pull haierkeys/obsidian-image-api-gateway:latest
 
-# 创建并启动容器
-docker run -tid --name image-api \
-        -p 8000:8000 -p 8001:8001 \
-        -v /data/image-api/storage/:/api/storage/ \
-        -v /data/image-api/config/:/api/config/ \
-        haierkeys/obsidian-image-api-gateway:latest
-```
+  # 下载默认配置文件到配置目录
+  wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
 
-### 二进制安装
+  # 创建并启动容器
+  docker run -tid --name image-api \
+          -p 8000:8000 -p 8001:8001 \
+          -v /data/image-api/storage/:/api/storage/ \
+          -v /data/image-api/config/:/api/config/ \
+          haierkeys/obsidian-image-api-gateway:latest
+  ```
 
-从 [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases) 下载最新版本，解压后执行：
+- 二进制安装
 
-```bash
-./image-api run -c config/config.yaml
-```
+  从 [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases) 下载最新版本，解压后执行：
 
-### 配置
+  ```bash
+  ./image-api run -c config/config.yaml
+  ```
+
+### 使用
+
+- 使用单服务接口
+
+	支持 `本地存储`, `OSS` , `Cloudflare R2` , `Amazon S3` , `MinIO`
+
+	需要修改 [config.yaml](config/config.yaml#http-port)
+
+	修改`http-port` 和 `auth-token` 两个选项
+
+	启动网关程序
+
+	API 网关地址为 `http://{IP:PORT}/api/upload`
+
+	API 访问令牌为  `auth-token` 内容
+
+- 使用`多用户`开放服务接口
+
+	支持  `OSS` , `Cloudflare R2` , `Amazon S3`
+
+	需要在 [config.yaml](config/config.yaml#user) 中修改
+
+	`http-port` 和 `database`
+
+	同时修改 `user.is-enable` 和 `user.register-is-enable` 为 `true`
+
+	启动网关程序
+
+	访问 `WebGUI` 地址 `http://{IP:PORT}` 进行用户注册配置
+
+	![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
+
+	API 网关地址为 `http://{IP:PORT}/api/user/upload`
+
+	点击在`WebGUI` 复制 API 配置 获取配置信息
+
+
+### 配置说明
 
 默认的配置文件名为 _config.yaml_，请将其放置在 _根目录_ 或 _config_ 目录下。
 
@@ -78,13 +120,6 @@ docker run -tid --name image-api \
 - [配置文件 - 中文注释](config/config.yaml)
 - [配置文件 - 英文注释](config/config-en.yaml)
 
-### 开放服务 - 用户公共接口 & Web 界面
-<span id="lable"></span>
-
-![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
-
-- Web 界面：[http://IP:[[config:http-port](config/config.yaml#http-port)]]
-- 配置设置：[config:database](config/config.yaml#database) 和 [config:user](config/config.yaml#user)
 
 ## 其他资源
 
