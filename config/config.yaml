@@ -92,7 +92,7 @@ database:
 user:
   # 多用户开放接口是否启用
   # Whether the multi-user open interface is enabled
-  is-enable: false
+  is-enable: true
   # 多用户开放接口是否开启注册
   # Whether the multi-user open interface is open for registration
   register-is-enable: true
