@@ -28,7 +28,6 @@ func init() {
 		Use:   "run [-c config_file] [-d working_dir] [-p port]",
 		Short: "Run service",
 		Run: func(cmd *cobra.Command, args []string) {
-
 			if len(runEnv.dir) > 0 {
 				err := os.Chdir(runEnv.dir)
 				if err != nil {
@@ -38,12 +37,35 @@ func init() {
 			}
 
 			if len(runEnv.config) <= 0 {
-				if fileurl.IsExist("config.yaml") {
-					runEnv.config = "config.yaml"
-				} else if fileurl.IsExist("config/config-dev.yaml") {
+				if fileurl.IsExist("config/config-dev.yaml") {
 					runEnv.config = "config/config-dev.yaml"
-				} else {
+				} else if fileurl.IsExist("config.yaml") {
+					runEnv.config = "config.yaml"
+				} else if fileurl.IsExist("config/config.yaml") {
 					runEnv.config = "config/config.yaml"
+				} else {
+
+					log.Println("config file not found")
+					runEnv.config = "config/config.yaml"
+
+					if err := fileurl.CreatePath(runEnv.config, os.ModePerm); err != nil {
+						log.Println("config file auto create error:", err)
+						return
+					}
+
+					file, err := os.OpenFile(runEnv.config, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+					if err != nil {
+						log.Println("config file auto create error:", err)
+						return
+					}
+					defer file.Close()
+					_, err = file.WriteString(configDefault)
+					if err != nil {
+						log.Println("config file auto create writing error:", err)
+						return
+					}
+					log.Println("config file auto create successfully")
+
 				}
 			}
 

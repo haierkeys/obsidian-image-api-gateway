@@ -47,6 +47,18 @@
   mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
   ```
 
+  首次启动如果不下载配置文件,程序会自动生成一个默认配置到 `config/config.yaml`
+
+  如果你想从网络下载一个默认配置 使用以下命令来下载
+
+  ```bash
+  # 从开源库下载默认配置文件到配置目录
+  wget -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
+  ```
+
+
+
+
 - 容器化安装（Docker 方式）
 
   假设您的服务器图片保存路径为 _/data/storage/uploads_，依次执行以下命令：
@@ -55,12 +67,9 @@
   # 拉取最新的容器镜像
   docker pull haierkeys/obsidian-image-api-gateway:latest
 
-  # 下载默认配置文件到配置目录
-  wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
-
   # 创建并启动容器
   docker run -tid --name image-api \
-          -p 8000:8000 -p 8001:8001 \
+          -p 9000:9000 -p 9001:9001 \
           -v /data/image-api/storage/:/api/storage/ \
           -v /data/image-api/config/:/api/config/ \
           haierkeys/obsidian-image-api-gateway:latest
@@ -117,8 +126,7 @@
 
 更多配置详情请参考：
 
-- [配置文件 - 中文注释](config/config.yaml)
-- [配置文件 - 英文注释](config/config-en.yaml)
+- [config/config.yaml](config/config.yaml)
 
 
 ## 其他资源

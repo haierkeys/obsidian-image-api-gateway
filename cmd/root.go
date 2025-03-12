@@ -9,6 +9,7 @@ import (
 )
 
 var frontendFiles embed.FS
+var configDefault string
 var rootCmd = &cobra.Command{
 	Use:   "image-api",
 	Short: "obsidian image-api gateway",
@@ -18,8 +19,9 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func Execute(efs embed.FS) {
+func Execute(efs embed.FS, c string) {
 	frontendFiles = efs
+	configDefault = c
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

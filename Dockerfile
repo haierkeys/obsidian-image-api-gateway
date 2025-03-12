@@ -10,9 +10,9 @@ RUN apk --update add libstdc++ curl ca-certificates bash curl gcompat tzdata && 
     echo ${TZ} > /etc/timezone && \
     rm -rf  /tmp/* /var/cache/apk/*
 
-EXPOSE 8000 8001 8002
-RUN mkdir -p /api/
-VOLUME /${P_NAME}/configs
+EXPOSE 9000 9001
+RUN mkdir -p /${P_NAME}/
+VOLUME /${P_NAME}/config
 VOLUME /${P_NAME}/storage
 COPY ./build/${TARGETOS}_${TARGETARCH}/${P_BIN} /${P_NAME}/
 

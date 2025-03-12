@@ -47,6 +47,18 @@ This software is open-source and free. If you would like to show your appreciati
   mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
   ```
 
+  On first startup, if the configuration file is not downloaded, the program will automatically generate a default configuration in `config/config.yaml`.
+
+  If you want to download the default configuration from the network, use the following command:
+
+  ```bash
+  # Download the default configuration file from the open-source repository to the config directory
+  wget -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
+  ```
+
+
+
+
 - Containerized Installation (Docker Method)
 
   Assuming your server stores images at _/data/storage/uploads_, execute the following commands:
@@ -55,12 +67,9 @@ This software is open-source and free. If you would like to show your appreciati
   # Pull the latest container image
   docker pull haierkeys/obsidian-image-api-gateway:latest
 
-  # Download the default configuration file to the config directory
-  wget  -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
-
   # Create and start the container
   docker run -tid --name image-api \
-          -p 8000:8000 -p 8001:8001 \
+          -p 9000:9000 -p 9001:9001 \
           -v /data/image-api/storage/:/api/storage/ \
           -v /data/image-api/config/:/api/config/ \
           haierkeys/obsidian-image-api-gateway:latest
@@ -116,9 +125,7 @@ The default configuration file is named _config.yaml_. Place it in the _root dir
 
 For more configuration details, refer to:
 
-- [Configuration File - Chinese Comments](config/config.yaml)
-- [Configuration File - English Comments](config/config-en.yaml)
-
+- [config/config.yaml](config/config.yaml)
 ## Other Resources
 
 - [Obsidian Auto Image Remote Uploader](https://github.com/haierkeys/obsidian-auto-image-remote-uploader)
