@@ -1,4 +1,8 @@
 FROM woahbase/alpine-glibc:latest
+LABEL org.opencontainers.image.title  = "Obsidian Image API Gateway"
+LABEL org.opencontainers.image.source = "https://github.com/haierkeys/obsidian-image-api-gateway"
+LABEL org.opencontainers.image.documentation = "https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/refs/heads/main/README.md"
+LABEL org.opencontainers.image.vendor = "HaierKeys"
 ARG TARGETOS
 ARG TARGETARCH
 ENV TZ=Asia/Shanghai
