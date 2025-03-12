@@ -52,18 +52,16 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 		api.GET("/debug/vars", apiRouter.Expvar)
 		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-		// 是否启用用户接口
-		if global.Config.User.IsEnabled {
-			userApiR := api.Group("/user")
-			{
-				userApiR.POST("/register", apiRouter.NewUser().Register)
-				userApiR.POST("/login", apiRouter.NewUser().Login)
-				userApiR.Use(middleware.UserAuthToken()).POST("/cloud_config", apiRouter.NewCloudConfig().UpdateAndCreate)
-				userApiR.Use(middleware.UserAuthToken()).DELETE("/cloud_config", apiRouter.NewCloudConfig().Delete)
-				userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config", apiRouter.NewCloudConfig().List)
-				userApiR.Use(middleware.UserAuthToken()).POST("/upload", apiRouter.NewUpload().UserUpload)
-			}
+		userApiR := api.Group("/user")
+		{
+			userApiR.POST("/register", apiRouter.NewUser().Register)
+			userApiR.POST("/login", apiRouter.NewUser().Login)
+			userApiR.Use(middleware.UserAuthToken()).POST("/cloud_config", apiRouter.NewCloudConfig().UpdateAndCreate)
+			userApiR.Use(middleware.UserAuthToken()).DELETE("/cloud_config", apiRouter.NewCloudConfig().Delete)
+			userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config", apiRouter.NewCloudConfig().List)
+			userApiR.Use(middleware.UserAuthToken()).POST("/upload", apiRouter.NewUpload().UserUpload)
 		}
+
 		api.Use(middleware.AuthToken()).POST("/upload", apiRouter.NewUpload().Upload)
 
 	}

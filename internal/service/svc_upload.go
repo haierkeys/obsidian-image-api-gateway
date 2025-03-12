@@ -103,6 +103,10 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 
 func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *multipart.FileHeader, params *ClientUploadParams) (*FileInfo, error) {
 
+	if !global.Config.User.IsEnabled {
+		return nil, code.ErrorMultiUserPublicAPIClosed
+	}
+
 	// 上传文件名
 	var fileName = fileurl.GetFileNameOrRandom(fileHeader.Filename)
 

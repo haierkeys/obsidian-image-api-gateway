@@ -2,6 +2,7 @@ server:
   # 设置服务器运行模式为 debug（调试模式）
   # Set the server run mode to debug (debugging mode)
   run-mode: debug
+  # http-port
   # 服务器端口 - 格式为 -ip:port（绑定特定 IP）或 :port（绑定所有 IPs）
   # Server port - format: -ip:port (bind to a specific IP) or :port (bind to all IPs)
   http-port: :9000
@@ -68,6 +69,7 @@ log:
   production: true
 
 security:
+  # auth-token
   # 图片上传 API 授权 Token
   # Auth token for image upload API
   auth-token: 6666
@@ -75,6 +77,7 @@ security:
   # Key for encrypting authentication data
   encryption_key: X-Auth-Token
 
+# database
 # 数据库配置
 # Database configuration
 database:
@@ -83,15 +86,16 @@ database:
   table-prefix: pre_
   auto-migrate: true
 
-# 公共用户接口设置
-# Public user interface settings
+# user
+# 多用户开放接口相关配置
+# Multi-user open interface related configuration
 user:
-  # 公共用户接口是否启用
-  # Whether the public user interface is enabled
+  # 多用户开放接口是否启用
+  # Whether the multi-user open interface is enabled
   is-enable: false
-  # 公共用户接口是否开启注册
-  # Whether registration is enabled for the public user interface
-  register-is-enable: false
+  # 多用户开放接口是否开启注册
+  # Whether the multi-user open interface is open for registration
+  register-is-enable: true
 
 # 本地文件存储配置
 # Local file storage configuration

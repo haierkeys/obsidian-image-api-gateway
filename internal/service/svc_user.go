@@ -40,6 +40,7 @@ type UserRegisterSendEmail struct {
 }
 
 func (svc *Service) UserRegisterSendEmail(param *UserCreateRequest) (int64, error) {
+
 	user := &dao.User{
 		Email: param.Email,
 		// 其他字段可以根据需要设置，例如头像等
@@ -55,6 +56,10 @@ func (svc *Service) UserRegisterSendEmail(param *UserCreateRequest) (int64, erro
 
 // UserRegister 用户注册
 func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
+
+	if !global.Config.User.IsEnabled {
+		return nil, code.ErrorMultiUserPublicAPIClosed
+	}
 
 	if !global.Config.User.RegisterIsEnable {
 		return nil, code.ErrorUserRegisterIsDisable
@@ -116,6 +121,11 @@ func (svc *Service) UserLogin(param *UserLoginRequest) (*User, error) {
 
 	var user *dao.User
 	var err error
+
+	if !global.Config.User.IsEnabled {
+		return nil, code.ErrorMultiUserPublicAPIClosed
+	}
+
 	if util.IsValidEmail(param.Credentials) {
 		user, err = svc.dao.GetUserByEmail(param.Credentials)
 		if err != nil {
