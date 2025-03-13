@@ -61,7 +61,7 @@ func (h *User) Login(c *gin.Context) {
 
 	if err != nil {
 
-		//global.Logger.Error("apiRouter.user.Login svc UserLogin err: %v", zap.Error(err))
+		global.Logger.Error("apiRouter.user.Login svc UserLogin err: %v", zap.Error(err))
 		response.ToResponse(code.ErrorUserLoginFailed.WithDetails(err.Error()))
 		return
 	}
