@@ -7,7 +7,7 @@ import (
 var (
 	// 程序执行目录
 	ROOT string
-	Name string = "obsidian image-api gateway"
+	Name string = "Obsidian Image API Gateway"
 )
 
 func init() {

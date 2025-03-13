@@ -64,6 +64,8 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 
 	validator.RegisterCustom()
 
+	s.logger.Info(fmt.Sprintf("%s v%s / Git:%s / BuidTime:%s", global.Name, global.Version, global.GitTag, global.BuildTime))
+
 	s.logger.Info("loading config file: " + configRealpath)
 
 	// Start http api server
