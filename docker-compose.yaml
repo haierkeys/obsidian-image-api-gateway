@@ -1,0 +1,21 @@
+version: '3'
+services:
+  image-api:
+    image: haierkeys/obsidian-image-api-gateway:latest  # 你的应用镜像
+    container_name: image-api
+    ports:
+      - "9000:9000"  # 映射端口 9000
+      - "9001:9001"  # 映射端口 9001
+    volumes:
+      - /data/image-api/storage/:/api/storage/  # 映射存储目录
+      - /data/image-api/config/:/api/config/    # 映射配置目录
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # 允许 Watchtower 访问 Docker Daemon
+    environment:
+      - WATCHTOWER_SCHEDULE=0 0,30 * * * *  # 每半小时检查更新
+      - WATCHTOWER_CLEANUP=true            # 删除旧镜像，节省空间
+    restart: unless-stopped
