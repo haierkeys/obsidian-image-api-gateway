@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 )
 
@@ -37,9 +36,6 @@ func ParseToken(tokenString string) (*UserEntity, error) {
 	if err != nil {
 		return nil, err
 	}
-	dump.P("jwt ParseToken result:")
-	dump.P(token)
-	dump.P(claims)
 
 	if !token.Valid {
 		return nil, fmt.Errorf("invalid token")
@@ -61,7 +57,7 @@ func GenerateToken(uid int64, nickname string, ip string, expiry int64) (string,
 			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
-			Issuer:    "obsidian-image-api-gateway",
+			Issuer:    global.Name,
 			Subject:   "user-token",
 			ID:        fmt.Sprintf("%d", uid), // Use UID as unique token ID
 		},
