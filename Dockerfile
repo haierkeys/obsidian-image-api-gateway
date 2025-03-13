@@ -1,5 +1,5 @@
 FROM woahbase/alpine-glibc:latest
-
+MAINTAINER "HaierKeys <haierkeys@gmail.com>"
 ARG TARGETOS
 ARG TARGETARCH
 ARG VERSION
@@ -20,8 +20,10 @@ LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.description="Provide image resizing, cropping, upload/download, and cloud storage features for Obsidian CIAU."
 LABEL org.opencontainers.image.url="https://github.com/haierkeys/obsidian-image-api-gateway"
 LABEL org.opencontainers.image.source="https://github.com/haierkeys/obsidian-image-api-gateway"
+LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/refs/heads/main/README.md"
 LABEL org.opencontainers.image.revision=${GIT_COMMIT}
 LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.vendor="HaierKeys"
 
 
 
