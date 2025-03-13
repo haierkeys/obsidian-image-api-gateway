@@ -13,7 +13,7 @@ ARG GIT_COMMIT=${GIT_COMMIT}
 LABEL app.name="obsidian-image-api-gateway"
 LABEL app.version=${VERSION}
 
-LABEL org.opencontainers.image.title  = "Obsidian Image API Gateway"
+LABEL org.opencontainers.image.title="Obsidian Image API Gateway"
 LABEL org.opencontainers.image.created=${BUILD_DATE}
 LABEL org.opencontainers.image.authors="HaierKeys <haierkeys@gmail.com>"
 LABEL org.opencontainers.image.version=${VERSION}

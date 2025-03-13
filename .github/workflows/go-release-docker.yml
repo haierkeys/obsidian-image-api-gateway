@@ -84,7 +84,7 @@ jobs:
           registry: ghcr.io
           snapshot: false
           tags: "${{ env.IMAGE_TAG }}"
-          build_args: |
+          buildargs: |
             VERSION=${{ env.IMAGE_TAG }}
             BUILD_DATE=${{ env.BUILD_DATE }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
@@ -99,7 +99,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           snapshot: false
           tags: "${{ env.IMAGE_TAG }}"
-          build_args: |
+          buildargs: |
             VERSION=${{ env.IMAGE_TAG }}
             BUILD_DATE=${{ env.BUILD_DATE }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
