@@ -3,6 +3,8 @@ LABEL org.opencontainers.image.title  = "Obsidian Image API Gateway"
 LABEL org.opencontainers.image.source = "https://github.com/haierkeys/obsidian-image-api-gateway"
 LABEL org.opencontainers.image.documentation = "https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/refs/heads/main/README.md"
 LABEL org.opencontainers.image.vendor = "HaierKeys"
+LABEL org.opencontainers.image.licenses = "MIT"
+LABEL org.opencontainers.image.description = "Provide image resizing, cropping, upload/download, and cloud storage features for Obsidian CIAU."
 ARG TARGETOS
 ARG TARGETARCH
 ENV TZ=Asia/Shanghai

@@ -71,7 +71,7 @@ func init() {
 
 			s, err := NewServer(runEnv)
 			if err != nil {
-				log.Println("failed to change the current working directory, ", err)
+				s.logger.Error("api service start err ", zap.Error(err))
 			}
 
 			go func() {
@@ -122,7 +122,8 @@ func init() {
 			signal.Notify(quit1, syscall.SIGINT, syscall.SIGTERM)
 			<-quit1
 			s.sc.SendCloseSignal(nil)
-			log.Println("service has been shut down.")
+			s.logger.Info("api service has been shut down.")
+			log.Println("api service has been shut down.")
 
 		},
 	}

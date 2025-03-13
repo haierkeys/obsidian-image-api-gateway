@@ -1,7 +1,6 @@
 package global
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
@@ -140,28 +139,25 @@ type email struct {
 }
 
 // ConfigLoad 初始化
-func ConfigLoad(f string) error {
+func ConfigLoad(f string) (string, error) {
 
 	realpath, err := fileurl.GetAbsPath(f, "")
 	if err != nil {
-		return err
+		return realpath, err
 	}
-
-	fmt.Println("Config Absolute Path: " + realpath)
-
 	c := new(config)
 
 	c.File = f
 	file, err := os.ReadFile(f)
 	if err != nil {
-		return errors.Wrap(err, "read config file failed")
+		return realpath, errors.Wrap(err, "read config file failed")
 	}
 
 	err = yaml.Unmarshal(file, c)
 	if err != nil {
-		return errors.Wrap(err, "parse config file failed")
+		return realpath, errors.Wrap(err, "parse config file failed")
 	}
 	Config = c
-	return nil
+	return realpath, nil
 
 }

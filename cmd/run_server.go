@@ -35,7 +35,8 @@ type Server struct {
 
 func NewServer(runEnv *runFlags) (*Server, error) {
 
-	if err := global.ConfigLoad(runEnv.config); err != nil {
+	configRealpath, err := global.ConfigLoad(runEnv.config)
+	if err != nil {
 		return nil, err
 	}
 
@@ -45,7 +46,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 	}
 
 	if len(runMode) > 0 {
-		gin.SetMode(runEnv.runMode)
+		gin.SetMode(runMode)
 	} else {
 		gin.SetMode("release")
 	}
@@ -63,9 +64,13 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 
 	validator.RegisterCustom()
 
+	fmt.Println("loading config file: " + configRealpath)
+	s.logger.Info("loading config file: " + configRealpath)
+
 	// Start http api server
 	if httpAddr := global.Config.Server.HttpPort; len(httpAddr) > 0 {
-		s.logger.Info("starting api http server", zap.String("Config.Server.HttpPort", httpAddr))
+		fmt.Println("api service starting: Config.Server.HttpPort" + httpAddr)
+		s.logger.Info("api service starting", zap.String("Config.Server.HttpPort", httpAddr))
 		s.httpServer = &http.Server{
 			Addr:           global.Config.Server.HttpPort,
 			Handler:        routers.NewRouter(frontendFiles),
@@ -81,7 +86,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 			}()
 			select {
 			case err := <-errChan:
-				s.logger.Error("private api http server err", zap.Error(err))
+				s.logger.Error("api service err", zap.Error(err))
 				s.sc.SendCloseSignal(err)
 			case <-closeSignal:
 
@@ -90,7 +95,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 
 				// 停止HTTP服务器
 				if err := s.httpServer.Shutdown(ctx); err != nil {
-					s.logger.Error("service shutdown error", zap.Error(err))
+					s.logger.Error("api service shutdown error", zap.Error(err))
 				}
 
 				// _ = s.httpServer.Close()
@@ -100,7 +105,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 
 	if httpAddr := global.Config.Server.PrivateHttpListen; len(httpAddr) > 0 {
 
-		s.logger.Info("starting private api http server", zap.String("Config.Server.PrivateHttpListen", httpAddr))
+		s.logger.Info("private api service starting", zap.String("Config.Server.PrivateHttpListen", httpAddr))
 		s.privateHttpServer = &http.Server{
 			Addr:           global.Config.Server.PrivateHttpListen,
 			Handler:        routers.NewPrivateRouter(),
@@ -117,7 +122,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 			}()
 			select {
 			case err := <-errChan:
-				s.logger.Error("private api http server err", zap.Error(err))
+				s.logger.Error("private api service err", zap.Error(err))
 				s.sc.SendCloseSignal(err)
 			case <-closeSignal:
 
@@ -128,7 +133,7 @@ func NewServer(runEnv *runFlags) (*Server, error) {
 
 				// 停止HTTP服务器
 				if err := s.privateHttpServer.Shutdown(ctx); err != nil {
-					s.logger.Error("service shutdown error", zap.Error(err))
+					s.logger.Error("private api service shutdown error", zap.Error(err))
 				}
 			}
 		})
