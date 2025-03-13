@@ -1,5 +1,5 @@
 FROM woahbase/alpine-glibc:latest
-MAINTAINER "HaierKeys <haierkeys@gmail.com>"
+MAINTAINER HaierKeys <haierkeys@gmail.com>
 ARG TARGETOS
 ARG TARGETARCH
 ARG VERSION
@@ -10,8 +10,13 @@ ARG VERSION=${VERSION}
 ARG BUILD_DATE=${BUILD_DATE}
 ARG GIT_COMMIT=${GIT_COMMIT}
 
-LABEL app.name="obsidian-image-api-gateway"
-LABEL app.version=${VERSION}
+
+
+LABEL name="obsidian-image-api-gateway"
+LABEL version=${VERSION}
+LABEL description="Provide image resizing, cropping, upload/download, and cloud storage features for Obsidian CIAU."
+LABEL maintainer="HaierKeys <haierkeys@gmail.com>"
+
 
 LABEL org.opencontainers.image.title="Obsidian Image API Gateway"
 LABEL org.opencontainers.image.created=${BUILD_DATE}
