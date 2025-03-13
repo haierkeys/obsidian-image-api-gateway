@@ -6,31 +6,31 @@
     <img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway" alt="license">
 </p>
 
-This project provides image uploading, storage, and cloud synchronization services for the [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) Obsidian plugin.
+This project provides image upload, storage, and cloud synchronization services for the [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) Obsidian plugin.
 
 ## Feature List
 
-- [x] Supports image uploading
+- [x] Supports image upload
 - [x] Supports token authorization to enhance API security
-- [x] Supports HTTP access to images (basic functionality, Nginx is recommended as an alternative)
+- [x] Supports HTTP access to images (basic feature, recommended to use Nginx instead)
 - [x] Storage support:
-  - [x] Save to both local and cloud storage for easy migration
-  - [x] Local storage support (designed for NAS, functionality tested)
-  - [x] Support for Alibaba Cloud OSS storage (implemented but untested)
-  - [x] Support for Cloudflare R2 storage (implemented and tested)
-  - [x] Support for Amazon S3 (implemented and tested)
+  - [x] Simultaneously save to local or cloud storage for easy migration
+  - [x] Local storage support (prepared for NAS, functionality tested)
+  - [x] Supports Alibaba Cloud OSS storage (implemented, not yet tested)
+  - [x] Supports Cloudflare R2 storage (implemented and tested)
+  - [x] Supports Amazon S3 (implemented and tested)
   - [x] Added MinIO storage support (v1.5+)
-  - [ ] Google ECS support (to be developed)
-- [x] Provides Docker installation support for use on home NAS or remote servers
-- [x] Provides public service API & web interface for public service usage <a href="#userapi">User Public Interface & Web Interface</a>
+  - [ ] Supports Google ECS (to be developed)
+- [x] Provides Docker installation support for easy use on home NAS or remote servers
+- [x] Provides public service API && Web interface for convenient public service <a href="#userapi">User Public Interface & Web Interface</a>
 
 ## Changelog
 
-To view the complete update details, please visit [Changelog](https://github.com/haierkeys/obsidian-image-api-gateway/releases).
+For a complete list of updates, please visit [Changelog](https://github.com/haierkeys/obsidian-image-api-gateway/releases).
 
 ## Pricing
 
-This software is open-source and free. If you would like to show your appreciation or support continued development, you can do so via the following method:
+This software is open-source and free. If you’d like to show your appreciation or help support ongoing development, you can support me through the following method:
 
 [<img src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" alt="BuyMeACoffee" width="100">](https://ko-fi.com/haierkeys)
 
@@ -40,28 +40,35 @@ This software is open-source and free. If you would like to show your appreciati
 - Directory Setup
 
   ```bash
-  # Create the required directories for the project
+  # Create the directories required for the project
   mkdir -p /data/image-api
   cd /data/image-api
 
   mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
   ```
 
-  On first startup, if the configuration file is not downloaded, the program will automatically generate a default configuration in `config/config.yaml`.
+  The default local image storage path on the server is **/data/storage/uploads**
 
-  If you want to download the default configuration from the network, use the following command:
+  If you don’t download the configuration file on the first startup, the program will automatically generate a default configuration at **config/config.yaml**
+
+  If you want to download a default configuration from the web, use the following command:
 
   ```bash
   # Download the default configuration file from the open-source repository to the config directory
   wget -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
   ```
 
+- Binary Installation
 
+  Download the latest version from [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases), unzip it, and run:
 
+  ```bash
+  ./image-api run -c config/config.yaml
+  ```
 
 - Containerized Installation (Docker Method)
 
-  Assuming your server stores images at _/data/storage/uploads_, execute the following commands:
+  Docker Command:
 
   ```bash
   # Pull the latest container image
@@ -75,57 +82,92 @@ This software is open-source and free. If you would like to show your appreciati
           haierkeys/obsidian-image-api-gateway:latest
   ```
 
-- Binary Installation
+  Docker Compose
+  Use *containrrr/watchtower* to monitor the image for automatic project updates
+  The content of **docker-compose.yaml** is as follows:
 
-  Download the latest version from [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases), extract it, and execute:
+  ```yaml
+  # docker-compose.yaml
+  services:
+    image-api:
+      image: haierkeys/obsidian-image-api-gateway:latest  # Your application image
+      container_name: image-api
+      ports:
+        - "9000:9000"  # Map port 9000
+        - "9001:9001"  # Map port 9001
+      volumes:
+        - /data/image-api/storage/:/api/storage/  # Map storage directory
+        - /data/image-api/config/:/api/config/    # Map config directory
+
+    watchtower:
+      image: containrrr/watchtower
+      container_name: watchtower
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock  # Allow Watchtower to access Docker Daemon
+      environment:
+        - WATCHTOWER_SCHEDULE=0 0,30 * * * *  # Check for updates every half hour
+        - WATCHTOWER_CLEANUP=true            # Delete old images to save space
+      restart: unless-stopped
+  ```
+
+  Execute **docker compose**
+
+  Register the Docker container as a service:
 
   ```bash
-  ./image-api run -c config/config.yaml
+  docker compose up -d
+  ```
+
+  Stop and destroy the Docker container:
+
+  ```bash
+  docker compose down
   ```
 
 ### Usage
 
-- Using the Single-Service API
+- Using Single-Service Interface
 
-    Supports `Local Storage`, `OSS`, `Cloudflare R2`, `Amazon S3`, and `MinIO`.
+  Supports **local storage**, **OSS**, **Cloudflare R2**, **Amazon S3**, **MinIO**
 
-    Modify [config.yaml](config/config.yaml#http-port)
+  You need to modify [config.yaml](config/config.yaml#http-port)
 
-    Change `http-port` and `auth-token` options.
+  Modify the `http-port` and `auth-token` options
 
-    Start the gateway program.
+  Start the gateway program
 
-    The API gateway address is `http://{IP:PORT}/api/upload`
+  The API gateway address is `http://{IP:PORT}/api/upload`
 
-    The API access token is the content of `auth-token`.
+  The API access token is the content of `auth-token`
 
-- Using the Multi-User Public Service API
+- Using **Multi-User** Public Service Interface
 
-    Supports `OSS`, `Cloudflare R2`, and `Amazon S3`.
+  Supports **OSS**, **Cloudflare R2**, **Amazon S3**
 
-    Modify [config.yaml](config/config.yaml#user)
+  You need to modify [config.yaml](config/config.yaml#user)
 
-    Change `http-port` and `database`.
+  Modify `http-port` and `database`
 
-    Also, set `user.is-enable` and `user.register-is-enable` to `true`.
+  Also set `user.is-enable` and `user.register-is-enable` to `true`
 
-    Start the gateway program.
+  Start the gateway program
 
-    Access the `WebGUI` at `http://{IP:PORT}` to configure user registration.
+  Visit the **WebGUI** address `http://{IP:PORT}` for user registration and configuration
 
-    ![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
+  ![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
 
-    The API gateway address is `http://{IP:PORT}/api/user/upload`.
+  The API gateway address is `http://{IP:PORT}/api/user/upload`
 
-    Click on `WebGUI` to copy API configuration and obtain setup details.
+  Click on **WebGUI** to copy the API configuration and retrieve the configuration information
 
-### Configuration Instructions
+### Configuration Details
 
-The default configuration file is named _config.yaml_. Place it in the _root directory_ or the _config_ directory.
+The default configuration file is named **config.yaml**, please place it in the **root directory** or **config** directory.
 
 For more configuration details, refer to:
 
 - [config/config.yaml](config/config.yaml)
+
 ## Other Resources
 
 - [Obsidian Auto Image Remote Uploader](https://github.com/haierkeys/obsidian-auto-image-remote-uploader)

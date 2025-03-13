@@ -1,4 +1,3 @@
-version: '3'
 services:
   image-api:
     image: haierkeys/obsidian-image-api-gateway:latest  # 你的应用镜像

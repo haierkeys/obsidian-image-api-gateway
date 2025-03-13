@@ -47,7 +47,9 @@
   mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
   ```
 
-  首次启动如果不下载配置文件,程序会自动生成一个默认配置到 `config/config.yaml`
+  默认服务端本地图片保存路径为 **/data/storage/uploads**
+
+  首次启动如果不下载配置文件,程序会自动生成一个默认配置到 **config/config.yaml**
 
   如果你想从网络下载一个默认配置 使用以下命令来下载
 
@@ -56,12 +58,18 @@
   wget -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
   ```
 
+- 二进制安装
 
+  从 [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases) 下载最新版本，解压后执行：
+
+  ```bash
+  ./image-api run -c config/config.yaml
+  ```
 
 
 - 容器化安装（Docker 方式）
 
-  假设您的服务器图片保存路径为 _/data/storage/uploads_，依次执行以下命令：
+  Docker 命令:
 
   ```bash
   # 拉取最新的容器镜像
@@ -75,19 +83,55 @@
           haierkeys/obsidian-image-api-gateway:latest
   ```
 
-- 二进制安装
+  Docker Compose
+  使用 *containrrr/watchtower* 来监听镜像实现自动更新项目
+  **docker-compose.yaml** 内容如下
 
-  从 [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases) 下载最新版本，解压后执行：
+  ```yaml
+  # docker-compose.yaml
+  services:
+    image-api:
+      image: haierkeys/obsidian-image-api-gateway:latest  # 你的应用镜像
+      container_name: image-api
+      ports:
+        - "9000:9000"  # 映射端口 9000
+        - "9001:9001"  # 映射端口 9001
+      volumes:
+        - /data/image-api/storage/:/api/storage/  # 映射存储目录
+        - /data/image-api/config/:/api/config/    # 映射配置目录
+
+    watchtower:
+      image: containrrr/watchtower
+      container_name: watchtower
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock  # 允许 Watchtower 访问 Docker Daemon
+      environment:
+        - WATCHTOWER_SCHEDULE=0 0,30 * * * *  # 每半小时检查更新
+        - WATCHTOWER_CLEANUP=true            # 删除旧镜像，节省空间
+      restart: unless-stopped
+  ```
+
+  执行 **docker compose**
+
+  以服务方式注册 docker 容器
 
   ```bash
-  ./image-api run -c config/config.yaml
+  docker compose up -d
   ```
+
+  注销并销毁 docker 容器
+
+  ```bash
+  docker compose down
+  ```
+
+
 
 ### 使用
 
 - 使用单服务接口
 
-	支持 `本地存储`, `OSS` , `Cloudflare R2` , `Amazon S3` , `MinIO`
+	支持 **本地存储**, **OSS** , **Cloudflare R2** , **Amazon S3** , **MinIO**
 
 	需要修改 [config.yaml](config/config.yaml#http-port)
 
@@ -99,9 +143,9 @@
 
 	API 访问令牌为  `auth-token` 内容
 
-- 使用`多用户`开放服务接口
+- 使用 **多用户** 开放服务接口
 
-	支持  `OSS` , `Cloudflare R2` , `Amazon S3`
+	支持  **OSS** , **Cloudflare R2** , **Amazon S3**
 
 	需要在 [config.yaml](config/config.yaml#user) 中修改
 
@@ -111,18 +155,18 @@
 
 	启动网关程序
 
-	访问 `WebGUI` 地址 `http://{IP:PORT}` 进行用户注册配置
+	访问 **WebGUI** 地址 `http://{IP:PORT}` 进行用户注册配置
 
 	![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
 
 	API 网关地址为 `http://{IP:PORT}/api/user/upload`
 
-	点击在`WebGUI` 复制 API 配置 获取配置信息
+	点击在 **WebGUI** 复制 API 配置 获取配置信息
 
 
 ### 配置说明
 
-默认的配置文件名为 _config.yaml_，请将其放置在 _根目录_ 或 _config_ 目录下。
+默认的配置文件名为 **config.yaml**，请将其放置在 **根目录** 或 **config** 目录下。
 
 更多配置详情请参考：
 
