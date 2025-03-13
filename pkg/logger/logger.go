@@ -60,21 +60,32 @@ func NewLogger(lc Config) (*zap.Logger, error) {
 		return nil, fmt.Errorf("invalid log level: %w", err)
 	}
 
-	var out zapcore.WriteSyncer
+	var fileOut zapcore.WriteSyncer
 	if lf := lc.File; len(lf) > 0 {
 		f, _, err := zap.Open(lf)
 		if err != nil {
 			return nil, fmt.Errorf("open log file: %w", err)
 		}
-		out = zapcore.Lock(f)
-	} else {
-		out = stderr
-	}
+		fileOut = zapcore.Lock(f)
 
-	if lc.Production {
-		return zap.New(zapcore.NewCore(zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()), out, lvl)), nil
+		var fileEncoder zapcore.Encoder
+		if lc.Production {
+			fileEncoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		} else {
+			fileEncoder = zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		}
+
+		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+
+		consoleCore := zapcore.NewCore(consoleEncoder, zapcore.NewMultiWriteSyncer(zapcore.AddSync(stderr)), lvl)
+		fileCore := zapcore.NewCore(fileEncoder, zapcore.NewMultiWriteSyncer(zapcore.AddSync(fileOut)), lvl)
+
+		// 使用 zapcore.NewTee 合并两个 Core
+		return zap.New(zapcore.NewTee(consoleCore, fileCore)), nil
+
+	} else {
+		return zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), stderr, lvl)), nil
 	}
-	return zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), out, lvl)), nil
 }
 
 // L is a global logger.

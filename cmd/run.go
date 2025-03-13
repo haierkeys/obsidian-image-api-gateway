@@ -123,7 +123,6 @@ func init() {
 			<-quit1
 			s.sc.SendCloseSignal(nil)
 			s.logger.Info("api service has been shut down.")
-			log.Println("api service has been shut down.")
 
 		},
 	}

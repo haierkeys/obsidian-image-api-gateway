@@ -1,6 +1,6 @@
 server:
-  # 设置服务器运行模式为 debug（调试模式）
-  # Set the server run mode to debug (debugging mode)
+  # 服务器运行模式 release | debug
+  # Server operating mode: release | debug
   run-mode: release
   # http-port
   # 服务器端口 - 格式为 -ip:port（绑定特定 IP）或 :port（绑定所有 IPs）

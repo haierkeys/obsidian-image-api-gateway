@@ -41,6 +41,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 	var isEnable bool
+
 	if c.Type == "mysql" {
 		db, err = gorm.Open(
 			mysql.Open(fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
@@ -52,7 +53,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 				c.ParseTime,
 			)),
 			&gorm.Config{
-				Logger: logger.Default.LogMode(logger.Warn),
+				Logger: logger.Default.LogMode(logger.Silent),
 				NamingStrategy: schema.NamingStrategy{
 					TablePrefix:   c.TablePrefix, // 表名前缀，`User` 的表名应该是 `t_users`
 					SingularTable: true,          // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
@@ -70,7 +71,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 		}
 
 		db, err = gorm.Open(sqlite.Open(c.Path), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Warn),
+			Logger: logger.Default.LogMode(logger.Silent),
 			NamingStrategy: schema.NamingStrategy{
 				TablePrefix:   c.TablePrefix, // 表名前缀，`User` 的表名应该是 `t_users`
 				SingularTable: true,          // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
@@ -86,6 +87,8 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 
 		if global.Config.Server.RunMode == "debug" {
 			db.Config.Logger = logger.Default.LogMode(logger.Info)
+		} else {
+			db.Config.Logger = logger.Default.LogMode(logger.Silent)
 		}
 
 		// 获取通用数据库对象 sql.DB ，然后使用其提供的功能
