@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.url="https://github.com/haierkeys/obsidian-image-
 LABEL org.opencontainers.image.source="https://github.com/haierkeys/obsidian-image-api-gateway"
 LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/refs/heads/main/README.md"
 LABEL org.opencontainers.image.revision=${GIT_COMMIT}
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.vendor="HaierKeys"
 
 
