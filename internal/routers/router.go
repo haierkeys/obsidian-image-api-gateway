@@ -56,6 +56,8 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 		{
 			userApiR.POST("/register", apiRouter.NewUser().Register)
 			userApiR.POST("/login", apiRouter.NewUser().Login)
+
+			userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config_enabled_types", apiRouter.NewCloudConfig().EnabledTypes)
 			userApiR.Use(middleware.UserAuthToken()).POST("/cloud_config", apiRouter.NewCloudConfig().UpdateAndCreate)
 			userApiR.Use(middleware.UserAuthToken()).DELETE("/cloud_config", apiRouter.NewCloudConfig().Delete)
 			userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config", apiRouter.NewCloudConfig().List)
@@ -65,7 +67,7 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 		api.Use(middleware.AuthToken()).POST("/upload", apiRouter.NewUpload().Upload)
 
 	}
-	if global.Config.LocalFS.IsEnabled && global.Config.LocalFS.HttpfsIsEnable {
+	if global.Config.LocalFS.HttpfsIsEnable {
 		r.StaticFS(global.Config.LocalFS.SavePath, http.Dir(global.Config.LocalFS.SavePath))
 	}
 	r.Use(middleware.Cors())

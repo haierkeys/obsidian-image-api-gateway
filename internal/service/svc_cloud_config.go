@@ -31,9 +31,9 @@ type CloudConfigRequest struct {
 	Endpoint        string `form:"endpoint"`                                          // 端点 oss
 	Region          string `form:"region"`                                            // 区域 s3
 	AccountId       string `form:"accountId"`                                         // 账户ID r2
-	BucketName      string `form:"bucketName" binding:"required,gte=1"`               // 存储桶名称
-	AccessKeyId     string `form:"accessKeyId" binding:"required,min=2,max=100"`      // 访问密钥ID
-	AccessKeySecret string `form:"accessKeySecret" binding:"required,min=2,max=100"`  // 访问密钥秘密
+	BucketName      string `form:"bucketName"`                                        // 存储桶名称
+	AccessKeyId     string `form:"accessKeyId"`                                       // 访问密钥ID
+	AccessKeySecret string `form:"accessKeySecret"`                                   // 访问密钥秘密
 	CustomPath      string `form:"customPath"`                                        // 自定义路径
 	AccessUrlPrefix string `form:"accessUrlPrefix"  binding:"required,min=2,max=100"` // 访问地址前缀
 	IsEnabled       int64  `form:"isEnabled"`                                         // 是否启用
@@ -41,6 +41,11 @@ type CloudConfigRequest struct {
 
 type DeleteCloudConfigRequest struct {
 	Id int64 `form:"id" binding:"required,gte=1"`
+}
+
+// CloudTypeList 方法用于获取云存储类型列表
+func (svc *Service) CloudTypeEnabledList() ([]storage.CloudType, error) {
+	return storage.GetIsUserEnabledStorageTypes(), nil
 }
 
 // CloudConfigList 方法用于获取指定用户的云存储配置列表
@@ -72,16 +77,36 @@ func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig
 func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigRequest) (int64, error) {
 
 	// 检查云存储类型是否有效
-	if !storage.CloudStorageTypeMap[params.Type] {
-		return 0, code.ErrorInvalidCloudStorageType
+	if !storage.StorageTypeMap[params.Type] {
+		return 0, code.ErrorInvalidStorageType
+	}
+
+	// 检查云存储类型是否启用
+	if err := storage.IsUserEnabled(params.Type); err != nil {
+		return 0, err
+	}
+
+	//云存储内容设置项检查
+	if storage.CloudStorageTypeMap[params.Type] {
+		if params.BucketName == "" {
+			return 0, code.ErrorInvalidCloudStorageBucketName
+		}
+		if params.AccessKeyId == "" {
+			return 0, code.ErrorInvalidCloudStorageAccessKeyId
+		}
+		if params.AccessKeySecret == "" {
+			return 0, code.ErrorInvalidCloudStorageAccessKeySecret
+		}
 	}
 
 	// 检查云存储类型是否为 r2
 	if params.Type == storage.R2 {
+
 		// 检查账户ID是否为空
 		if params.AccountId == "" {
 			return 0, code.ErrorInvalidCloudStorageAccountId
 		}
+
 	} else if params.Type == storage.S3 {
 		// 检查区域是否为空
 		if params.Region == "" {

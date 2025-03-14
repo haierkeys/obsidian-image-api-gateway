@@ -74,7 +74,7 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 		} else if sType == storage.OSS {
 			_ = convert.StructToMap(global.Config.OSS, config)
 		} else if sType == storage.R2 {
-			_ = convert.StructToMap(global.Config.CloudfluR2, config)
+			_ = convert.StructToMap(global.Config.CloudflueR2, config)
 		} else if sType == storage.S3 {
 			_ = convert.StructToMap(global.Config.AWSS3, config)
 		} else if sType == storage.MinIO {
@@ -141,6 +141,13 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 	}
 
 	userCloudConfig = convert.StructToMapByReflect(daoCloudConfig)
+
+	// 检查云存储类型是否启用
+	if err := storage.IsUserEnabled(daoCloudConfig.Type); err != nil {
+		return nil, err
+	}
+
+	userCloudConfig["SavePath"] = global.Config.LocalFS.SavePath
 
 	ins, err := storage.NewClient(daoCloudConfig.Type, userCloudConfig)
 	if err != nil {

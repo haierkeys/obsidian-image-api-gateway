@@ -17,6 +17,24 @@ func NewCloudConfig() *CloudConfig {
 	return &CloudConfig{}
 }
 
+func (t *CloudConfig) EnabledTypes(c *gin.Context) {
+	response := app.NewResponse(c)
+	uid := app.GetUid(c)
+	if uid == 0 {
+		global.Logger.Error("apiRouter.CloudConfig.Types err uid=0")
+		response.ToResponse(code.ErrorNotUserAuthToken)
+		return
+	}
+	svc := service.New(c)
+	list, err := svc.CloudTypeEnabledList()
+	if err != nil {
+		global.Logger.Error("apiRouter.CloudConfig.Types svc CloudTypeList err: %v", zap.Error(err))
+		response.ToResponse(code.Failed.WithDetails(err.Error()))
+		return
+	}
+	response.ToResponse(code.Success.WithData(list))
+}
+
 func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 	params := &service.CloudConfigRequest{}
 	response := app.NewResponse(c)

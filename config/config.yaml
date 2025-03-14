@@ -87,25 +87,28 @@ database:
   auto-migrate: true
 
 # user
-# 多用户开放接口相关配置
-# Multi-user open interface related configuration
+# 多用户开放网关相关配置
+# Multi-user open gateway related configuration
 user:
-  # 多用户开放接口是否启用
-  # Whether the multi-user open interface is enabled
+  # 多用户开放网关是否启用
+  # Whether the multi-user open gateway is enabled
   is-enable: true
-  # 多用户开放接口是否开启注册
-  # Whether the multi-user open interface is open for registration
-  register-is-enable: true
+  # 多用户开放网关是否开启注册
+  # Whether the multi-user open gateway is enabled to register
+  register-is-enable: false
 
-# 本地文件存储配置
-# Local file storage configuration
+# 服务器本地存储配置
+# server local storage configuration
 local-fs:
-  # 是否启用本地文件存储
-  # Whether local file storage is enabled
+  # 是否在 单服务网关 内启用服务器本地存储
+  # Whether Server Local Storage is enabled in the single-service gateway
   is-enable: false
+  # 是否在 多用户开放网关 内启用用户文件存储
+  # Whether Server Local Storage is enabled in the multi-user open gateway
+  is-user-enable: true
   # 是否启用内置的 HTTP 文件访问服务
   # Whether the built-in HTTP file access service is enabled
-  httpfs-is-enable: false
+  httpfs-is-enable: true
   # 上传文件保存路径
   # Path to save uploaded files
   save-path: storage/uploads
@@ -113,9 +116,12 @@ local-fs:
 # 阿里云 OSS 配置
 # Alibaba Cloud OSS configuration
 oss:
-  # 是否启用阿里云 OSS 云存储
-  # Whether Alibaba Cloud OSS storage is enabled
+  # 是否在 单服务网关 内启用阿里云 OSS 存储
+  # Whether alibaba cloud OSS storage is enabled in the single-service gateway
   is-enable: false
+  # 是否在 多用户开放网关 内启用阿里云 OSS 存储
+  # Whether alibaba cloud OSS storage is enabled in the multi-user open gateway
+  is-user-enable: true
   # OSS 服务的 Endpoint（需要配置）
   # Endpoint for OSS service (needs configuration)
   endpoint:
@@ -134,10 +140,13 @@ oss:
 
 # CloudFlu R2 存储配置
 # CloudFlu R2 storage configuration
-cloudflu-r2:
+cloudflue-r2:
   # 是否启用 R2 云存储
   # Whether R2 cloud storage is enabled
   is-enable: false
+  # 是否在 多用户开放网关 内 R2 云存储
+  # Whether R2 cloud storage is enabled in the multi-user open gateway
+  is-user-enable: true
   # R2 存储桶名称
   # R2 bucket name
   bucket-name: image
@@ -157,9 +166,12 @@ cloudflu-r2:
 # AWS S3 存储配置
 # AWS S3 storage configuration
 aws-s3:
-  # 是否启用 AWS S3 云存储
-  # Whether AWS S3 cloud storage is enabled
+  # 是否在 单服务网关 内启用 AWS S3 云存储
+  # Whether AWS S3 cloud storage is enabled in the single-service gateway
   is-enable: false
+  # 是否在 多用户开放网关 内启用 AWS S3 云存储
+  # Whether AWS S3 cloud storage is enabled in the multi-user open gateway
+  is-user-enable: true
   # AWS 区域（区域代码）
   # AWS region (region code)
   region: ap-southeast-1
@@ -179,9 +191,12 @@ aws-s3:
 # MinIO 存储配置
 # MinIO storage configuration
 minio:
-  # 是否启用 MinIO 存储
-  # Whether MinIO storage is enabled
+  # 是否在 单服务网关 内启用 MinIO 云存储
+  # Whether MinIO cloud storage is enabled in the single-service gateway
   is-enable: true
+  # 是否在 多用户开放网关 内启用 MinIO 云存储
+  # Whether MinIO cloud storage is enabled in the multi-user open gateway
+  is-user-enable: true
   # MinIO 服务器的 Endpoint URL
   # Endpoint URL for MinIO server
   endpoint: http://192.168.215.2:9000

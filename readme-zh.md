@@ -47,8 +47,6 @@
   mkdir -p ./config && mkdir -p ./storage/logs && mkdir -p ./storage/uploads
   ```
 
-  默认服务端本地图片保存路径为 **/data/storage/uploads**
-
   首次启动如果不下载配置文件,程序会自动生成一个默认配置到 **config/config.yaml**
 
   如果你想从网络下载一个默认配置 使用以下命令来下载
@@ -129,9 +127,9 @@
 
 ### 使用
 
-- 使用单服务接口
+- **使用单服务网关**
 
-	支持 **本地存储**, **OSS** , **Cloudflare R2** , **Amazon S3** , **MinIO**
+	支持 `本地存储`, `OSS` , `Cloudflare R2` , `Amazon S3` , `MinIO`
 
 	需要修改 [config.yaml](config/config.yaml#http-port)
 
@@ -143,9 +141,10 @@
 
 	API 访问令牌为  `auth-token` 内容
 
-- 使用 **多用户** 开放服务接口
 
-	支持  **OSS** , **Cloudflare R2** , **Amazon S3**
+- **使用 多用户 开放网关**
+
+	支持  `本地存储`, `OSS` , `Cloudflare R2` , `Amazon S3` , `MinIO`  ( v2.3+ )
 
 	需要在 [config.yaml](config/config.yaml#user) 中修改
 
@@ -155,13 +154,23 @@
 
 	启动网关程序
 
-	访问 **WebGUI** 地址 `http://{IP:PORT}` 进行用户注册配置
+	访问 `WebGUI` 地址 `http://{IP:PORT}` 进行用户注册配置
 
 	![Image](https://github.com/user-attachments/assets/39c798de-b243-42c1-a75a-cd179913fc49)
 
 	API 网关地址为 `http://{IP:PORT}/api/user/upload`
 
-	点击在 **WebGUI** 复制 API 配置 获取配置信息
+	点击在 `WebGUI` 复制 API 配置 获取配置信息
+
+
+
+- **存储类型说明**
+
+
+  | 存储类型       | 说明 |
+  |----------------|-----------|
+  | 服务器本地存储   | 默认的保存路径为: `/data/storage/uploads` 关联配置项`config.local-fs.save-path`,  <br />如果使用网关图片资源访问服务, 需要 `config.local-fs.httpfs-is-enable` 设置为 `true` <br /> 对应的 `访问地址前缀` 为 `http://{IP:PORT}` <br />推荐使用 Nginx 来实现资源访问 |
+
 
 
 ### 配置说明

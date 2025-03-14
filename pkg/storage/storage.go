@@ -3,6 +3,7 @@ package storage
 import (
 	"io"
 
+	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aliyun_oss"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
@@ -56,4 +57,46 @@ func NewClient(cType Type, config map[string]any) (Storager, error) {
 		return minio.NewClient(config)
 	}
 	return nil, code.ErrorInvalidStorageType
+}
+
+func IsUserEnabled(cType Type) error {
+
+	// 检查云存储类型是否有效
+	if !StorageTypeMap[cType] {
+		return code.ErrorInvalidCloudStorageType
+	}
+
+	if cType == LOCAL && !global.Config.LocalFS.IsUserEnabled {
+		return code.ErrorUserLocalFSDisabled
+	} else if cType == OSS && !global.Config.OSS.IsUserEnabled {
+		return code.ErrorUserALIOSSDisabled
+	} else if cType == R2 && !global.Config.CloudflueR2.IsUserEnabled {
+		return code.ErrorUserCloudflueR2Disabled
+	} else if cType == S3 && !global.Config.AWSS3.IsUserEnabled {
+		return code.ErrorUserAWSS3Disabled
+	} else if cType == MinIO && !global.Config.MinIO.IsUserEnabled {
+		return code.ErrorUserMinIODisabled
+	}
+	return nil
+}
+
+func GetIsUserEnabledStorageTypes() []CloudType {
+
+	var list []CloudType
+	if global.Config.CloudflueR2.IsUserEnabled {
+		list = append(list, R2)
+	}
+	if global.Config.OSS.IsUserEnabled {
+		list = append(list, OSS)
+	}
+	if global.Config.AWSS3.IsUserEnabled {
+		list = append(list, S3)
+	}
+	if global.Config.MinIO.IsUserEnabled {
+		list = append(list, MinIO)
+	}
+	if global.Config.LocalFS.IsUserEnabled {
+		list = append(list, LOCAL)
+	}
+	return list
 }

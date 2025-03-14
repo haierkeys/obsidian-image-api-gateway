@@ -19,19 +19,19 @@ var (
 )
 
 type config struct {
-	File       string
-	Server     server               `yaml:"server"`
-	Log        LogConfig            `yaml:"log"`
-	Database   Database             `yaml:"database"`
-	User       user                 `yaml:"user"`
-	App        app                  `yaml:"app"`
-	Email      email                `yaml:"email"`
-	Security   security             `yaml:"security"`
-	LocalFS    local_fs.Config      `yaml:"local-fs"`
-	OSS        aliyun_oss.Config    `yaml:"storage-oss"`
-	CloudfluR2 cloudflare_r2.Config `yaml:"cloudflu-r2"`
-	MinIO      minio.Config         `yaml:"minio"`
-	AWSS3      aws_s3.Config        `yaml:"aws-s3"`
+	File        string
+	Server      server               `yaml:"server"`
+	Log         LogConfig            `yaml:"log"`
+	Database    Database             `yaml:"database"`
+	User        user                 `yaml:"user"`
+	App         app                  `yaml:"app"`
+	Email       email                `yaml:"email"`
+	Security    security             `yaml:"security"`
+	LocalFS     local_fs.Config      `yaml:"local-fs"`
+	OSS         aliyun_oss.Config    `yaml:"oss"`
+	CloudflueR2 cloudflare_r2.Config `yaml:"cloudflue-r2"`
+	MinIO       minio.Config         `yaml:"minio"`
+	AWSS3       aws_s3.Config        `yaml:"aws-s3"`
 }
 
 type LogConfig struct {
