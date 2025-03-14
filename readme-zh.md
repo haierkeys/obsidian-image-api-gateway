@@ -169,7 +169,7 @@
 
   | 存储类型       | 说明 |
   |----------------|-----------|
-  | 服务器本地存储   | 默认的保存路径为: `/data/storage/uploads` 关联配置项`config.local-fs.save-path`,  <br />如果使用网关图片资源访问服务, 需要 `config.local-fs.httpfs-is-enable` 设置为 `true` <br /> 对应的 `访问地址前缀` 为 `http://{IP:PORT}` <br />推荐使用 Nginx 来实现资源访问 |
+  | 服务器本地存储   | 默认的保存路径为: `/data/storage/uploads` 关联配置项`config.local-fs.save-path` 为 `storage/uploads`,  <br />如果使用网关图片资源访问服务, 需要 `config.local-fs.httpfs-is-enable` 设置为 `true` <br /> 对应的 `访问地址前缀` 为 `http://{IP:PORT}`, 使用单服务网关设置 `config.app.upload-url-pre` <br />推荐使用 Nginx 来实现资源访问, 使用单服务网关 |
 
 
 
