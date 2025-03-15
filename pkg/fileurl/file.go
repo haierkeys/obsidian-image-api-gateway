@@ -58,10 +58,13 @@ func GetFileExt(name string) string {
 }
 
 // GetDatePath 获取日期保存路径
-func GetDatePath() string {
-	getYearMonth := time.Now().Format("200601")
-	getDay := time.Now().Format("02")
-	return getYearMonth + "/" + getDay + "/"
+func GetDatePath(timeFormat string) string {
+	now := time.Now()
+	if timeFormat == "" {
+		timeFormat = "200601/02"
+	}
+	datePath := PathSuffixCheckAdd(now.Format(timeFormat), "/")
+	return datePath
 }
 
 // IsContainExt 判断文件后缀是否在允许范围内

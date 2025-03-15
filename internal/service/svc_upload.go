@@ -54,7 +54,7 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 		return nil, errors.New("exceeded maximum file limit.")
 	}
 
-	var fileKey = fileurl.GetDatePath() + fileName
+	var fileKey = fileurl.GetDatePath(global.Config.App.UploadDatePath) + fileName
 	var fileType = fileHeader.Header.Get("Content-Type")
 	var dstFileKey string
 
@@ -119,7 +119,7 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 		return nil, errors.New("exceeded maximum file limit.")
 	}
 
-	var fileKey = fileurl.GetDatePath() + fileName
+	var fileKey = fileurl.GetDatePath(global.Config.App.UploadDatePath) + fileName
 	var fileType = fileHeader.Header.Get("Content-Type")
 	var dstFileKey string
 
