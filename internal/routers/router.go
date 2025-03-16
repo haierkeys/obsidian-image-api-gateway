@@ -9,7 +9,7 @@ import (
 	_ "github.com/haierkeys/obsidian-image-api-gateway/docs"
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers/apiRouter"
+	apiRouter "github.com/haierkeys/obsidian-image-api-gateway/internal/routers/api_router"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/limiter"
 
 	"github.com/gin-gonic/gin"
