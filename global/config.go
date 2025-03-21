@@ -118,7 +118,7 @@ type app struct {
 	// 上传服务器URL
 	UploadUrlPre string `yaml:"upload-url-pre"`
 	//上传日期路径设置
-	UploadDatePath     string `yaml:"upload-date-path"`
+	UploadDatePath string `yaml:"upload-date-path"`
 	// 上传图片最大尺寸
 	UploadMaxSize int `yaml:"upload-max-size"`
 	// 上传图片允许的扩展名
@@ -127,7 +127,6 @@ type app struct {
 	ImageMaxSizeWidth  int `yaml:"image-max-size-width"`
 	ImageMaxSizeHeight int `yaml:"image-max-size-height"`
 	ImageQuality       int `yaml:"image-quality"`
-
 }
 
 type email struct {

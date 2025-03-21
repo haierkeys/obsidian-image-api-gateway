@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
+	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/logger"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/safe_close"
@@ -194,7 +194,7 @@ func initValidator() error {
 
 func initDatabase() error {
 	var err error
-	global.DBEngine, err = model.NewDBEngine(global.Config.Database)
+	global.DBEngine, err = dao.NewDBEngine(global.Config.Database)
 	if err != nil {
 		return err
 	}

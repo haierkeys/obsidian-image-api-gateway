@@ -24,6 +24,7 @@ import (
 	"os"
 
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
