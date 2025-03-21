@@ -18,7 +18,6 @@ require (
 	github.com/go-playground/validator/v10 v10.25.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
-	github.com/gookit/goutil v0.6.18
 	github.com/haierkeys/gormTracing v0.0.0-20250102131738-31ab6d84a1ab
 	github.com/jinzhu/gorm v1.9.16
 	github.com/juju/ratelimit v1.0.2
@@ -27,6 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/radovskyb/watcher v1.0.7
 	github.com/spf13/cobra v1.8.1
+	github.com/studio-b12/gowebdav v0.10.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.4
@@ -79,7 +79,6 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gookit/color v1.5.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -105,7 +104,6 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/arch v0.14.0 // indirect

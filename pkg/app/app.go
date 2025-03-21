@@ -4,9 +4,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-
 	"github.com/gin-gonic/gin"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 )
 
 type Response struct {
@@ -39,18 +38,7 @@ type ResResult struct {
 	Data interface{} `json:"data"`
 }
 
-type ResListResult struct {
-	// 业务状态码
-	Code int `json:"code"`
-	// 状态
-	Status bool `json:"status"`
-	// 失败&&成功消息
-	Msg interface{} `json:"message"`
-	// 数据集合
-	Data ListRes `json:"data"`
-}
-
-type ErrResult struct {
+type ResDetailsResult struct {
 	// 业务状态码
 	Code int `json:"code"`
 	// 状态
@@ -61,6 +49,17 @@ type ErrResult struct {
 	Data interface{} `json:"data"`
 	// 错误支付
 	Details interface{} `json:"details"`
+}
+
+type ResListResult struct {
+	// 业务状态码
+	Code int `json:"code"`
+	// 状态
+	Status bool `json:"status"`
+	// 失败&&成功消息
+	Msg interface{} `json:"message"`
+	// 数据集合
+	Data ListRes `json:"data"`
 }
 
 func NewResponse(ctx *gin.Context) *Response {
@@ -112,7 +111,7 @@ func (r *Response) ToResponse(code *code.Code) {
 	r.Ctx.Set("status_code", code.StatusCode())
 	if code.HaveDetails() {
 		details := strings.Join(code.Details(), ",")
-		r.SendResponse(code.StatusCode(), ErrResult{
+		r.SendResultResponse(code.StatusCode(), ResDetailsResult{
 			Code:    code.Code(),
 			Status:  code.Status(),
 			Msg:     code.Lang.GetMessage(),
@@ -120,7 +119,7 @@ func (r *Response) ToResponse(code *code.Code) {
 			Details: details,
 		})
 	} else {
-		r.SendResponse(code.StatusCode(), ResResult{
+		r.SendResultResponse(code.StatusCode(), ResResult{
 			Code:   code.Code(),
 			Status: code.Status(),
 			Msg:    code.Lang.GetMessage(),
@@ -133,7 +132,7 @@ func (r *Response) ToResponseList(code *code.Code, list interface{}, totalRows i
 
 	r.Ctx.Set("status_code", code.StatusCode())
 
-	r.SendResponse(code.StatusCode(), ResListResult{
+	r.SendResultResponse(code.StatusCode(), ResListResult{
 		Code:   code.Code(),
 		Status: code.Status(),
 		Msg:    code.Lang.GetMessage(),
@@ -148,6 +147,6 @@ func (r *Response) ToResponseList(code *code.Code, list interface{}, totalRows i
 	})
 }
 
-func (r *Response) SendResponse(statusCode int, content interface{}) {
+func (r *Response) SendResultResponse(statusCode int, content interface{}) {
 	r.Ctx.JSON(statusCode, content)
 }

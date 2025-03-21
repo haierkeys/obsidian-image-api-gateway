@@ -104,7 +104,7 @@ func NewDBEngine(c global.Database) (*gorm.DB, error) {
 		sqlDB.SetMaxOpenConns(c.MaxOpenConns)
 
 		// SetConnMaxLifetime 设置了连接可复用的最大时间。
-		sqlDB.SetConnMaxLifetime(time.Hour)
+		sqlDB.SetConnMaxLifetime(time.Minute * 10)
 
 		_ = db.Use(&gormTracing.OpentracingPlugin{})
 
