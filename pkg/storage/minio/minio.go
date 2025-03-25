@@ -17,7 +17,7 @@ type Config struct {
 	BucketName      string `yaml:"bucket-name"`
 	Endpoint        string `yaml:"endpoint"`
 	Region          string `yaml:"region"`
-	AccessKeyId     string `yaml:"access-key-id"`
+	AccessKeyID     string `yaml:"access-key-id"`
 	AccessKeySecret string `yaml:"access-key-secret"`
 	CustomPath      string `yaml:"custom-path"`
 }
@@ -63,14 +63,14 @@ func NewClient(cf map[string]any) (*MinIO, error) {
 		Endpoint:        cf["Endpoint"].(string),
 		Region:          cf["Region"].(string),
 		BucketName:      cf["BucketName"].(string),
-		AccessKeyId:     cf["AccessKeyId"].(string),
+		AccessKeyID:     cf["AccessKeyID"].(string),
 		AccessKeySecret: cf["AccessKeySecret"].(string),
 		CustomPath:      cf["CustomPath"].(string),
 	}
 
 	var endpoint = conf.Endpoint
 	var region = conf.Region
-	var accessKeyId = conf.AccessKeyId
+	var accessKeyId = conf.AccessKeyID
 	var accessKeySecret = conf.AccessKeySecret
 
 	if clients[accessKeyId] != nil {

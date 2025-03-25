@@ -92,7 +92,7 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 			return 0, code.ErrorInvalidCloudStorageBucketName
 		}
 		if params.AccessKeyID == "" {
-			return 0, code.ErrorInvalidCloudStorageAccessKeyId
+			return 0, code.ErrorInvalidCloudStorageAccessKeyID
 		}
 		if params.AccessKeySecret == "" {
 			return 0, code.ErrorInvalidCloudStorageAccessKeySecret

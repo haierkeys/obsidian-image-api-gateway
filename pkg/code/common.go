@@ -32,7 +32,7 @@ var (
 	ErrorInvalidCloudStorageType            = NewError(incr(400), lang{zh: "云存储类型无效", en: "Invalid cloud storage type"})
 	ErrorInvalidStorageType                 = NewError(incr(400), lang{zh: "存储类型无效", en: "Invalid storage type"})
 	ErrorInvalidCloudStorageBucketName      = NewError(incr(400), lang{zh: "云存储桶名无效", en: "Invalid cloud storage bucket name"})
-	ErrorInvalidCloudStorageAccessKeyId     = NewError(incr(400), lang{zh: "云存储访问密钥ID无效", en: "Invalid cloud storage access key ID"})
+	ErrorInvalidCloudStorageAccessKeyID     = NewError(incr(400), lang{zh: "云存储访问密钥ID无效", en: "Invalid cloud storage access key ID"})
 	ErrorInvalidCloudStorageAccessKeySecret = NewError(incr(400), lang{zh: "云存储访问密钥无效", en: "Invalid cloud storage access key"})
 	ErrorInvalidCloudStorageAccountId       = NewError(incr(400), lang{zh: "云存储账户ID无效", en: "Invalid cloud storage account ID"})
 	ErrorInvalidCloudStorageRegion          = NewError(incr(400), lang{zh: "云存储区域无效", en: "Invalid cloud storage region"})

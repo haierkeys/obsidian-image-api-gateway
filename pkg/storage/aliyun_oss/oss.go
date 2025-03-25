@@ -9,7 +9,7 @@ type Config struct {
 	IsUserEnabled   bool   `yaml:"is-user-enable"`
 	Endpoint        string `yaml:"endpoint"`
 	BucketName      string `yaml:"bucket-name"`
-	AccessKeyId     string `yaml:"access-key-id"`
+	AccessKeyID     string `yaml:"access-key-id"`
 	AccessKeySecret string `yaml:"access-key-secret"`
 	CustomPath      string `yaml:"custom-path"`
 }
@@ -53,14 +53,14 @@ func NewClient(cf map[string]any) (*OSS, error) {
 		IsUserEnabled:   IsUserEnabled,
 		Endpoint:        cf["Endpoint"].(string),
 		BucketName:      cf["BucketName"].(string),
-		AccessKeyId:     cf["AccessKeyId"].(string),
+		AccessKeyID:     cf["AccessKeyID"].(string),
 		AccessKeySecret: cf["AccessKeySecret"].(string),
 		CustomPath:      cf["CustomPath"].(string),
 	}
 
-	var id = conf.AccessKeyId
+	var id = conf.AccessKeyID
 	var endpoint = conf.Endpoint
-	var accessKeyId = conf.AccessKeyId
+	var accessKeyId = conf.AccessKeyID
 	var accessKeySecret = conf.AccessKeySecret
 
 	var err error
