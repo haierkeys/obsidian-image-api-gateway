@@ -45,7 +45,7 @@ type CloudConfigSet struct {
 func (d *Dao) cloudConfig() *query.Query {
 	return d.Use(
 		func(g *gorm.DB) {
-			model.AutoMigrate(g, "Note")
+			model.AutoMigrate(g, "CloudConfig")
 		},
 	)
 }
