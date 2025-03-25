@@ -9,7 +9,7 @@ tmp_dir = "build"
 
 [build]
 # 每次构建前要运行的命令数组
-pre_cmd = []
+pre_cmd = ["go mod tidy"]
 # 纯 shell 命令，你也可以使用 `make`。
 cmd = "go build -o ./build/api ./main.go"
 # go build -o ./build/api ./main.go

@@ -38,12 +38,10 @@ CREATE TABLE "cloud_config" (
     "access_url_prefix" text DEFAULT '',
     "user" text DEFAULT '',
     "password" text DEFAULT '',
-    "path" text DEFAULT '',
-
     "is_enabled" integer NOT NULL DEFAULT 1,
     "is_deleted" integer NOT NULL DEFAULT 0,
-    "updated_at" datetime DEFAULT NULL,
     "created_at" datetime DEFAULT NULL,
+    "updated_at" datetime DEFAULT NULL,
     "deleted_at" datetime DEFAULT NULL
 );
 CREATE INDEX "idx_cloud_config_uid" ON "cloud_config" ("uid" ASC);

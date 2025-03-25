@@ -57,7 +57,6 @@ func NewClient(cf map[string]any) (*WebDAV, error) {
 		IsEnabled:     IsEnabled,
 		IsUserEnabled: IsUserEnabled,
 		Endpoint:      cf["Endpoint"].(string),
-		Path:          cf["Path"].(string),
 		User:          cf["User"].(string),
 		Password:      cf["Password"].(string),
 		CustomPath:    cf["CustomPath"].(string),
@@ -72,7 +71,6 @@ func NewClient(cf map[string]any) (*WebDAV, error) {
 	if clients[endpoint+path+user+customPath] != nil {
 		return clients[endpoint+path+user+customPath], nil
 	}
-
 
 	c := gowebdav.NewClient(endpoint, user, password)
 	c.Connect()

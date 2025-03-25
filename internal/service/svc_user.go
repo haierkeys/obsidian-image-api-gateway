@@ -173,7 +173,7 @@ func (svc *Service) UserChangePassword(uid int64, params *UserChangePasswordRequ
 		return code.ErrorDBQuery
 	}
 
-	if user != nil {
+	if user == nil {
 		return code.ErrorUserNotFound
 	}
 

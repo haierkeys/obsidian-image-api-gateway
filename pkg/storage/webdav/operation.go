@@ -3,36 +3,49 @@
 package webdav
 
 import (
-	"fmt"
+	"io"
 	"os"
+
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/errors"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
 )
 
 // SendFile 将本地文件上传到 WebDAV 服务器。
-func (w *WebDAV) SendFile(localPath, remotePath string) error {
-	content, err := os.ReadFile(localPath)
+func (w *WebDAV) SendFile(fileKey string, file io.Reader, itype string) (string, error) {
+
+	fileKey = fileurl.PathSuffixCheckAdd(w.Config.CustomPath, "/") + fileKey
+
+	err := w.Client.MkdirAll(w.Config.CustomPath, 0644)
 	if err != nil {
-		return fmt.Errorf("打开本地文件失败: %v", err)
+		return "", errors.Wrap(err, "webdav")
 	}
 
-	err = w.Client.Write(remotePath, content, os.ModePerm)
-
+	content, err := io.ReadAll(file)
 	if err != nil {
-		return fmt.Errorf("上传文件失败: %v", err)
+		return "", errors.Wrap(err, "webdav")
 	}
 
-	return nil
+	err = w.Client.Write(fileKey, content, os.ModePerm)
+
+	if err != nil {
+		return "", errors.Wrap(err, "webdav")
+	}
+
+	return fileKey, nil
 }
 
 // SendContent 将二进制内容上传到 WebDAV 服务器。
-func (w *WebDAV) SendContent(remotePath string, content []byte) error {
+func (w *WebDAV) SendContent(fileKey string, content []byte) (string, error) {
 
-	err := w.Client.Write(remotePath, content, os.ModePerm)
+	fileKey = fileurl.PathSuffixCheckAdd(w.Config.CustomPath, "/") + fileKey
+
+	err := w.Client.Write(fileKey, content, os.ModePerm)
 
 	if err != nil {
-		return fmt.Errorf("上传文件失败: %v", err)
+		return "", errors.Wrap(err, "webdav")
 	}
 
-	return nil
+	return fileKey, nil
 }
 
 // // DownloadFile 从 WebDAV 服务器下载文件到本地。

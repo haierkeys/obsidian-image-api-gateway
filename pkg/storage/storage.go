@@ -10,6 +10,7 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/minio"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/webdav"
 )
 
 type Type = string
@@ -32,11 +33,10 @@ var StorageTypeMap = map[Type]bool{
 }
 
 var CloudStorageTypeMap = map[Type]bool{
-	OSS:    true,
-	R2:     true,
-	S3:     true,
-	MinIO:  true,
-	WebDAV: true,
+	OSS:   true,
+	R2:    true,
+	S3:    true,
+	MinIO: true,
 }
 
 type Storager interface {
@@ -58,6 +58,8 @@ func NewClient(cType Type, config map[string]any) (Storager, error) {
 		return aws_s3.NewClient(config)
 	} else if cType == MinIO {
 		return minio.NewClient(config)
+	} else if cType == WebDAV {
+		return webdav.NewClient(config)
 	}
 	return nil, code.ErrorInvalidStorageType
 }

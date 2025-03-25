@@ -57,7 +57,7 @@ func NewRouter(frontendFiles embed.FS) *gin.Engine {
 			userApiR.POST("/register", apiRouter.NewUser().Register)
 			userApiR.POST("/login", apiRouter.NewUser().Login)
 
-			userApiR.Use(middleware.UserAuthToken()).GET("/change_password", apiRouter.NewUser().UserChangePassword)
+			userApiR.Use(middleware.UserAuthToken()).POST("/change_password", apiRouter.NewUser().UserChangePassword)
 			userApiR.Use(middleware.UserAuthToken()).GET("/cloud_config_enabled_types", apiRouter.NewCloudConfig().EnabledTypes)
 			userApiR.Use(middleware.UserAuthToken()).POST("/cloud_config", apiRouter.NewCloudConfig().UpdateAndCreate)
 			userApiR.Use(middleware.UserAuthToken()).DELETE("/cloud_config", apiRouter.NewCloudConfig().Delete)

@@ -23,7 +23,6 @@ type CloudConfig struct {
 	AccessURLPrefix string     `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
 	User            string     `json:"user" form:"user"`                       // 用户名
 	Password        string     `json:"password" form:"password"`               // 密码
-	Path            string     `json:"path" form:"path"`                       // 路径
 	IsEnabled       int64      `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
 	IsDeleted       int64      `json:"isDeleted" form:"isDeleted"`             // 是否删除，非空
 	UpdatedAt       timex.Time `json:"updatedAt" form:"updatedAt"`             // 更新时间，自动更新时间戳
@@ -44,7 +43,6 @@ type CloudConfigSet struct {
 	AccessURLPrefix string `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
 	User            string `json:"user" form:"user"`                       // 用户名
 	Password        string `json:"password" form:"password"`               // 密码
-	Path            string `json:"path" form:"path"`                       // 路径
 	IsEnabled       int64  `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
 }
 
@@ -62,7 +60,11 @@ func (d *Dao) Create(params *CloudConfigSet, uid int64) (int64, error) {
 	u := d.cloudConfig().CloudConfig
 
 	m := convert.StructAssign(params, &model.CloudConfig{}).(*model.CloudConfig)
+	m.UID = uid
 	err := u.WithContext(d.ctx).Create(m)
+
+	//dump.P(m, uid)
+
 	if err != nil {
 		return 0, err
 	}

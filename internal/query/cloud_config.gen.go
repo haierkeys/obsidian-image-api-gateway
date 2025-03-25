@@ -40,11 +40,10 @@ func newCloudConfig(db *gorm.DB, opts ...gen.DOOption) cloudConfig {
 	_cloudConfig.AccessURLPrefix = field.NewString(tableName, "access_url_prefix")
 	_cloudConfig.User = field.NewString(tableName, "user")
 	_cloudConfig.Password = field.NewString(tableName, "password")
-	_cloudConfig.Path = field.NewString(tableName, "path")
 	_cloudConfig.IsEnabled = field.NewInt64(tableName, "is_enabled")
 	_cloudConfig.IsDeleted = field.NewInt64(tableName, "is_deleted")
-	_cloudConfig.UpdatedAt = field.NewField(tableName, "updated_at")
 	_cloudConfig.CreatedAt = field.NewField(tableName, "created_at")
+	_cloudConfig.UpdatedAt = field.NewField(tableName, "updated_at")
 	_cloudConfig.DeletedAt = field.NewField(tableName, "deleted_at")
 
 	_cloudConfig.fillFieldMap()
@@ -69,11 +68,10 @@ type cloudConfig struct {
 	AccessURLPrefix field.String
 	User            field.String
 	Password        field.String
-	Path            field.String
 	IsEnabled       field.Int64
 	IsDeleted       field.Int64
-	UpdatedAt       field.Field
 	CreatedAt       field.Field
+	UpdatedAt       field.Field
 	DeletedAt       field.Field
 
 	fieldMap map[string]field.Expr
@@ -104,11 +102,10 @@ func (c *cloudConfig) updateTableName(table string) *cloudConfig {
 	c.AccessURLPrefix = field.NewString(table, "access_url_prefix")
 	c.User = field.NewString(table, "user")
 	c.Password = field.NewString(table, "password")
-	c.Path = field.NewString(table, "path")
 	c.IsEnabled = field.NewInt64(table, "is_enabled")
 	c.IsDeleted = field.NewInt64(table, "is_deleted")
-	c.UpdatedAt = field.NewField(table, "updated_at")
 	c.CreatedAt = field.NewField(table, "created_at")
+	c.UpdatedAt = field.NewField(table, "updated_at")
 	c.DeletedAt = field.NewField(table, "deleted_at")
 
 	c.fillFieldMap()
@@ -136,7 +133,7 @@ func (c *cloudConfig) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *cloudConfig) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 19)
+	c.fieldMap = make(map[string]field.Expr, 18)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["uid"] = c.UID
 	c.fieldMap["type"] = c.Type
@@ -150,11 +147,10 @@ func (c *cloudConfig) fillFieldMap() {
 	c.fieldMap["access_url_prefix"] = c.AccessURLPrefix
 	c.fieldMap["user"] = c.User
 	c.fieldMap["password"] = c.Password
-	c.fieldMap["path"] = c.Path
 	c.fieldMap["is_enabled"] = c.IsEnabled
 	c.fieldMap["is_deleted"] = c.IsDeleted
-	c.fieldMap["updated_at"] = c.UpdatedAt
 	c.fieldMap["created_at"] = c.CreatedAt
+	c.fieldMap["updated_at"] = c.UpdatedAt
 	c.fieldMap["deleted_at"] = c.DeletedAt
 }
 

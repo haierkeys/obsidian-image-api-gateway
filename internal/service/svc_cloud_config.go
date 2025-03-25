@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
@@ -23,7 +24,6 @@ type CloudConfig struct {
 	AccessURLPrefix string     `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
 	User            string     `json:"user" form:"user"`                       // 用户名
 	Password        string     `json:"password" form:"password"`               // 密码
-	Path            string     `json:"path" form:"path"`                       // 路径
 	IsEnabled       int64      `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
 	UpdatedAt       timex.Time `json:"updatedAt" form:"updatedAt"`             // 更新时间，自动更新时间戳
 	CreatedAt       timex.Time `json:"createdAt" form:"createdAt"`             // 创建时间，自动创建时间戳
@@ -42,7 +42,6 @@ type CloudConfigRequest struct {
 	AccessURLPrefix string `form:"accessUrlPrefix"  binding:"required,min=2,max=100"` // 访问地址前缀
 	User            string `form:"user"`                                              // 访问用户名
 	Password        string `form:"password"`                                          // 密码
-	Path            string `form:"path"`                                              // 远端路径
 	IsEnabled       int64  `form:"isEnabled"`                                         // 是否启用
 }
 
@@ -129,11 +128,26 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 		if params.Endpoint == "" {
 			return 0, code.ErrorInvalidCloudStorageEndpoint
 		}
+	} else if params.Type == storage.WebDAV {
+		// 检查端点是否为空
+		if params.Endpoint == "" {
+			return 0, code.ErrorWebDAVInvalidEndpoint
+		}
+		if params.User == "" {
+			return 0, code.ErrorWebDAVInvalidUser
+		}
+		if params.Password == "" {
+			return 0, code.ErrorWebDAVInvalidPassword
+		}
+	}
+	if params.AccessURLPrefix == "" {
+		return 0, code.ErrorInvalidAccessURLPrefix
 	}
 
 	// 调用数据访问层的更新方法
 	da := convert.StructAssign(params, &dao.CloudConfigSet{}).(*dao.CloudConfigSet)
 
+	dump.P(uid)
 	var id int64
 	var err error
 	if params.ID == 0 {
