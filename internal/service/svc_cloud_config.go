@@ -10,32 +10,32 @@ import (
 )
 
 type CloudConfig struct {
-	Id              int64      `json:"id"`              // ID
+	ID              int64      `json:"id"`              // ID
 	Type            string     `json:"type"`            // 类型
 	BucketName      string     `json:"bucketName"`      // 存储桶名称
 	Endpoint        string     `json:"endpoint"`        // 端点
 	Region          string     `json:"region"`          // 区域
-	AccountId       string     `json:"accountId"`       // 账户ID
-	AccessKeyId     string     `json:"accessKeyId"`     // 访问密钥ID
+	AccountID       string     `json:"accountId"`       // 账户ID
+	AccessKeyID     string     `json:"accessKeyId"`     // 访问密钥ID
 	AccessKeySecret string     `json:"accessKeySecret"` // 访问密钥秘密
 	CustomPath      string     `json:"customPath"`      // 自定义路径
-	AccessUrlPrefix string     `json:"accessUrlPrefix"` // 访问地址前缀
+	AccessURLPrefix string     `json:"accessUrlPrefix"` // 访问地址前缀
 	IsEnabled       int64      `json:"isEnabled"`       // 是否启用
 	UpdatedAt       timex.Time `json:"updatedAt"`       // 更新时间
 	CreatedAt       timex.Time `json:"createdAt"`       // 创建时间
 }
 
 type CloudConfigRequest struct {
-	Id              int64  `form:"id"`                                                // ID
+	ID              int64  `form:"id"`                                                // ID
 	Type            string `form:"type" binding:"required,gte=1"`                     // 类型
 	Endpoint        string `form:"endpoint"`                                          // 端点 oss
 	Region          string `form:"region"`                                            // 区域 s3
-	AccountId       string `form:"accountId"`                                         // 账户ID r2
+	AccountID       string `form:"accountId"`                                         // 账户ID r2
 	BucketName      string `form:"bucketName"`                                        // 存储桶名称
-	AccessKeyId     string `form:"accessKeyId"`                                       // 访问密钥ID
+	AccessKeyID     string `form:"accessKeyId"`                                       // 访问密钥ID
 	AccessKeySecret string `form:"accessKeySecret"`                                   // 访问密钥秘密
 	CustomPath      string `form:"customPath"`                                        // 自定义路径
-	AccessUrlPrefix string `form:"accessUrlPrefix"  binding:"required,min=2,max=100"` // 访问地址前缀
+	AccessURLPrefix string `form:"accessUrlPrefix"  binding:"required,min=2,max=100"` // 访问地址前缀
 	IsEnabled       int64  `form:"isEnabled"`                                         // 是否启用
 }
 
@@ -52,13 +52,13 @@ func (svc *Service) CloudTypeEnabledList() ([]storage.CloudType, error) {
 func (svc *Service) CloudConfigList(uid int64, pager *app.Pager) ([]*CloudConfig, int, error) {
 
 	// 统计指定用户的云存储配置数量
-	count, err := svc.dao.CountListByUid(uid)
+	count, err := svc.dao.CountListByUID(uid)
 	if err != nil {
 		return nil, 0, err // 如果发生错误，返回 nil 和错误信息
 	}
 
 	// 获取指定用户的云存储配置列表
-	daoList, err := svc.dao.GetListByUid(pager.Page, pager.PageSize, uid)
+	daoList, err := svc.dao.GetListByUID(pager.Page, pager.PageSize, uid)
 	if err != nil {
 		return nil, 0, err // 如果发生错误，返回 nil 和错误信息
 	}
@@ -91,7 +91,7 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 		if params.BucketName == "" {
 			return 0, code.ErrorInvalidCloudStorageBucketName
 		}
-		if params.AccessKeyId == "" {
+		if params.AccessKeyID == "" {
 			return 0, code.ErrorInvalidCloudStorageAccessKeyId
 		}
 		if params.AccessKeySecret == "" {
@@ -103,7 +103,7 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 	if params.Type == storage.R2 {
 
 		// 检查账户ID是否为空
-		if params.AccountId == "" {
+		if params.AccountID == "" {
 			return 0, code.ErrorInvalidCloudStorageAccountId
 		}
 
@@ -129,7 +129,7 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 
 	var id int64
 	var err error
-	if params.Id == 0 {
+	if params.ID == 0 {
 		id, err = svc.dao.Create(da, uid)
 		if err != nil {
 			// 如果发生错误，返回错误信息
@@ -137,14 +137,14 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 		}
 		svc.dao.DisableBatch(id, uid)
 	} else {
-		id = params.Id
-		err := svc.dao.Update(da, params.Id, uid)
+		id = params.ID
+		err := svc.dao.Update(da, params.ID, uid)
 		if err != nil {
 			// 如果发生错误，返回错误信息
 			return 0, err
 		}
 		if params.IsEnabled == 1 {
-			svc.dao.DisableBatch(params.Id, uid)
+			svc.dao.DisableBatch(params.ID, uid)
 		}
 	}
 	return id, nil

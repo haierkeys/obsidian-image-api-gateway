@@ -75,7 +75,7 @@ func (u Upload) UserUpload(c *gin.Context) {
 	}
 	defer file.Close()
 
-	uid := app.GetUid(c)
+	uid := app.GetUID(c)
 	if uid == 0 {
 		global.Logger.Error("apiRouter.UserUpload svc UserLogin err uid=0")
 		response.ToResponse(code.ErrorNotUserAuthToken)

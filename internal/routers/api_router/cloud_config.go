@@ -19,7 +19,7 @@ func NewCloudConfig() *CloudConfig {
 
 func (t *CloudConfig) EnabledTypes(c *gin.Context) {
 	response := app.NewResponse(c)
-	uid := app.GetUid(c)
+	uid := app.GetUID(c)
 	if uid == 0 {
 		global.Logger.Error("apiRouter.CloudConfig.Types err uid=0")
 		response.ToResponse(code.ErrorNotUserAuthToken)
@@ -44,7 +44,7 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
-	uid := app.GetUid(c)
+	uid := app.GetUID(c)
 	if uid == 0 {
 		global.Logger.Error("apiRouter.CloudConfig.UpdateAndCreate err uid=0")
 		response.ToResponse(code.ErrorNotUserAuthToken)
@@ -57,7 +57,7 @@ func (t *CloudConfig) UpdateAndCreate(c *gin.Context) {
 		response.ToResponse(code.Failed.WithDetails(err.Error()))
 		return
 	}
-	if params.Id == 0 {
+	if params.ID == 0 {
 		response.ToResponse(code.SuccessCreate.WithData(id))
 	} else {
 		response.ToResponse(code.SuccessUpdate.WithData(id))
@@ -73,7 +73,7 @@ func (t *CloudConfig) Delete(c *gin.Context) {
 		response.ToResponse(code.ErrorInvalidParams.WithDetails(errs.ErrorsToString()).WithData(errs.MapsToString()))
 		return
 	}
-	uid := app.GetUid(c)
+	uid := app.GetUID(c)
 	if uid == 0 {
 		global.Logger.Error("apiRouter.CloudConfig.Delete err uid=0")
 		response.ToResponse(code.ErrorNotUserAuthToken)
@@ -91,7 +91,7 @@ func (t *CloudConfig) Delete(c *gin.Context) {
 
 func (t *CloudConfig) List(c *gin.Context) {
 	response := app.NewResponse(c)
-	uid := app.GetUid(c)
+	uid := app.GetUID(c)
 	if uid == 0 {
 		global.Logger.Error("apiRouter.CloudConfig.List err uid=0")
 		response.ToResponse(code.ErrorNotUserAuthToken)

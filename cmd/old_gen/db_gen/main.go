@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/cmd/db_gen/db_driver"
+	"github.com/haierkeys/obsidian-image-api-gateway/cmd/old_gen/db_gen/db_driver"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
 )
 
