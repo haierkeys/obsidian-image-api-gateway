@@ -6,43 +6,48 @@ PRAGMA foreign_keys = false;
 -- ----------------------------
 -- Table structure for pre_user
 -- ----------------------------
-DROP TABLE IF EXISTS "pre_user";
-CREATE TABLE "pre_user" (
-    "uid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, -- 用户id
-    "email" TEXT DEFAULT '', -- 邮箱地址
-    "username" TEXT DEFAULT '', -- 用户名
-    "password" TEXT DEFAULT '', -- 密码
-    "salt" TEXT DEFAULT '', -- 密码混淆码
-    "token" TEXT NOT NULL DEFAULT '', -- 用户授权令牌
-    "avatar" TEXT NOT NULL DEFAULT '', -- 用户头像路径
-    "is_deleted" INTEGER NOT NULL DEFAULT 0, -- 是否删除
-    "updated_at" TIMESTAMP DEFAULT NULL, -- 更新时间
-    "created_at" TIMESTAMP DEFAULT NULL, -- 创建时间
-    "deleted_at" TIMESTAMP DEFAULT NULL, -- 标记删除时间
-    UNIQUE ("email" ASC) -- 唯一索引
+DROP TABLE IF EXISTS "user";
+CREATE TABLE "user" (
+    "uid" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "email" text DEFAULT '',
+    "username" text DEFAULT '',
+    "password" text DEFAULT '',
+    "salt" text DEFAULT '',
+    "token" text NOT NULL DEFAULT '',
+    "avatar" text NOT NULL DEFAULT '',
+    "is_deleted" integer NOT NULL DEFAULT 0,
+    "updated_at" datetime DEFAULT NULL,
+    "created_at" datetime DEFAULT NULL,
+    "deleted_at" datetime DEFAULT NULL,
+    UNIQUE ("email" ASC)
 );
-CREATE UNIQUE INDEX "email" ON "pre_user" ("email" ASC);
+CREATE UNIQUE INDEX "idx_user_email" ON "user" ("email" ASC);
 
-DROP TABLE IF EXISTS "pre_cloud_config";
-CREATE TABLE "pre_cloud_config" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, -- 配置id
-    "uid" INTEGER NOT NULL DEFAULT 0, -- 用户id
-    "type" TEXT DEFAULT '', -- 类型
-    "endpoint" TEXT DEFAULT '',-- 账户id
-    "region" TEXT DEFAULT '',-- 账户id
-    "account_id" TEXT DEFAULT '', -- 账户id
-    "bucket_name" TEXT DEFAULT '',-- 存储桶名称
-    "access_key_id" TEXT DEFAULT '', -- 访问密钥id
-    "access_key_secret" TEXT DEFAULT '', -- 访问密钥
-    "custom_path" TEXT DEFAULT '', -- 自定义路径
-    "access_url_prefix" TEXT DEFAULT '', -- 访问地址前缀
-    "is_enabled" INTEGER NOT NULL DEFAULT 1, -- 是否启用
-    "is_deleted" INTEGER NOT NULL DEFAULT 0, -- 是否删除
-    "updated_at" TIMESTAMP DEFAULT NULL, -- 更新时间
-    "created_at" TIMESTAMP DEFAULT NULL, -- 创建时间
-    "deleted_at" TIMESTAMP DEFAULT NULL -- 标记删除时间
+DROP TABLE IF EXISTS "cloud_config";
+CREATE TABLE "cloud_config" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "uid" integer NOT NULL DEFAULT 0,
+    "type" text DEFAULT '',
+    "endpoint" text DEFAULT '',
+    "region" text DEFAULT '',
+    "account_id" text DEFAULT '',
+    "bucket_name" text DEFAULT '',
+    "access_key_id" text DEFAULT '',
+    "access_key_secret" text DEFAULT '',
+    "custom_path" text DEFAULT '',
+    "access_url_prefix" text DEFAULT '',
+    "user" text DEFAULT '',
+    "pass" text DEFAULT '',
+    "path" text DEFAULT '',
+
+    "is_enabled" integer NOT NULL DEFAULT 1,
+    "is_deleted" integer NOT NULL DEFAULT 0,
+    "updated_at" datetime DEFAULT NULL,
+    "created_at" datetime DEFAULT NULL,
+    "deleted_at" datetime DEFAULT NULL
 );
-CREATE INDEX "uid" ON "pre_cloud_config" ("uid" ASC); -- 用户id索引
+CREATE INDEX "idx_cloud_config_uid" ON "cloud_config" ("uid" ASC);
+
 
 PRAGMA foreign_keys = true;
 

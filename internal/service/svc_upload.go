@@ -78,6 +78,8 @@ func (svc *Service) UploadFile(file multipart.File, fileHeader *multipart.FileHe
 			_ = convert.StructToMap(global.Config.AWSS3, config)
 		} else if sType == storage.MinIO {
 			_ = convert.StructToMap(global.Config.MinIO, config)
+		} else if sType == storage.WebDAV {
+			_ = convert.StructToMap(global.Config.WebDAV, config)
 		} else {
 			continue
 		}

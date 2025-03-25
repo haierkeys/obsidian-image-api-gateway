@@ -9,6 +9,7 @@ import (
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/minio"
+	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/webdav"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
@@ -32,6 +33,7 @@ type config struct {
 	CloudflueR2 cloudflare_r2.Config `yaml:"cloudflue-r2"`
 	MinIO       minio.Config         `yaml:"minio"`
 	AWSS3       aws_s3.Config        `yaml:"aws-s3"`
+	WebDAV      webdav.Config        `yaml:"webdav"`
 }
 
 type LogConfig struct {

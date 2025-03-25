@@ -2,31 +2,38 @@
 
 package webdav
 
-// // SendFile 将本地文件上传到 WebDAV 服务器。
-// func (w *WebDAV) SendFile(localPath, remotePath string) error {
-// 	file, err := os.Open(localPath)
-// 	if err != nil {
-// 		return fmt.Errorf("打开本地文件失败: %v", err)
-// 	}
-// 	defer file.Close()
+import (
+	"fmt"
+	"os"
+)
 
-// 	err = w.Client.UploadFile(localPath, remotePath)
-// 	if err != nil {
-// 		return fmt.Errorf("上传文件失败: %v", err)
-// 	}
+// SendFile 将本地文件上传到 WebDAV 服务器。
+func (w *WebDAV) SendFile(localPath, remotePath string) error {
+	content, err := os.ReadFile(localPath)
+	if err != nil {
+		return fmt.Errorf("打开本地文件失败: %v", err)
+	}
 
-// 	return nil
-// }
+	err = w.Client.Write(remotePath, content, os.ModePerm)
 
-// // SendContent 将二进制内容上传到 WebDAV 服务器。
-// func (w *WebDAV) SendContent(remotePath string, content []byte) error {
-// 	err := w.Client.UploadStream(remotePath, bytes.NewReader(content), int64(len(content)))
-// 	if err != nil {
-// 		return fmt.Errorf("上传内容失败: %v", err)
-// 	}
+	if err != nil {
+		return fmt.Errorf("上传文件失败: %v", err)
+	}
 
-// 	return nil
-// }
+	return nil
+}
+
+// SendContent 将二进制内容上传到 WebDAV 服务器。
+func (w *WebDAV) SendContent(remotePath string, content []byte) error {
+
+	err := w.Client.Write(remotePath, content, os.ModePerm)
+
+	if err != nil {
+		return fmt.Errorf("上传文件失败: %v", err)
+	}
+
+	return nil
+}
 
 // // DownloadFile 从 WebDAV 服务器下载文件到本地。
 // func (w *WebDAV) DownloadFile(remotePath, localPath string) error {

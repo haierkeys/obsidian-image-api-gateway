@@ -218,3 +218,27 @@ minio:
   # 上传文件的自定义路径或前缀
   # Custom path or prefix for uploaded files
   custom-path: blog
+
+
+webdav:
+  # 是否在 单服务网关 内启用 WebDAV 存储
+  # Whether WebDAV storage is enabled in the single-service gateway
+  is-enable: false
+  # 是否在 多用户开放网关 内启用 WebDAV 存储
+  # Whether WebDAV storage is enabled in the multi-user open gateway
+  is-user-enable: true
+  # WebDAV 服务的 Endpoint（需要配置）
+  # Endpoint for WebDAV service (needs configuration)
+  endpoint:
+  # WebDAV 服务的路径（需要配置）
+  # Path for WebDAV service (needs configuration)
+  path:
+  # WebDAV 服务的用户名（需要配置）
+  # Username for WebDAV service (needs configuration)
+  user:
+  # WebDAV 服务的密码（需要配置）
+  # Password for WebDAV service (needs configuration)
+  password:
+  # 上传文件的自定义路径或前缀
+  # Custom path or prefix for uploaded files
+  custom-path: blog

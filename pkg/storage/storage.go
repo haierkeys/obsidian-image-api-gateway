@@ -20,20 +20,23 @@ const R2 CloudType = "r2"
 const S3 CloudType = "s3"
 const LOCAL Type = "localfs"
 const MinIO CloudType = "minio"
+const WebDAV CloudType = "webdav"
 
 var StorageTypeMap = map[Type]bool{
-	OSS:   true,
-	R2:    true,
-	S3:    true,
-	LOCAL: true,
-	MinIO: true,
+	OSS:    true,
+	R2:     true,
+	S3:     true,
+	LOCAL:  true,
+	MinIO:  true,
+	WebDAV: true,
 }
 
 var CloudStorageTypeMap = map[Type]bool{
-	OSS:   true,
-	R2:    true,
-	S3:    true,
-	MinIO: true,
+	OSS:    true,
+	R2:     true,
+	S3:     true,
+	MinIO:  true,
+	WebDAV: true,
 }
 
 type Storager interface {
