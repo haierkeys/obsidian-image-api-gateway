@@ -10,19 +10,23 @@ import (
 )
 
 type CloudConfig struct {
-	ID              int64      `json:"id"`              // ID
-	Type            string     `json:"type"`            // 类型
-	BucketName      string     `json:"bucketName"`      // 存储桶名称
-	Endpoint        string     `json:"endpoint"`        // 端点
-	Region          string     `json:"region"`          // 区域
-	AccountID       string     `json:"accountId"`       // 账户ID
-	AccessKeyID     string     `json:"accessKeyId"`     // 访问密钥ID
-	AccessKeySecret string     `json:"accessKeySecret"` // 访问密钥秘密
-	CustomPath      string     `json:"customPath"`      // 自定义路径
-	AccessURLPrefix string     `json:"accessUrlPrefix"` // 访问地址前缀
-	IsEnabled       int64      `json:"isEnabled"`       // 是否启用
-	UpdatedAt       timex.Time `json:"updatedAt"`       // 更新时间
-	CreatedAt       timex.Time `json:"createdAt"`       // 创建时间
+	ID              int64      `json:"id" form:"id"`                           // 主键ID
+	UID             int64      `json:"uid" form:"uid"`                         // 用户ID，非空，索引
+	Type            string     `json:"type" form:"type"`                       // 类型
+	Endpoint        string     `json:"endpoint" form:"endpoint"`               // 终端点
+	Region          string     `json:"region" form:"region"`                   // 区域
+	AccountID       string     `json:"accountId" form:"accountId"`             // 账户ID
+	BucketName      string     `json:"bucketName" form:"bucketName"`           // 桶名称
+	AccessKeyID     string     `json:"accessKeyId" form:"accessKeyId"`         // 访问密钥ID
+	AccessKeySecret string     `json:"accessKeySecret" form:"accessKeySecret"` // 访问密钥密文
+	CustomPath      string     `json:"customPath" form:"customPath"`           // 自定义路径
+	AccessURLPrefix string     `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
+	User            string     `json:"user" form:"user"`                       // 用户名
+	Password        string     `json:"password" form:"password"`               // 密码
+	Path            string     `json:"path" form:"path"`                       // 路径
+	IsEnabled       int64      `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
+	UpdatedAt       timex.Time `json:"updatedAt" form:"updatedAt"`             // 更新时间，自动更新时间戳
+	CreatedAt       timex.Time `json:"createdAt" form:"createdAt"`             // 创建时间，自动创建时间戳
 }
 
 type CloudConfigRequest struct {
@@ -36,6 +40,9 @@ type CloudConfigRequest struct {
 	AccessKeySecret string `form:"accessKeySecret"`                                   // 访问密钥秘密
 	CustomPath      string `form:"customPath"`                                        // 自定义路径
 	AccessURLPrefix string `form:"accessUrlPrefix"  binding:"required,min=2,max=100"` // 访问地址前缀
+	User            string `form:"user"`                                              // 访问用户名
+	Password        string `form:"password"`                                          // 密码
+	Path            string `form:"path"`                                              // 远端路径
 	IsEnabled       int64  `form:"isEnabled"`                                         // 是否启用
 }
 

@@ -37,7 +37,7 @@ CREATE TABLE "cloud_config" (
     "custom_path" text DEFAULT '',
     "access_url_prefix" text DEFAULT '',
     "user" text DEFAULT '',
-    "pass" text DEFAULT '',
+    "password" text DEFAULT '',
     "path" text DEFAULT '',
 
     "is_enabled" integer NOT NULL DEFAULT 1,

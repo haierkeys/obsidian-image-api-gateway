@@ -10,36 +10,42 @@ import (
 )
 
 type CloudConfig struct {
-	ID              int64      `gorm:"column:id;primary_key;auto_increment" json:"id" form:"id"`                                            //
-	UID             int64      `gorm:"column:uid;index;default:0" json:"uid" form:"uid"`                                                    //
-	Type            string     `gorm:"column:type;default:''" json:"type" form:"type"`                                                      //
-	BucketName      string     `gorm:"column:bucket_name;default:''" json:"bucketName" form:"bucketName"`                                   //
-	Endpoint        string     `gorm:"column:endpoint;default:''" json:"endpoint" form:"endpoint"`                                          //
-	Region          string     `gorm:"column:region;default:''" json:"region" form:"region"`                                                //
-	AccountID       string     `gorm:"column:account_id;default:''" json:"accountId" form:"accountId"`                                      //
-	AccessKeyID     string     `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`                               //
-	AccessKeySecret string     `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"`                   //
-	CustomPath      string     `gorm:"column:custom_path;default:''" json:"customPath" form:"customPath"`                                   //
-	AccessURLPrefix string     `gorm:"column:access_url_prefix;default:''" json:"accessUrlPrefix" form:"accessUrlPrefix"`                   //
-	IsEnabled       int64      `gorm:"column:is_enabled;default:1" json:"isEnabled" form:"isEnabled"`                                       //
-	IsDeleted       int64      `gorm:"column:is_deleted;default:0" json:"isDeleted" form:"isDeleted"`                                       //
-	UpdatedAt       timex.Time `gorm:"column:updated_at;type:datetime;autoUpdateTime:false;default:NULL" json:"updatedAt" form:"updatedAt"` //
-	CreatedAt       timex.Time `gorm:"column:created_at;type:datetime;autoUpdateTime:false;default:NULL" json:"createdAt" form:"createdAt"` //
-	DeletedAt       timex.Time `gorm:"column:deleted_at;type:datetime;autoUpdateTime:false;default:NULL" json:"deletedAt" form:"deletedAt"` //
+	ID              int64      `json:"id" form:"id"`                           // 主键ID
+	UID             int64      `json:"uid" form:"uid"`                         // 用户ID，非空，索引
+	Type            string     `json:"type" form:"type"`                       // 类型
+	Endpoint        string     `json:"endpoint" form:"endpoint"`               // 终端点
+	Region          string     `json:"region" form:"region"`                   // 区域
+	AccountID       string     `json:"accountId" form:"accountId"`             // 账户ID
+	BucketName      string     `json:"bucketName" form:"bucketName"`           // 桶名称
+	AccessKeyID     string     `json:"accessKeyId" form:"accessKeyId"`         // 访问密钥ID
+	AccessKeySecret string     `json:"accessKeySecret" form:"accessKeySecret"` // 访问密钥密文
+	CustomPath      string     `json:"customPath" form:"customPath"`           // 自定义路径
+	AccessURLPrefix string     `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
+	User            string     `json:"user" form:"user"`                       // 用户名
+	Password        string     `json:"password" form:"password"`               // 密码
+	Path            string     `json:"path" form:"path"`                       // 路径
+	IsEnabled       int64      `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
+	IsDeleted       int64      `json:"isDeleted" form:"isDeleted"`             // 是否删除，非空
+	UpdatedAt       timex.Time `json:"updatedAt" form:"updatedAt"`             // 更新时间，自动更新时间戳
+	CreatedAt       timex.Time `json:"createdAt" form:"createdAt"`             // 创建时间，自动创建时间戳
+	DeletedAt       timex.Time `json:"deletedAt" form:"deletedAt"`             // 删除时间，默认为NULL
 }
 
 type CloudConfigSet struct {
-	ID              int64  `gorm:"column:id;primary_key;auto_increment" json:"id" form:"id"`                          //
-	Type            string `gorm:"column:type;default:''" json:"type" form:"type"`                                    //
-	BucketName      string `gorm:"column:bucket_name;default:''" json:"bucketName" form:"bucketName"`                 //
-	Endpoint        string `gorm:"column:endpoint;default:''" json:"endpoint" form:"endpoint"`                        //
-	Region          string `gorm:"column:region;default:''" json:"region" form:"region"`                              //
-	AccountID       string `gorm:"column:account_id;default:''" json:"accountId" form:"accountId"`                    //
-	AccessKeyID     string `gorm:"column:access_key_id;default:''" json:"accessKeyId" form:"accessKeyId"`             //
-	AccessKeySecret string `gorm:"column:access_key_secret;default:''" json:"accessKeySecret" form:"accessKeySecret"` //
-	CustomPath      string `gorm:"column:custom_path;default:''" json:"customPath" form:"customPath"`                 //
-	AccessURLPrefix string `gorm:"column:access_url_prefix;default:''" json:"accessUrlPrefix" form:"accessUrlPrefix"` //
-	IsEnabled       int64  `gorm:"column:is_enabled;default:1" json:"isEnabled" form:"isEnabled"`                     //
+	ID              int64  `json:"id" form:"id"`                           // 主键ID
+	Type            string `json:"type" form:"type"`                       // 类型
+	Endpoint        string `json:"endpoint" form:"endpoint"`               // 终端点
+	Region          string `json:"region" form:"region"`                   // 区域
+	AccountID       string `json:"accountId" form:"accountId"`             // 账户ID
+	BucketName      string `json:"bucketName" form:"bucketName"`           // 桶名称
+	AccessKeyID     string `json:"accessKeyId" form:"accessKeyId"`         // 访问密钥ID
+	AccessKeySecret string `json:"accessKeySecret" form:"accessKeySecret"` // 访问密钥密文
+	CustomPath      string `json:"customPath" form:"customPath"`           // 自定义路径
+	AccessURLPrefix string `json:"accessUrlPrefix" form:"accessUrlPrefix"` // 访问URL前缀
+	User            string `json:"user" form:"user"`                       // 用户名
+	Password        string `json:"password" form:"password"`               // 密码
+	Path            string `json:"path" form:"path"`                       // 路径
+	IsEnabled       int64  `json:"isEnabled" form:"isEnabled"`             // 是否启用，非空，默认为1
 }
 
 func (d *Dao) cloudConfig() *query.Query {
