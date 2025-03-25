@@ -19,6 +19,7 @@ var (
 	ErrorUserRegister                       = NewError(incr(400), lang{zh: "用户注册失败", en: "User registration failed"})
 	ErrorPasswordNotValid                   = NewError(incr(400), lang{zh: "密码不符合规则", en: "Password does not meet the rules"})
 	ErrorUserLoginPasswordFailed            = NewError(incr(400), lang{zh: "密码错误", en: "Password error"})
+	ErrorUserOldPasswordFailed              = NewError(incr(400), lang{zh: "密码验证错误", en: "Password verification error"})
 	ErrorMultiUserPublicAPIClosed           = NewError(incr(400), lang{zh: "多用户开放接口已经关闭,请联系管理员配置 config.user.is-user-enable 选项", en: "Multi-user open interface has been closed, please contact the administrator to configure the config.user.is-user-enable option"})
 	ErrorUserRegisterIsDisable              = NewError(incr(400), lang{zh: "用户注册已关闭,请联系管理员配置 config.user.register-is-enable 选项", en: "User registration is closed, please contact the administrator to configure the config.user.register-is-enable option"})
 	ErrorUserLoginFailed                    = NewError(incr(400), lang{zh: "用户登录失败", en: "User login failed"})

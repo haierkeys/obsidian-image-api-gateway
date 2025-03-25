@@ -40,6 +40,12 @@ type UserRegisterSendEmail struct {
 	Email string `json:"email" form:"email" binding:"required,email"`
 }
 
+type UserChangePasswordRequest struct {
+	OldPassword     string `json:"oldPassword" form:"oldPassword" binding:"required"`
+	Password        string `json:"password" form:"password" binding:"required"`
+	ConfirmPassword string `json:"confirmPassword" form:"confirmPassword" binding:"required"`
+}
+
 func (svc *Service) UserRegisterSendEmail(param *UserCreateRequest) (int64, error) {
 
 	user := &dao.User{
@@ -56,7 +62,7 @@ func (svc *Service) UserRegisterSendEmail(param *UserCreateRequest) (int64, erro
 }
 
 // UserRegister 用户注册
-func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
+func (svc *Service) UserRegister(params *UserCreateRequest) (*User, error) {
 
 	if !global.Config.User.IsEnabled {
 		return nil, code.ErrorMultiUserPublicAPIClosed
@@ -66,15 +72,14 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 		return nil, code.ErrorUserRegisterIsDisable
 	}
 
-	if !util.IsValidUsername(param.Username) {
+	if !util.IsValidUsername(params.Username) {
 		return nil, code.ErrorUserUsernameNotValid
 	}
-	if param.Password != param.ConfirmPassword {
+	if params.Password != params.ConfirmPassword {
 		return nil, code.ErrorUserPasswordNotMatch
-
 	}
 
-	emailUser, err := svc.dao.GetUserByEmail(param.Email)
+	emailUser, err := svc.dao.GetUserByEmail(params.Email)
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, code.ErrorDBQuery
@@ -84,7 +89,7 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 		return nil, code.ErrorUserEmailAlreadyExists
 	}
 
-	nameUser, err := svc.dao.GetUserByUsername(param.Username)
+	nameUser, err := svc.dao.GetUserByUsername(params.Username)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, code.ErrorDBQuery
 	}
@@ -92,14 +97,14 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 		return nil, code.ErrorUserAlreadyExists
 	}
 
-	password, err := util.GeneratePasswordHash(param.Password)
+	password, err := util.GeneratePasswordHash(params.Password)
 	if err != nil {
 		return nil, code.ErrorPasswordNotValid
 	}
 
 	user := &dao.User{
-		Username: param.Username,
-		Email:    param.Email,
+		Username: params.Username,
+		Email:    params.Email,
 		Password: password,
 		// 其他字段可以根据需要设置，例如头像等
 	}
@@ -118,7 +123,7 @@ func (svc *Service) UserRegister(param *UserCreateRequest) (*User, error) {
 }
 
 // UserLogin 用户登录
-func (svc *Service) UserLogin(param *UserLoginRequest) (*User, error) {
+func (svc *Service) UserLogin(params *UserLoginRequest) (*User, error) {
 
 	var user *dao.User
 	var err error
@@ -127,19 +132,19 @@ func (svc *Service) UserLogin(param *UserLoginRequest) (*User, error) {
 		return nil, code.ErrorMultiUserPublicAPIClosed
 	}
 
-	if util.IsValidEmail(param.Credentials) {
-		user, err = svc.dao.GetUserByEmail(param.Credentials)
+	if util.IsValidEmail(params.Credentials) {
+		user, err = svc.dao.GetUserByEmail(params.Credentials)
 		if err != nil {
 			return nil, code.ErrorUserNotFound
 		}
 	} else {
-		user, err = svc.dao.GetUserByUsername(param.Credentials)
+		user, err = svc.dao.GetUserByUsername(params.Credentials)
 		if err != nil {
 			return nil, code.ErrorUserNotFound
 		}
 	}
 
-	if !util.CheckPasswordHash(user.Password, param.Password) {
+	if !util.CheckPasswordHash(user.Password, params.Password) {
 		return nil, code.ErrorUserLoginPasswordFailed
 	}
 
@@ -149,4 +154,37 @@ func (svc *Service) UserLogin(param *UserLoginRequest) (*User, error) {
 	user.Token = userAuthToken
 
 	return convert.StructAssign(user, &User{}).(*User), nil
+}
+
+// UserChangePassword 修改密码
+func (svc *Service) UserChangePassword(uid int64, params *UserChangePasswordRequest) error {
+
+	if !global.Config.User.IsEnabled {
+		return code.ErrorMultiUserPublicAPIClosed
+	}
+
+	if params.Password != params.ConfirmPassword {
+		return code.ErrorUserPasswordNotMatch
+	}
+
+	user, err := svc.dao.GetUserByUID(uid)
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return code.ErrorDBQuery
+	}
+
+	if user != nil {
+		return code.ErrorUserNotFound
+	}
+
+	if !util.CheckPasswordHash(user.Password, params.OldPassword) {
+		return code.ErrorUserOldPasswordFailed
+	}
+
+	password, err := util.GeneratePasswordHash(params.Password)
+	if err != nil {
+		return code.ErrorPasswordNotValid
+	}
+
+	return svc.dao.UserUpdatePassword(password, uid)
 }
