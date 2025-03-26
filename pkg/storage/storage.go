@@ -103,5 +103,8 @@ func GetIsUserEnabledStorageTypes() []CloudType {
 	if global.Config.LocalFS.IsUserEnabled {
 		list = append(list, LOCAL)
 	}
+	if global.Config.WebDAV.IsUserEnabled {
+		list = append(list, WebDAV)
+	}
 	return list
 }

@@ -227,12 +227,9 @@ webdav:
   # 是否在 多用户开放网关 内启用 WebDAV 存储
   # Whether WebDAV storage is enabled in the multi-user open gateway
   is-user-enable: true
-  # WebDAV 服务的 Endpoint（需要配置）
-  # Endpoint for WebDAV service (needs configuration)
+  # WebDAV 服务的地址（需要配置） 例如 https://webdav.demo.com/Download/
+  #WebDAV service address (to be configured) | Example: https://webdav.demo.com/Download/
   endpoint:
-  # WebDAV 服务的路径（需要配置）
-  # Path for WebDAV service (needs configuration)
-  path:
   # WebDAV 服务的用户名（需要配置）
   # Username for WebDAV service (needs configuration)
   user:
@@ -241,4 +238,4 @@ webdav:
   password:
   # 上传文件的自定义路径或前缀
   # Custom path or prefix for uploaded files
-  custom-path: blog
+  custom-path: demo_note
