@@ -97,16 +97,8 @@
       volumes:
         - /data/image-api/storage/:/api/storage/  # 映射存储目录
         - /data/image-api/config/:/api/config/    # 映射配置目录
+      restart: always
 
-    watchtower:
-      image: containrrr/watchtower
-      container_name: watchtower
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock  # 允许 Watchtower 访问 Docker Daemon
-      environment:
-        - WATCHTOWER_SCHEDULE=0 0,30 * * * *  # 每半小时检查更新
-        - WATCHTOWER_CLEANUP=true            # 删除旧镜像，节省空间
-      restart: unless-stopped
   ```
 
   执行 **docker compose**

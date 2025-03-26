@@ -96,16 +96,7 @@ This software is open source and free. If you would like to show appreciation or
       volumes:
         - /data/image-api/storage/:/api/storage/  # Map storage directory
         - /data/image-api/config/:/api/config/    # Map configuration directory
-
-    watchtower:
-      image: containrrr/watchtower
-      container_name: watchtower
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock  # Allow Watchtower to access Docker Daemon
-      environment:
-        - WATCHTOWER_SCHEDULE=0 0,30 * * * *  # Check for updates every half hour
-        - WATCHTOWER_CLEANUP=true            # Delete old images to save space
-      restart: unless-stopped
+      restart: always
   ```
 
   Execute **docker compose**
