@@ -9,7 +9,6 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/gookit/goutil/dump"
 	"github.com/haierkeys/obsidian-image-api-gateway/global"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
 	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
@@ -164,7 +163,6 @@ func (svc *Service) UserUploadFile(uid int64, file multipart.File, fileHeader *m
 	useStore := []string{daoCloudConfig.Type}
 
 	accessUrl := fileurl.PathSuffixCheckAdd(userCloudConfig["AccessURLPrefix"].(string), "/") + fileurl.UrlEscape(dstFileKey)
-	dump.P(fileurl.UrlEscape(dstFileKey))
 
 	return &FileInfo{ImageTitle: fileHeader.Filename, ImageUrl: accessUrl, UseStore: useStore}, nil
 }
