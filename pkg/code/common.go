@@ -37,7 +37,7 @@ var (
 	ErrorInvalidCloudStorageBucketName      = NewError(incr(400), lang{zh: "云存储桶名无效", en: "Invalid cloud storage bucket name"})
 	ErrorInvalidCloudStorageAccessKeyID     = NewError(incr(400), lang{zh: "云存储访问密钥ID无效", en: "Invalid cloud storage access key ID"})
 	ErrorInvalidCloudStorageAccessKeySecret = NewError(incr(400), lang{zh: "云存储访问密钥无效", en: "Invalid cloud storage access key"})
-	ErrorInvalidCloudStorageAccountId       = NewError(incr(400), lang{zh: "云存储账户ID无效", en: "Invalid cloud storage account ID"})
+	ErrorInvalidCloudStorageAccountID       = NewError(incr(400), lang{zh: "云存储账户ID无效", en: "Invalid cloud storage account ID"})
 	ErrorInvalidCloudStorageRegion          = NewError(incr(400), lang{zh: "云存储区域无效", en: "Invalid cloud storage region"})
 	ErrorInvalidCloudStorageEndpoint        = NewError(incr(400), lang{zh: "云存储端点无效", en: "Invalid cloud storage endpoint"})
 	ErrorUserCloudflueR2Disabled            = NewError(incr(400), lang{zh: "多用户开放网关存储类型 Cloudflue R2 未开启", en: "Multi-user open gateway storage type Cloudflue R2 is not enabled"})

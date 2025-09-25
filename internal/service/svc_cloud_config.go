@@ -110,7 +110,7 @@ func (svc *Service) CloudConfigUpdateAndCreate(uid int64, params *CloudConfigReq
 
 		// 检查账户ID是否为空
 		if params.AccountID == "" {
-			return 0, code.ErrorInvalidCloudStorageAccountId
+			return 0, code.ErrorInvalidCloudStorageAccountID
 		}
 
 	} else if params.Type == storage.S3 {
