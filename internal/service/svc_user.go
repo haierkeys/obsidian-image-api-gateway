@@ -114,7 +114,8 @@ func (svc *Service) UserRegister(params *UserCreateRequest) (*User, error) {
 		return nil, err
 	}
 
-	expiry := 30 * 24 * 60 * 60
+	// 过期时间 100年
+	expiry := 100 * 365 * 24 * 60 * 60
 	ip := svc.ctx.ClientIP()
 	userAuthToken, err := app.GenerateToken(u.UID, "", ip, int64(expiry))
 	user.Token = userAuthToken
@@ -147,8 +148,8 @@ func (svc *Service) UserLogin(params *UserLoginRequest) (*User, error) {
 	if !util.CheckPasswordHash(user.Password, params.Password) {
 		return nil, code.ErrorUserLoginPasswordFailed
 	}
-
-	expiry := 30 * 24 * 60 * 60
+	// 过期时间 100年
+	expiry := 100 * 365 * 24 * 60 * 60
 	ip := svc.ctx.ClientIP()
 	userAuthToken, err := app.GenerateToken(user.UID, user.Username, ip, int64(expiry))
 	user.Token = userAuthToken
