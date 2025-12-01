@@ -43,7 +43,7 @@ func GetFileName(name string) string {
 }
 
 func GetFileNameOrRandom(fileName string) string {
-    // 处理特殊文件名（image.png 和 Untitled开头的文件名）
+    // 处理特殊文件名（通过剪切板上传的 image.png 和以 Untitled 开头的文件名）
     if fileName == "image.png" || strings.HasPrefix(fileName, "Untitled") {
         return GetFileName(uuid.New().String() + "-" + fileName)
     }
