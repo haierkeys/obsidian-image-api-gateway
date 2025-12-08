@@ -6,141 +6,123 @@ on:
     tags:
       - "*"
 
+# 必须配置权限
+permissions:
+  contents: write
+  packages: write
+
 jobs:
-  create-release:
-    name: Create Release
+  # 1. 编译 Go 二进制文件 (并行处理多系统打包)
+  build-binaries:
+    name: Build Binaries
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: false
-          prerelease: false
-
-  build-push-docker:
-    runs-on: ubuntu-latest
-    needs: create-release
-    outputs:
-      NAME: ${{ env.NAME }}
-      IMAGE_TAG: ${{ env.IMAGE_TAG }}
-      TAG_VERSION: ${{ env.TAG_VERSION }}
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set Environment Variables
-        run: |
-          echo "NAME=$(basename ${GITHUB_REPOSITORY})" >> ${GITHUB_ENV}
-          echo "IMAGE_TAG=$(basename ${GITHUB_REF})" >> ${GITHUB_ENV}
-          echo "TAG_VERSION=$(git describe --tags --abbrev=0)" >> ${GITHUB_ENV}
-          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
-          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> ${GITHUB_ENV}
-
-      - name: Append 'latest' tag if on main branch
-        if: github.ref == 'refs/heads/main' || env.IMAGE_TAG == env.TAG_VERSION
-        run: echo "IMAGE_TAG=${{ env.IMAGE_TAG }},latest" >> ${GITHUB_ENV}
+      - name: Set Version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - uses: actions/setup-go@v5
         with:
           go-version: 'stable'
 
-      - name: Check Go Version
-        run: go version  # 验证版本
-
-      - name: Go Build Prepare
+      - name: Install gox
         run: go install github.com/mitchellh/gox@latest
 
+      # 假设你的 make gox-all 会把文件输出到 build/ 目录，并且按目录分好了架构
+      # 比如: build/linux_amd64/your_app
       - name: Go Build Multi-platform
         run: make gox-all
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build_file
-          path: ./build/
-
-      - name: Upload Config Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: config
-          path: ./config
-
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-
-      - name: Docker Build & Publish to GitHub Container Registry
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          dockerfile: Dockerfile
-          name: ${{ github.actor }}/${{ env.NAME }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          platforms: linux/amd64,linux/arm64
-          registry: ghcr.io
-          snapshot: false
-          tags: "${{ env.IMAGE_TAG }}"
-          buildargs: |
-            VERSION=${{ env.IMAGE_TAG }}
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-
-      - name: Docker Build & Publish to DockerHub
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          dockerfile: Dockerfile
-          name: ${{ github.actor }}/${{ env.NAME }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          platforms: linux/amd64,linux/arm64
-          snapshot: false
-          tags: "${{ env.IMAGE_TAG }}"
-          buildargs: |
-            VERSION=${{ env.IMAGE_TAG }}
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-
-  push-release:
-    needs: [create-release, build-push-docker]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        jobs:
-          - { goos: darwin, goarch: amd64, cc: "" }
-          - { goos: darwin, goarch: arm64, cc: "" }
-          - { goos: linux, goarch: amd64, cc: "" }
-          - { goos: linux, goarch: arm64, cc: "" }
-          - { goos: windows, goarch: amd64, cc: "", ext: ".exe" }
-    steps:
-      - name: Set NAME env
-        run: echo "NAME=${{ needs.build-push-docker.outputs.NAME }}-${{ needs.build-push-docker.outputs.TAG_VERSION }}" >> ${GITHUB_ENV}
-
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build_file
-          path: ./build/
-
-      - name: Download Config Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: config
-          path: ./config
-
-      - name: Create GZip Archive
+      # 打包成 tar.gz
+      - name: Package Artifacts
         run: |
-          tar -czvf ./build/${{ env.NAME }}-${{ matrix.jobs.goos }}-${{ matrix.jobs.goarch }}.tar.gz ./config  -C ./build/${{ matrix.jobs.goos }}_${{ matrix.jobs.goarch }}/ .
+          mkdir -p releases
+          # 定义项目名称
+          APP_NAME=$(basename ${GITHUB_REPOSITORY})
+          
+          # 这里假设 make gox-all 生成了如下结构 (根据你的原脚本推测)
+          # 如果 gox 生成的是单文件名为 app_linux_amd64，你需要调整这里的打包逻辑
+          
+          # 遍历 build 下的文件夹进行压缩 (适配 gox 默认输出目录模式)
+          for dir in ./build/*; do
+            if [ -d "$dir" ]; then
+              PLATFORM=$(basename "$dir") # 例如 linux_amd64
+              # 压缩 config 目录和 二进制文件
+              tar -czvf "releases/${APP_NAME}-${PLATFORM}.tar.gz" -C ./config . -C "$dir" .
+            fi
+          done
 
-      - name: Upload GZip to Release
-        uses: actions/upload-release-asset@v1
+      # 创建 Release 并上传所有 tar.gz
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: releases/*.tar.gz
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 2. 构建并推送 Docker 镜像 (依赖 build-binaries 完成，或者并行运行)
+  build-push-docker:
+    name: Build & Push Docker
+    runs-on: ubuntu-latest
+    needs: build-binaries # 也可以设为不依赖，并行跑更快
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 登录 DockerHub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./build/${{ env.NAME }}-${{ matrix.jobs.goos }}-${{ matrix.jobs.goarch }}.tar.gz
-          asset_name: ${{ env.NAME }}-${{ matrix.jobs.goos }}-${{ matrix.jobs.goarch }}.tar.gz
-          asset_content_type: application/gzip
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 登录 GHCR
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 自动生成 metadata (tags, labels)
+      # 这里的逻辑是：如果是 tag v1.0.0，它会自动生成 :v1.0.0 和 :latest (默认行为)
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ github.repository }}
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable=${{ !contains(github.ref, '-') }}
+
+      # 构建并推送
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ needs.build-binaries.outputs.VERSION }}
+            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            GIT_COMMIT=${{ github.sha }}
