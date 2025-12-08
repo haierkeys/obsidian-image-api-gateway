@@ -17,7 +17,6 @@ jobs:
     name: Build Binaries
     runs-on: ubuntu-latest
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
       VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout
@@ -46,15 +45,22 @@ jobs:
           # 定义项目名称
           APP_NAME=$(basename ${GITHUB_REPOSITORY})
           
-          # 这里假设 make gox-all 生成了如下结构 (根据你的原脚本推测)
-          # 如果 gox 生成的是单文件名为 app_linux_amd64，你需要调整这里的打包逻辑
-          
           # 遍历 build 下的文件夹进行压缩 (适配 gox 默认输出目录模式)
           for dir in ./build/*; do
             if [ -d "$dir" ]; then
               PLATFORM=$(basename "$dir") # 例如 linux_amd64
-              # 压缩 config 目录和 二进制文件
-              tar -czvf "releases/${APP_NAME}-${PLATFORM}.tar.gz" -C ./config . -C "$dir" .
+              BINARY_NAME=$(basename ${GITHUB_REPOSITORY})
+              if [ -f "$dir/$BINARY_NAME" ]; then
+                TEMP_DIR=$(mktemp -d)
+                cp "$dir/$BINARY_NAME" "$TEMP_DIR/"
+                if [ -d "./config" ]; then
+                  cp -r ./config "$TEMP_DIR/"
+                fi
+                tar -czvf "releases/${APP_NAME}-${PLATFORM}.tar.gz" -C "$TEMP_DIR" .
+                rm -rf "$TEMP_DIR"
+              else
+                echo "Binary file not found in $dir, skipping..."
+              fi
             fi
           done
 
@@ -68,11 +74,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # 2. 构建并推送 Docker 镜像 (依赖 build-binaries 完成，或者并行运行)
+  # 2. 构建并推送 Docker 镜像到 GitHub Container Registry
   build-push-docker:
-    name: Build & Push Docker
+    name: Build & Push Docker to GHCR
     runs-on: ubuntu-latest
-    needs: build-binaries # 也可以设为不依赖，并行跑更快
+    needs: build-binaries # 依赖二进制构建完成后运行
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,13 +88,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # 登录 DockerHub
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 登录 GHCR
       - name: Login to GitHub Container Registry
@@ -105,7 +104,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.repository }}
             ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern={{version}}
