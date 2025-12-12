@@ -3,13 +3,13 @@ package global
 import (
 	"os"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aliyun_oss"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/minio"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/webdav"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/aliyun_oss"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/aws_s3"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/cloudflare_r2"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/local_fs"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/minio"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/webdav"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"

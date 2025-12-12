@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
+	"github.com/haierkeys/custom-image-gateway/internal/model"
 )
 
 func newCloudConfig(db *gorm.DB, opts ...gen.DOOption) cloudConfig {

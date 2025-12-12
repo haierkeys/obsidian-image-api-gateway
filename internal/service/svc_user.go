@@ -3,13 +3,13 @@ package service
 import (
 	"errors"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/util"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/dao"
+	"github.com/haierkeys/custom-image-gateway/pkg/app"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/convert"
+	"github.com/haierkeys/custom-image-gateway/pkg/timex"
+	"github.com/haierkeys/custom-image-gateway/pkg/util"
 
 	"gorm.io/gorm"
 )

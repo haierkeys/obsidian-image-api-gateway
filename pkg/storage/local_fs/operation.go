@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 )
 
 func (p *LocalFS) CheckSave() error {

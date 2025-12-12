@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/query"
+	"github.com/haierkeys/custom-image-gateway/internal/query"
 	"gorm.io/gen"
 )
 

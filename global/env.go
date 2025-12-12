@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 )
 
 var (

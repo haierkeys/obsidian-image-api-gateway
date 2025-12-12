@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/global"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

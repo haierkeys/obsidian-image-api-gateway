@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"net/http/pprof"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
-	apiRouter "github.com/haierkeys/obsidian-image-api-gateway/internal/routers/api_router"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/middleware"
+	apiRouter "github.com/haierkeys/custom-image-gateway/internal/routers/api_router"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

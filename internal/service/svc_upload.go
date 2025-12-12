@@ -9,11 +9,11 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/convert"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage"
 
 	"github.com/disintegration/imaging"
 	"github.com/gen2brain/avif"

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gen"

@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/query"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/query"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 
 	"github.com/glebarez/sqlite"
 	"github.com/haierkeys/gormTracing"

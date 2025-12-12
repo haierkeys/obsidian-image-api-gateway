@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
+	"github.com/haierkeys/custom-image-gateway/pkg/timex"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"

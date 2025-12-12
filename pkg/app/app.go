@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
 
 	"github.com/gin-gonic/gin"
 )

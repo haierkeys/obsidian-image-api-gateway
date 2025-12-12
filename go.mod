@@ -1,4 +1,4 @@
-module github.com/haierkeys/obsidian-image-api-gateway
+module github.com/haierkeys/custom-image-gateway
 
 go 1.24.1
 

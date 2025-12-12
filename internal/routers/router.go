@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/haierkeys/obsidian-image-api-gateway/docs"
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/middleware"
-	apiRouter "github.com/haierkeys/obsidian-image-api-gateway/internal/routers/api_router"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/limiter"
+	_ "github.com/haierkeys/custom-image-gateway/docs"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/middleware"
+	apiRouter "github.com/haierkeys/custom-image-gateway/internal/routers/api_router"
+	"github.com/haierkeys/custom-image-gateway/pkg/limiter"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

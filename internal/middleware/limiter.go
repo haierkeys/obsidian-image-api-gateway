@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/limiter"
+	"github.com/haierkeys/custom-image-gateway/pkg/app"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/limiter"
 
 	"github.com/gin-gonic/gin"
 )

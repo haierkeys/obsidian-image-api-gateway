@@ -7,7 +7,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"

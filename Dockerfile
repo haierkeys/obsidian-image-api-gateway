@@ -12,7 +12,7 @@ ARG GIT_COMMIT=${GIT_COMMIT}
 
 
 
-LABEL name="obsidian-image-api-gateway"
+LABEL name="custom-image-gateway"
 LABEL version=${VERSION}
 LABEL description="Provide image resizing, cropping, upload/download, and cloud storage features for Obsidian CIAU."
 LABEL maintainer="HaierKeys <haierkeys@gmail.com>"
@@ -23,9 +23,9 @@ LABEL org.opencontainers.image.created=${BUILD_DATE}
 LABEL org.opencontainers.image.authors="HaierKeys <haierkeys@gmail.com>"
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.description="Provide image resizing, cropping, upload/download, and cloud storage features for Obsidian CIAU."
-LABEL org.opencontainers.image.url="https://github.com/haierkeys/obsidian-image-api-gateway"
-LABEL org.opencontainers.image.source="https://github.com/haierkeys/obsidian-image-api-gateway"
-LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/refs/heads/main/README.md"
+LABEL org.opencontainers.image.url="https://github.com/haierkeys/custom-image-gateway"
+LABEL org.opencontainers.image.source="https://github.com/haierkeys/custom-image-gateway"
+LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/haierkeys/custom-image-gateway/refs/heads/main/README.md"
 LABEL org.opencontainers.image.revision=${GIT_COMMIT}
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.vendor="HaierKeys"

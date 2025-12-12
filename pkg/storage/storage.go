@@ -3,14 +3,14 @@ package storage
 import (
 	"io"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aliyun_oss"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/aws_s3"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/cloudflare_r2"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/local_fs"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/minio"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage/webdav"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/aliyun_oss"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/aws_s3"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/cloudflare_r2"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/local_fs"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/minio"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage/webdav"
 )
 
 type Type = string

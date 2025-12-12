@@ -5,7 +5,7 @@ include .env
 REPO = $(eval REPO := $$(shell go list -f '{{.ImportPath}}' .))$(value REPO)
 
 DockerHubUser = haierkeys
-DockerHubName = obsidian-image-api-gateway
+DockerHubName = custom-image-gateway
 
 
 # DockerHubName		=	$(shell basename "$(PWD)")

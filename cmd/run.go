@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 
 	"github.com/radovskyb/watcher"
 	"github.com/spf13/cobra"

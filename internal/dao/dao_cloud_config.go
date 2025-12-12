@@ -1,11 +1,11 @@
 package dao
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/query"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
+	"github.com/haierkeys/custom-image-gateway/internal/model"
+	"github.com/haierkeys/custom-image-gateway/internal/query"
+	"github.com/haierkeys/custom-image-gateway/pkg/app"
+	"github.com/haierkeys/custom-image-gateway/pkg/convert"
+	"github.com/haierkeys/custom-image-gateway/pkg/timex"
 	"gorm.io/gorm"
 )
 

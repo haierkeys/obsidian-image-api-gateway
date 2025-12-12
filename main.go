@@ -3,7 +3,7 @@ package main
 import (
 	"embed"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/cmd"
+	"github.com/haierkeys/custom-image-gateway/cmd"
 )
 
 //go:embed frontend

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/global"
 
 	"github.com/spf13/cobra"
 )

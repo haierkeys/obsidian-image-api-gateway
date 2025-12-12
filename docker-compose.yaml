@@ -1,6 +1,6 @@
 services:
   image-api:
-    image: haierkeys/obsidian-image-api-gateway:latest
+    image: haierkeys/custom-image-gateway:latest
     container_name: image-api
     ports:
       - "9000:9000"

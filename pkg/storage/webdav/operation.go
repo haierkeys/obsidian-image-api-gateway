@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/errors"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/fileurl"
+	"github.com/haierkeys/custom-image-gateway/pkg/errors"
+	"github.com/haierkeys/custom-image-gateway/pkg/fileurl"
 )
 
 // SendFile 将本地文件上传到 WebDAV 服务器。

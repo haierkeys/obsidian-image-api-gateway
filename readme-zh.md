@@ -1,12 +1,13 @@
 [中文文档](readme-zh.md) / [English Document](README.md)
-# Obsidian Image API Gateway
+
+# Custom Image Gateway
 
 <p align="center">
-    <img src="https://img.shields.io/github/release/haierkeys/obsidian-image-api-gateway" alt="version">
-    <img src="https://img.shields.io/github/license/haierkeys/obsidian-image-api-gateway" alt="license">
+    <img src="https://img.shields.io/github/release/haierkeys/custom-image-gateway" alt="version">
+    <img src="https://img.shields.io/github/license/haierkeys/custom-image-gateway" alt="license">
 </p>
 
-该项目为 [Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader) Obsidian 插件提供图片上传、存储与云同步服务。
+该项目为 [Obsidian Custom Image Auto Uploader](https://github.com/haierkeys/obsidian-custom-image-auto-uploader)  插件提供图片上传、存储与云同步服务。
 
 ## 功能清单
 
@@ -26,7 +27,7 @@
 
 ## 更新日志
 
-查看完整的更新内容，请访问 [Changelog](https://github.com/haierkeys/obsidian-image-api-gateway/releases)。
+查看完整的更新内容，请访问 [Changelog](https://github.com/haierkeys/custom-image-gateway/releases)。
 
 ## 价格
 
@@ -53,12 +54,12 @@
 
   ```bash
   # 从开源库下载默认配置文件到配置目录
-  wget -P ./config/ https://raw.githubusercontent.com/haierkeys/obsidian-image-api-gateway/main/config/config.yaml
+  wget -P ./config/ https://raw.githubusercontent.com/haierkeys/custom-image-gateway/main/config/config.yaml
   ```
 
 - 二进制安装
 
-  从 [Releases](https://github.com/haierkeys/obsidian-image-api-gateway/releases) 下载最新版本，解压后执行：
+  从 [Releases](https://github.com/haierkeys/custom-image-gateway/releases) 下载最新版本，解压后执行：
 
   ```bash
   ./image-api run -c config/config.yaml
@@ -71,14 +72,14 @@
 
   ```bash
   # 拉取最新的容器镜像
-  docker pull haierkeys/obsidian-image-api-gateway:latest
+  docker pull haierkeys/custom-image-gateway:latest
 
   # 创建并启动容器
   docker run -tid --name image-api \
           -p 9000:9000 -p 9001:9001 \
           -v /data/image-api/storage/:/api/storage/ \
           -v /data/image-api/config/:/api/config/ \
-          haierkeys/obsidian-image-api-gateway:latest
+          haierkeys/custom-image-gateway:latest
   ```
 
   Docker Compose
@@ -89,7 +90,7 @@
   # docker-compose.yaml
   services:
     image-api:
-      image: haierkeys/obsidian-image-api-gateway:latest  # 你的应用镜像
+      image: haierkeys/custom-image-gateway:latest  # 你的应用镜像
       container_name: image-api
       ports:
         - "9000:9000"  # 映射端口 9000
@@ -159,9 +160,9 @@
 - **存储类型说明**
 
 
-  | 存储类型       | 说明 |
-  |----------------|-----------|
-  | 服务器本地存储   | 默认的保存路径为: `/data/storage/uploads` 关联配置项`config.local-fs.save-path` 为 `storage/uploads`,  <br />如果使用网关图片资源访问服务, 需要 `config.local-fs.httpfs-is-enable` 设置为 `true` <br /> 对应的 `访问地址前缀` 为 `http://{IP:PORT}`, 使用单服务网关设置 `config.app.upload-url-pre` <br />推荐使用 Nginx 来实现资源访问 |
+  | 存储类型       | 说明                                                                                                                                                                                                                                                                                                                                    |
+  |----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | 服务器本地存储 | 默认的保存路径为: `/data/storage/uploads` 关联配置项`config.local-fs.save-path` 为 `storage/uploads`,  <br />如果使用网关图片资源访问服务, 需要 `config.local-fs.httpfs-is-enable` 设置为 `true` <br /> 对应的 `访问地址前缀` 为 `http://{IP:PORT}`, 使用单服务网关设置 `config.app.upload-url-pre` <br />推荐使用 Nginx 来实现资源访问 |
 
 
 
@@ -176,4 +177,4 @@
 
 ## 其他资源
 
-- [Obsidian Auto Image Remote Uploader](https://github.com/haierkeys/obsidian-auto-image-remote-uploader)
+- [Obsidian Custom Image Auto Uploader](https://github.com/haierkeys/https://github.com/haierkeys/obsidian-custom-image-auto-uploader)

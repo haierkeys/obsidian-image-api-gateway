@@ -23,8 +23,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/model"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
+	"github.com/haierkeys/custom-image-gateway/internal/model"
+	"github.com/haierkeys/custom-image-gateway/pkg/timex"
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"

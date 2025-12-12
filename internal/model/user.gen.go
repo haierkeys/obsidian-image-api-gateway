@@ -4,7 +4,7 @@
 
 package model
 
-import "github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
+import "github.com/haierkeys/custom-image-gateway/pkg/timex"
 
 const TableNameUser = "user"
 

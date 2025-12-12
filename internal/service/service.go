@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/dao"
 
 	"github.com/gin-gonic/gin"
 )

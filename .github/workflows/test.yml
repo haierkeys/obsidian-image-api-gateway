@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  PLUGIN_NAME: obsidian-image-api-gateway
+  PLUGIN_NAME: custom-image-gateway
 jobs:
   build:
     runs-on: ubuntu-latest

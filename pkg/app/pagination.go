@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/pkg/convert"
 
 	"github.com/gin-gonic/gin"
 )

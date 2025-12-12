@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/haierkeys/obsidian-image-api-gateway/global"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/routers"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/logger"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/safe_close"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/validator"
+	"github.com/haierkeys/custom-image-gateway/global"
+	"github.com/haierkeys/custom-image-gateway/internal/dao"
+	"github.com/haierkeys/custom-image-gateway/internal/routers"
+	"github.com/haierkeys/custom-image-gateway/pkg/logger"
+	"github.com/haierkeys/custom-image-gateway/pkg/safe_close"
+	"github.com/haierkeys/custom-image-gateway/pkg/validator"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

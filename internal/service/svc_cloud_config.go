@@ -2,12 +2,12 @@ package service
 
 import (
 	"github.com/gookit/goutil/dump"
-	"github.com/haierkeys/obsidian-image-api-gateway/internal/dao"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/app"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/code"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/convert"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/storage"
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/timex"
+	"github.com/haierkeys/custom-image-gateway/internal/dao"
+	"github.com/haierkeys/custom-image-gateway/pkg/app"
+	"github.com/haierkeys/custom-image-gateway/pkg/code"
+	"github.com/haierkeys/custom-image-gateway/pkg/convert"
+	"github.com/haierkeys/custom-image-gateway/pkg/storage"
+	"github.com/haierkeys/custom-image-gateway/pkg/timex"
 )
 
 type CloudConfig struct {

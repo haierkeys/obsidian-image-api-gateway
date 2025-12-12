@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/haierkeys/obsidian-image-api-gateway/pkg/validator"
+	"github.com/haierkeys/custom-image-gateway/pkg/validator"
 
 	ut "github.com/go-playground/universal-translator"
 )

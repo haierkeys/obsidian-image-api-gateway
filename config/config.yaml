@@ -30,8 +30,8 @@ app:
   # 临时文件存储路径
   # Temporary file storage path
   temp-path: storage/temp
-  # 上传文件保存的日期路径设置 默认不设置 为 200601/02 格式 https://github.com/haierkeys/obsidian-image-api-gateway/wiki/%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E4%BF%9D%E5%AD%98%E7%9A%84%E6%97%A5%E6%9C%9F%E8%B7%AF%E5%BE%84%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E
-  # Date path settings for uploaded files (default: not set, format: 200601/02) https://github.com/haierkeys/obsidian-image-api-gateway/wiki/Date-Path-Format-for-Stored-Uploaded-Files
+  # 上传文件保存的日期路径设置 默认不设置 为 200601/02 格式 https://github.com/haierkeys/custom-image-gateway/wiki/%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E4%BF%9D%E5%AD%98%E7%9A%84%E6%97%A5%E6%9C%9F%E8%B7%AF%E5%BE%84%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E
+  # Date path settings for uploaded files (default: not set, format: 200601/02) https://github.com/haierkeys/custom-image-gateway/wiki/Date-Path-Format-for-Stored-Uploaded-Files
   upload-date-path: 200601/02
   # 上传文件的 URL 前缀
   # URL prefix for uploaded files
@@ -218,7 +218,6 @@ minio:
   # 上传文件的自定义路径或前缀
   # Custom path or prefix for uploaded files
   custom-path: blog
-
 
 webdav:
   # 是否在 单服务网关 内启用 WebDAV 存储
